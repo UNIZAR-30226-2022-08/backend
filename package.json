@@ -2,11 +2,12 @@
   "name": "backend",
   "version": "0.0.1",
   "description": "Backend de QueenChess",
-  "main": "index.js",
+  "main": "code/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-	"start": "node code/server.js",
-	"dev": "nodemon server.js"
+    "babel-node": "babel-node --presets='@babel/preset-env'",
+    "dev": "NODE_ENV=dev nodemon --exec babel-node code/server.js",
+    "prod-test": "NODE_ENV=production nodemon --exec babel-node code/server.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,28 @@
   },
   "homepage": "https://github.com/UNIZAR-30226-2022-08/backend#readme",
   "dependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.8",
+    "@babel/node": "^7.16.8",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/register": "^7.17.0",
+    "@babel/runtime": "^7.17.2",
+    "babel-loader": "^8.2.3",
     "express": "^4.17.3",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "npm-run-all": "^4.1.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.12.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "prettier": "2.6.1"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
   }
 }
