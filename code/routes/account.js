@@ -1,10 +1,10 @@
-const express = require('express')
-const router = express.Router()
-const Sequelize = require('sequelize');
-const User = require('../models/user')
+import { Router } from 'express';
+import User from '../models/user';
+
+const router = Router()
 
 // middleware that is specific to this router
-/*router.use((req, res, next) => {
+/* router.use((req, res, next) => {
 		console.log('Time: ', Date.now())
 		next()
 })
@@ -13,15 +13,14 @@ const User = require('../models/user')
 router.post('/register', async function(req, res) {
 	const {username, email, password } = req.body
 	await User.create({
-		username: username,
-		email: email,
-		password: password
+		username,
+		email,
+		password
 	}). then(function(){
 		res.status(201).send();
 	})
 	.catch(function(err) {
-		res.status(400).json({ error: err.errors}.send())
-		return;
+		res.status(400).json({ error: err.errors}).send()
 	});
 });
 	
@@ -33,39 +32,38 @@ router.post('/login', async function(req, res) {
 	const {email, password} = req.body;
 	await User.findOne({
 		where: {
-			email: email,
-			password: password
+			email,
+			password
 		}
-	}).then(function(user){
-		if(user.length!=0){
-			session=req.session;
+	}).then(function(user) {
+		if(user.length !== 0){
+			const {session} = req;
 			session.userId=user.dataValues.userId
 			session.username=user.dataValues.username
 			session.email=user.dataValues.email
 			res.status(200).send();
-			return;
 		} else {
 			res.status(400).json({ error: "Invalid email or password"}).send();
-			return;
+			
 		}
 	})
 });
 
 
-router.post('/changePassword', function(req, res) {
+router.post('/changePassword', async function(req, res) {
 	const {email, newPassword} = req.body
 	await User.update({
 		password: newPassword,
 		where: {
-			email: email
+			email
 		}
 	})
-	.then(function(){
+	.then(function() {
 		res.status(201).send();
 	})
 	.catch(function(err) {
 		res.status(400).json({ error: err.errors}.send())
-		return;
+		
 	});
 	
 });
@@ -74,9 +72,9 @@ router.all('/checkSession',(req,res) => {
 		res.json(req.session);
 });
 
-router.get("/logout",(req,res) => {
+router.post("/logout",(req,res) => {
 		req.session.destroy();
 		res.status(201).json({ status: 'success', message: 'Logged out' })
 });
 
-module.exports = router
+export default router

@@ -1,19 +1,19 @@
-const Sequelize = require('sequelize');
-const sequelize = require('../sequelize/sequelize')
+import { INTEGER, STRING } from 'sequelize';
+import sequelize from '../sequelize/sequelize';
 
-var AsyncGame = sequelize.define('async_game', {
+const AsyncGame = sequelize.define('async_game', {
 	gameId: { 
-        type: Sequelize.INTEGER,
+        type: INTEGER,
         autoIncrement: true,
         primaryKey: true 
     },
 	username: {
-		type: Sequelize.STRING,
+		type: STRING,
 		unique: true,
 		allowNull: false
 	},
 	email: {
-		type: Sequelize.STRING,
+		type: STRING,
 		unique: true,
 		allowNull: false,
 		validate: {
@@ -21,14 +21,14 @@ var AsyncGame = sequelize.define('async_game', {
 		}
 	},
 	password: {
-		type: Sequelize.STRING,
+		type: STRING,
 		allowNull: false,
 		validate: {
 			len: [6,12]
 		}
 	},
 	elo : {
-		type: Sequelize.INTEGER,
+		type: INTEGER,
 		defaultValue: 800,
 		validate: {
 			min: 0
@@ -38,8 +38,8 @@ var AsyncGame = sequelize.define('async_game', {
 	freezeTableName: true // Model tableName will be the same as the model name
 });
 
-User.sync().then(function () {
+AsyncGame.sync().then(function () {
 
 });
 
-module.exports = User
+export default AsyncGame

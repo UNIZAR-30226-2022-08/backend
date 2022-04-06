@@ -1,4 +1,5 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
+
 const sequelize = new Sequelize(process.env.DB_CONN_URI, {
 	dialect: 'postgres',
 	dialectOptions: {
@@ -20,4 +21,4 @@ sequelize.authenticate().then(() => {
 	console.log(err);
 });
 
-module.exports = sequelize
+export default sequelize

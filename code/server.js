@@ -1,17 +1,19 @@
 // Requiring module
-const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors') 
-require('dotenv').config()
-//For using sessions. cookieParser is the needed middleware
-const cookieParser = require("cookie-parser");
-const sessions = require('express-session');
+import express from 'express';
+import { json, urlencoded } from 'body-parser';
+import cors from 'cors';
+// For using sessions. cookieParser is the needed middleware
+import cookieParser from "cookie-parser";
+import sessions from 'express-session';
 
+import 'dotenv/config'
+import accountRouter from './routes/account';
+import logger from './logger';
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////////////////////////////
 const app = express();
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+app.use(json())
+app.use(urlencoded({     // to support URL-encoded bodies
 	extended: true
 	}))
 app.use(cors())
@@ -24,16 +26,14 @@ app.use(sessions({
 }));
 app.use(cookieParser());
 
-
-const accountRouter = require('./routes/account')
-
+app.use(logger)
 app.use('/account', accountRouter)
 
 // Port Number
 const PORT = process.env.PORT ||5000;
 
 // Server Setup
-app.listen(PORT,console.log(
+app.listen(PORT, console.log(
 	`Server started on port ${PORT}\n` 
-	//+ "List of routes: ", app._router.stack
+	// + "List of routes: ", app._router.stack
 ));

@@ -1,15 +1,15 @@
-const Sequelize = require('sequelize');
-const sequelize = require('../sequelize/sequelize')
+import { INTEGER, STRING } from 'sequelize';
+import sequelize from '../sequelize/sequelize';
 
-var User = sequelize.define('user', {
-	userId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+const User = sequelize.define('user', {
+	userId: { type: INTEGER, autoIncrement: true, primaryKey: true },
 	username: {
-		type: Sequelize.STRING,
+		type: STRING,
 		unique: true,
 		allowNull: false
 	},
 	email: {
-		type: Sequelize.STRING,
+		type: STRING,
 		unique: true,
 		allowNull: false,
 		validate: {
@@ -17,14 +17,14 @@ var User = sequelize.define('user', {
 		}
 	},
 	password: {
-		type: Sequelize.STRING,
+		type: STRING,
 		allowNull: false,
 		validate: {
 			len: [6,12]
 		}
 	},
 	elo : {
-		type: Sequelize.INTEGER,
+		type: INTEGER,
 		defaultValue: 800,
 		validate: {
 			min: 0
@@ -38,4 +38,4 @@ User.sync().then(function () {
 
 });
 
-module.exports = User
+export default User
