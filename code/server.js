@@ -8,7 +8,6 @@ import sessions from 'express-session';
 
 import 'dotenv/config'
 import accountRouter from './routes/account';
-import logger from './logger';
 
 /// ///////////////////////////////////////////////////////////////////////////////////////////////
 const app = express();
@@ -26,7 +25,6 @@ app.use(sessions({
 }));
 app.use(cookieParser());
 
-app.use(logger)
 app.use('/account', accountRouter)
 
 // Port Number
