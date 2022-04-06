@@ -4,10 +4,13 @@
   "description": "Backend de QueenChess",
   "main": "code/server.js",
   "scripts": {
+    "clean": "rm -rf build && mkdir build",
+    "build": "npm run clean && babel --presets='@babel/preset-env' code -d build",
+    "start": "node ./build/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "babel-node": "babel-node --presets='@babel/preset-env'",
     "dev": "NODE_ENV=dev nodemon --exec babel-node code/server.js",
-    "prod-test": "NODE_ENV=production nodemon --exec babel-node code/server.js"
+    "prod-test": "NODE_ENV=production nodemon --exec babel-node ./code/server.js"
   },
   "repository": {
     "type": "git",
@@ -26,7 +29,7 @@
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/register": "^7.17.0",
-    "@babel/runtime": "^7.17.2",
+    "@babel/runtime": "^7.17.9",
     "babel-loader": "^8.2.3",
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",
@@ -50,6 +53,7 @@
   "babel": {
     "presets": [
       "@babel/preset-env"
-    ]
+    ],
+    "plugins": ["@babel/plugin-transform-runtime"]
   }
 }
