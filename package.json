@@ -4,7 +4,6 @@
   "description": "Backend de QueenChess",
   "main": "code/server.js",
   "scripts": {
-    "start": "node ./code/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "babel-node": "babel-node --presets='@babel/preset-env'",
     "dev": "NODE_ENV=dev nodemon --exec babel-node code/server.js",
@@ -33,7 +32,6 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
-    "env": "^0.0.2",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "nodemon": "^2.0.15",
