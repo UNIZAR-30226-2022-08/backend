@@ -1,8 +1,12 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../sequelize/sequelize')
 
-var User = sequelize.define('user', {
-	userId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+var AsyncGame = sequelize.define('async_game', {
+	gameId: { 
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true 
+    },
 	username: {
 		type: Sequelize.STRING,
 		unique: true,
