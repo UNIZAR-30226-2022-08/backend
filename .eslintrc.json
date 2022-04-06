@@ -11,5 +11,7 @@
         "sourceType": "module"
     },
     "rules": {
+        "prefer-arrow-callback": "off",
+        "func-names": "off"
     }
 }
