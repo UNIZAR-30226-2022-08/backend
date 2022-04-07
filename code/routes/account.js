@@ -36,7 +36,7 @@ router.post('/login', async function(req, res) {
 			password
 		}
 	}).then(function(user) {
-		if(user.length !== 0){
+		if(user){
 			const {session} = req;
 			session.userId=user.dataValues.userId
 			session.username=user.dataValues.username
