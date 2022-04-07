@@ -15,7 +15,7 @@ app.use(json())
 app.use(urlencoded({     // to support URL-encoded bodies
 	extended: true
 	}))
-app.use(cors({origin: false}))
+app.use(cors({origin: true}))
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(sessions({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
