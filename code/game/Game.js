@@ -63,7 +63,7 @@ class Game {
 	 * @param {number} x x position to check
 	 * @param {number} y y position to check
 	 */
-	ocuppied(x, y) {}
+	occupied(x, y) {}
 }
 
 export default Game;

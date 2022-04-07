@@ -8,7 +8,7 @@ import sessions from 'express-session';
 
 import 'dotenv/config'
 import accountRouter from './routes/account';
-
+import gameRouter from './routes/game';
 /// ///////////////////////////////////////////////////////////////////////////////////////////////
 const app = express();
 app.use(json())
@@ -26,6 +26,7 @@ app.use(sessions({
 app.use(cookieParser());
 
 app.use('/account', accountRouter)
+app.use('/game', gameRouter)
 
 // Port Number
 const PORT = process.env.PORT ||5000;

@@ -7,32 +7,13 @@ const AsyncGame = sequelize.define('async_game', {
         autoIncrement: true,
         primaryKey: true 
     },
-	username: {
+	whitePlayer: {
 		type: STRING,
-		unique: true,
 		allowNull: false
 	},
-	email: {
-		type: STRING,
-		unique: true,
-		allowNull: false,
-		validate: {
-			isEmail: true
-		}
-	},
-	password: {
+	blackPlayer: {
 		type: STRING,
 		allowNull: false,
-		validate: {
-			len: [6,12]
-		}
-	},
-	elo : {
-		type: INTEGER,
-		defaultValue: 800,
-		validate: {
-			min: 0
-		}
 	}
 }, {
 	freezeTableName: true // Model tableName will be the same as the model name
