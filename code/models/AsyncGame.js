@@ -14,6 +14,18 @@ const AsyncGame = sequelize.define('async_game', {
 	blackPlayer: {
 		type: STRING,
 		allowNull: false,
+	},
+	whitePieces: {
+		type: STRING,
+		allowNull: false
+	},
+	blackPieces: {
+		type: STRING,
+		allowNull: false,
+	},
+	turn: {
+		type: STRING,
+		allowNull: false,
 	}
 }, {
 	freezeTableName: true // Model tableName will be the same as the model name
