@@ -14,23 +14,11 @@ router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 router.post("/changePassword", UserController.changePassword);
 router.post("/logout", UserController.logout);
+router.get("/getPublicProfile", UserController.getPublicProfile);
+router.post("/editInfo", UserController.editInfo);
 
 router.all("/checkSession", (req, res) => {
-	res.json(req.session);
+	res.json({ response: req.session });
 });
-
-// router.all('/getAllUsers', async (req,res) => {
-// 	await User.findAll({
-// 	}).then(function(user) {
-// 		res.status(200).json(user)
-// 	})
-// });
-
-// router.all('/login', async function(req, res) {
-// 	await User.findAll({
-// 	}).then(function(user) {
-// 		res.status(200).json(user)
-// 	})
-// });
 
 export default router;

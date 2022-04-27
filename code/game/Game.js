@@ -3,6 +3,8 @@ import Pawn from "./piezas/Pawn";
 import Queen from "./piezas/Queen";
 
 class Game {
+	_ongoing = "ongoing"
+	_complete = "complete"
 	constructor() {
 		this.turn = WhitePlayer;
 		this.whitePieces = [];
