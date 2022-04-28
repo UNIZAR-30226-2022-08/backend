@@ -1,26 +1,70 @@
-import { BlackPlayer, WhitePlayer } from "./piezas/Piece";
-import Pawn from "./piezas/Pawn";
-import Queen from "./piezas/Queen";
+import King from "./piezas/King";
+
+const WhitePlayer = true;
+const BlackPlayer = false;
+
+function getInitialBoard() {
+	return {
+		whitePieces: [
+			// Pawns
+			{ x: 1, y: 0 },
+			{ x: 1, y: 1 },
+			{ x: 1, y: 2 },
+			{ x: 1, y: 3 },
+			{ x: 1, y: 4 },
+			{ x: 1, y: 5 },
+			{ x: 1, y: 6 },
+			{ x: 1, y: 7 },
+			// Queen and king
+			{ x: 0, y: 0 },
+			{ x: 0, y: 0 },
+			// Bishops
+			{ x: 0, y: 0 },
+			{ x: 0, y: 0 },
+			// Rooks
+			{ x: 0, y: 0 },
+			{ x: 0, y: 0 },
+			// Knights
+			{ x: 0, y: 0 },
+			{ x: 0, y: 0 },
+		],
+		blackPieces: [
+			// Pawns
+			{ x: 6, y: 0 },
+			{ x: 6, y: 1 },
+			{ x: 6, y: 2 },
+			{ x: 6, y: 3 },
+			{ x: 6, y: 4 },
+			{ x: 6, y: 5 },
+			{ x: 6, y: 6 },
+			{ x: 6, y: 7 },
+			// Queen and king
+			{ x: 7, y: 0 },
+			{ x: 7, y: 0 },
+			// Bishops
+			{ x: 7, y: 0 },
+			{ x: 7, y: 0 },
+			// Rooks
+			{ x: 7, y: 0 },
+			{ x: 7, y: 0 },
+			// Knights
+			{ x: 7, y: 0 },
+			{ x: 7, y: 0 },
+		],
+	};
+}
 
 class Game {
-	_ongoing = "ongoing"
-	_complete = "complete"
-	constructor() {
+	_ongoing = "ongoing";
+
+	_complete = "complete";
+
+	constructor(whitePlayer, blackPlayer) {
 		this.turn = WhitePlayer;
-		this.whitePieces = [];
-		this.blackPieces = [];
+		this.whitePlayer = whitePlayer;
+		this.blackPlayer = blackPlayer;
 
-		// Whites
-		for (let i = 0; i < 7; i += 1) {
-			this.whitePieces.push(new Pawn(WhitePlayer, i, 1));
-		}
-		this.whitePieces.push(new Queen(WhitePlayer, 3, 0));
-
-		// Blacks
-		for (let i = 0; i < 7; i += 1) {
-			this.blackPieces.push(new Pawn(BlackPlayer, i, 6));
-		}
-		this.blackPieces.push(new Queen(BlackPlayer, 3, 7));
+		this.board = getInitialBoard();
 	}
 
 	moveFromTo(player, x1, y1, x2, y2) {
@@ -31,6 +75,7 @@ class Game {
 				// notificar pieza tomada
 				console.log("eliminada pieza %s", taken.constructor.name);
 			}
+			return true;
 		}
 		return false;
 	}
@@ -91,77 +136,67 @@ class Game {
 	}
 
 	checkMate() {
-		const king = this.whitePieces.find((elem) => {
-			if (elem instanceof Queen) {
-				return true;
-			}
-			return false;
-		});
+		const king = this.whitePieces.find((elem) => elem instanceof King);
 		if (!king) {
 			return false;
 		}
 
 		return this.blackPieces
-			.map((elem) => {
-				let test = elem
+			.map((piece) =>
+				piece
 					.getAllowedMoves()
-					.concat(elem.pos)
+					.concat(piece.pos)
 					.map((move) =>
 						king
 							.getAllowedMoves()
 							.concat(king.pos)
 							.map((kingMove) => {
 								if (
-									elem.pos.x + move.x === king.pos.x + kingMove.x &&
-									elem.pos.y + move.y === king.pos.y + kingMove.y
+									piece.pos.x + move.x === king.pos.x + kingMove.x &&
+									piece.pos.y + move.y === king.pos.y + kingMove.y
 								) {
 									return true;
 								}
 								return false;
 							})
 							.every((a) => a)
-					);
-				console.log(test);
-				return test.every((res) => res);
-			})
+					)
+					.every((res) => res)
+			)
 			.some((p) => p);
 	}
 
 	check() {
-		const king = this.whitePieces.find((elem) => {
-			if (elem instanceof Queen) {
-				return true;
-			}
-			return false;
-		});
+		const king = this.whitePieces.find((piece) => piece instanceof King);
 		if (!king) {
 			return false;
 		}
 
 		return this.blackPieces
-			.map((elem) =>
-				elem
+			.map((piece) =>
+				piece
 					.getAllowedMoves()
-					.concat(elem.pos)
+					.concat(piece.pos)
 					.map((move) =>
 						king
 							.getAllowedMoves()
 							.concat(king.pos)
 							.map((kingMove) => {
 								if (
-									elem.pos.x + move.x === king.pos.x + kingMove.x &&
-									elem.pos.y + move.y === king.pos.y + kingMove.y
+									piece.pos.x + move.x === king.pos.x + kingMove.x &&
+									piece.pos.y + move.y === king.pos.y + kingMove.y
 								) {
 									return true;
 								}
 								return false;
 							})
-							.some((a) => a)
+							.some((res) => res)
 					)
 					.some((res) => res)
 			)
-			.some((p) => p);
+			.some((res) => res);
 	}
 }
 
+export { getInitialBoard, WhitePlayer, BlackPlayer };
 export default Game;
