@@ -1,16 +1,7 @@
 import { Router } from "express";
-import User from "../models/User";
-import AsyncGame from "../models/asyncGame";
-import Game from "../game/Game";
 import GameController from "../controller/GameController";
-const router = Router();
 
-// middleware that is specific to this router
-/* router.use((req, res, next) => {
-		console.log('Time: ', Date.now())
-		next()
-})
-*/
+const router = Router();
 
 router.put("/newAsyncGame", GameController.createAsyncGame);
 router.get("/getState", GameController.getGame);
