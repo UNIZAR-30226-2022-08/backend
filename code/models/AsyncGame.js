@@ -1,43 +1,60 @@
-import { INTEGER, STRING } from "sequelize";
-import sequelize from "../sequelize/sequelize";
+import DataTypes from "sequelize";
+import sequelize from "../database/database";
+import User from "./User";
 
-const AsyncGame = sequelize.define('async_game', {
-	gameId: { 
-        type: INTEGER,
-        autoIncrement: true,
-        primaryKey: true 
-    },
-	whitePieces: {
-		type: STRING,
-		allowNull: false
+const Game = sequelize.define(
+	"game",
+	{
+		id: {
+			type: DataTypes.INTEGER,
+			autoIncrement: true,
+			primaryKey: true,
+		},
+		boardState: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		whiteTurn: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			default: true,
+		},
+		inProgress: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			default: false,
+		},
+		isAsync: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
+		// This field must be used together with "inProgress". If game is still in progress
+		// then the value of this is useless
+		whiteWon: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			default: true,
+		},
+		whitePlayerId: {
+			type: DataTypes.STRING,
+			allowNull: false,
+			references: {
+				model: User,
+				key: "username",
+			},
+		},
+		blackPlayerId: {
+			type: DataTypes.STRING,
+			allowNull: false,
+			references: {
+				model: User,
+				key: "username",
+			},
+		},
 	},
-	blackPieces: {
-		type: STRING,
-		allowNull: false,
-	},
-	whiteTurn: {
-		type: BOOLEAN,
-		allowNull: false,
-		default: true
-	},
-	inProgress: {
-		type: BOOLEAN,
-		allowNull: false,
-		default: false
-	},
-	isAsync: {
-		type: BOOLEAN,
-		allowNull: false
-	},
-	//This field must be used together with "inProgress". If game is still in progress
-	//then the value of this is useless
-	whiteWon: {
-		type: BOOLEAN,
-		allowNull: false,
-		default: true
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name
 	}
 );
 
-await AsyncGame.sync({ alter: true });
-
-export default AsyncGame;
+export default Game;
