@@ -1,18 +1,18 @@
-import { INTEGER, STRING } from "sequelize";
-import sequelize from "../sequelize/sequelize";
+import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
+import sequelize from "../database/database";
 
 const User = sequelize.define(
 	"user",
 	{
 		username: {
-			type: STRING,
+			type: DataTypes.STRING,
 			unique: true,
 			allowNull: false,
 			primaryKey: true,
 		},
 		email: {
-			type: STRING,
+			type: DataTypes.STRING,
 			unique: true,
 			allowNull: false,
 			validate: {
@@ -20,21 +20,21 @@ const User = sequelize.define(
 			},
 		},
 		password: {
-			type: STRING,
+			type: DataTypes.STRING,
 			allowNull: false,
 			validate: {
 				len: [6, 12],
 			},
 		},
 		elo: {
-			type: INTEGER,
+			type: DataTypes.INTEGER,
 			defaultValue: 800,
 			validate: {
 				min: 0,
 			},
 		},
 		money: {
-			type: INTEGER,
+			type: DataTypes.INTEGER,
 			defaultValue: 0,
 			validate: {
 				min: 0,
@@ -45,57 +45,37 @@ const User = sequelize.define(
 		hooks: {
 			beforeCreate: async (user) => {
 				if (user.password) {
-					user.password = bcrypt.hash(user.password, bcrypt.genSalt());
+					user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync());
 				}
 			},
 			beforeUpdate: async (user) => {
 				if (user.password) {
-					user.password = bcrypt.hashSync(user.password, bcrypt.genSalt());
+					user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync());
 				}
 			},
-		},
-		instanceMethods: {
-			validPassword: (password) => bcrypt.compareSync(password, this.password),
 		},
 		freezeTableName: true, // Model tableName will be the same as the model name
 	}
 );
 
-User.prototype.validPassword = async (password, hash) =>
-	bcrypt.compare(password, hash);
-
-User.hasMany(User, {
-	foreignKey: {
+const UserFriendList = sequelize.define("friendList", {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
 		allowNull: false,
-		foreignKey: "friends",
+	},
+	accepted: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+		defaultValue: false,
 	},
 });
 
-User.hasMany(User, {
-	foreignKey: {
-		allowNull: false,
-		foreignKey: "friendRequests",
-	},
-});
-
-await User.sync({ alter: true });
-await User.create({
-	username: "user1",
-	password: "password",
-	email: "a@b.com",
-	elo: 800,
-});
-await User.create({
-	username: "user2",
-	password: "password",
-	email: "a@c.com",
-	elo: 800,
-});
-await User.create({
-	username: "user3",
-	password: "password",
-	email: "a@d.com",
-	elo: 1000,
+User.belongsToMany(User, {
+	through: UserFriendList,
+	as: "Friend",
 });
 
 export default User;
+export { UserFriendList };
