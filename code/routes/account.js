@@ -7,11 +7,11 @@ router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 
 // middleware that is specific to this router
-/* router.use((req, res, next) => {
-		console.log('Time: ', Date.now())
-		next()
-})
-*/
+router.use((req, res, next) => {
+	if (!req.session.username)
+		return res.status(403).json({ error: "user not logged in" }).send();
+	return next();
+});
 
 router.post("/changePassword", UserController.changePassword);
 router.post("/logout", UserController.logout);
