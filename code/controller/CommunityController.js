@@ -16,15 +16,16 @@ const CommunityController = {
 			return
 		}
         else {
-            var { count, rows } = await Project.findAndCountAll({
+            var playedCount = await Project.findAndCountAll({
                 where: {
                     inProgress: false,
                     [Op.or]: [{ whitePlayer: username }, { blackPlayer: username }]
                 },
+            }).then(function (count, rows){
+                return count
             });
-            var playedCount = count
 
-            const { count, rows } = await Project.findAndCountAll({
+            var { count, rows } = await Project.findAndCountAll({
                 where: {
                     inProgress: false,
                     [Op.or]: [

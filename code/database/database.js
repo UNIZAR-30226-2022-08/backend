@@ -2,12 +2,12 @@ import Sequelize from "sequelize";
 
 const database = new Sequelize(process.env.DB_CONN_URI, {
 	dialect: "postgres",
-	// dialectOptions: {
-	// 	ssl: {
+	dialectOptions: {
+		ssl: {
 	// 		require: false,
-	// 		rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
-	// 	},
-	// },
+	 		rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
+		},
+	},
 	pool: {
 		max: 9,
 		min: 0,

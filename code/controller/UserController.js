@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { request } from "express";
 import Sequelize from "sequelize";
-import User, { UserFriendList, UserFriendRequests } from "../models/User";
+import User, { UserFriendList, UserFriendRequests } from "../models/User"
 
 const UserController = {
 	async register(req, res) {
