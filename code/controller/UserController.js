@@ -159,10 +159,17 @@ const UserController = {
 	},
 	async getFriendRequests(req, res) {
 		return UserFriendList.findAll({
-			where: {
-				userUsername: req.session.username,
-				accepted: false,
-			},
+			where: Sequelize.and(
+				{ accepted: false },
+				Sequelize.or(
+					{
+						userUsername: req.session.username,
+					},
+					{
+						FriendUsername: req.session.username,
+					}
+				)
+			),
 			attributes: ["id", "FriendUsername", "accepted"],
 		})
 			.then((requests) => {
@@ -177,10 +184,17 @@ const UserController = {
 	},
 	async getFriends(req, res) {
 		return UserFriendList.findAll({
-			where: {
-				userUsername: req.session.username,
-				accepted: true,
-			},
+			where: Sequelize.and(
+				{ accepted: true },
+				Sequelize.or(
+					{
+						userUsername: req.session.username,
+					},
+					{
+						FriendUsername: req.session.username,
+					}
+				)
+			),
 			attributes: ["id", "FriendUsername", "accepted"],
 		})
 			.then((requests) => {
