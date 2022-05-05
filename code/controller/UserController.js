@@ -47,11 +47,12 @@ const UserController = {
 			});
 	},
 	async changePassword(req, res) {
-		const { email, newPassword } = req.body;
-		await User.update({
+		const { newPassword } = req.body;
+		const { username } = req.session;
+		return User.update({
 			password: newPassword,
 			where: {
-				email,
+				username,
 			},
 		})
 			.then(function () {
