@@ -18,6 +18,7 @@ app.use(
 		extended: true,
 	})
 );
+app.use(cors({ origin: "*", credentials: "*" }));
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
 	sessions({
