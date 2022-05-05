@@ -103,6 +103,32 @@ const UserController = {
 			.then(() => res.status(200).send())
 			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
+	async removeFriend(req, res) {
+		if (req.session.username === null || req.body.friend === null)
+			return res.status(400).json({ error: "invalid request" }).send();
+
+		const removed = await UserFriendList.destroy({
+			where: Sequelize.and(
+				{ accepted: true },
+				Sequelize.or(
+					{
+						userUsername: req.session.username,
+						FriendUsername: req.body.friend,
+					},
+					{
+						userUsername: req.body.friend,
+						FriendUsername: req.session.username,
+					}
+				)
+			),
+		});
+
+		if (removed < 1) {
+			return res.status(400).json({ error: "user is not friend" }).send();
+		}
+
+		return res.status(200).send();
+	},
 	async acceptFriendRequest(req, res) {
 		if (req.session.username === null || req.body.friend === null)
 			res.status(400).json({ error: "user is already friend" }).send();

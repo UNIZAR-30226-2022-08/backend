@@ -19,6 +19,7 @@ accountRouter.post("/logout", UserController.logout);
 // router.get('/getPublicProfile', UserController.getPublicProfile)
 // router.post("/editInfo", UserController.editInfo);
 accountRouter.put("/addFriend", UserController.addFriend);
+accountRouter.delete("/removeFriend", UserController.removeFriend);
 accountRouter.put("/acceptFriendRequest", UserController.acceptFriendRequest);
 accountRouter.get("/getFriendRequests", UserController.getFriendRequests);
 accountRouter.get("/getFriends", UserController.getFriends);
