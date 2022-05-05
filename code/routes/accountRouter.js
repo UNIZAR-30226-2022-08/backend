@@ -7,6 +7,10 @@ const accountRouter = Router();
 accountRouter.post("/register", UserController.register);
 accountRouter.post("/login", UserController.login);
 
+accountRouter.get("/checkSession", (req, res) => {
+	res.json({ response: req.session });
+});
+
 // session validation middleware
 accountRouter.use(validSession);
 
@@ -18,9 +22,5 @@ accountRouter.put("/addFriend", UserController.addFriend);
 accountRouter.put("/acceptFriendRequest", UserController.acceptFriendRequest);
 accountRouter.get("/getFriendRequests", UserController.getFriendRequests);
 accountRouter.get("/getFriends", UserController.getFriends);
-
-accountRouter.all("/checkSession", (req, res) => {
-	res.json({ response: req.session });
-});
 
 export default accountRouter;
