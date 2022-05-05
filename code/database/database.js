@@ -4,8 +4,8 @@ const database = new Sequelize(process.env.DB_CONN_URI, {
 	dialect: "postgres",
 	dialectOptions: {
 		ssl: {
-	// 		require: false,
-	 		rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
+			// 		require: false,
+			rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
 		},
 	},
 	pool: {
@@ -24,6 +24,6 @@ database
 	.catch((err) => {
 		console.log(err);
 	});
-database.sync({ alter: true, force: true });
+database.sync({ alter: true });
 
 export default database;
