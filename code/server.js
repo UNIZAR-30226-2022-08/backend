@@ -18,7 +18,12 @@ app.use(
 		extended: true,
 	})
 );
-app.use(cors({ origin: "*", credentials: true }));
+app.use(
+	cors({
+		origin: "https://queenchess-frontweb.herokuapp.com",
+		credentials: true,
+	})
+);
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
 	sessions({
