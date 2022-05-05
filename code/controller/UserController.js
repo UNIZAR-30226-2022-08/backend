@@ -64,7 +64,10 @@ const UserController = {
 	},
 	async logout(req, res) {
 		req.session.destroy();
-		res.status(201).json({ status: "success", message: "Logged out" });
+		return res
+			.status(201)
+			.json({ status: "success", message: "Logged out" })
+			.send();
 	},
 
 	async addFriend(req, res) {
