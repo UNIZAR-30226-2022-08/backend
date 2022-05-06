@@ -1,13 +1,14 @@
 import Sequelize from "sequelize";
 import GameModel from "../models/GameModel";
 import UserModel, { UserFriendList } from "../models/UserModel";
-
+import {containsParams} from "../util/util.js";
 const CommunityController = {
 	async getPublicProfile(req, res) {
-		// try {
-		// } catch (error) {
-		// 	return res.status(400).json({ error: "Parametros incorrectos" }).send();
-		// }
+		if (!containsParams(["username"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
+		}
+
 		let { username } = req.body;
 
 		return UserModel.findOne({
@@ -77,8 +78,10 @@ const CommunityController = {
 	},
 
 	async addFriend(req, res) {
-		if (req.session.username === null || req.body.friend === null)
-			return res.status(400).json({ error: "invalid request" }).send();
+		if (!containsParams(["friend"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
+		}
 
 		const friendship = await UserFriendList.findOne({
 			where: Sequelize.or(

@@ -40,6 +40,10 @@ const User = sequelize.define(
 				min: 0,
 			},
 		},
+		pendingChats: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		}, 
 	},
 	{
 		hooks: {

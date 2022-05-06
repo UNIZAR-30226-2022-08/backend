@@ -4,7 +4,7 @@ import GameModel from "../models/GameModel";
 
 
 const GameController = {
-	createAsyncGame(req, res) {
+	async createAsyncGame(req, res) {
 		let whitePlayer, blackPlayer
 		try {
 			let {whitePlayer, blackPlayer} = req.body
@@ -25,7 +25,7 @@ const GameController = {
 		})
 	},
 
-	getGame(req, res) {
+	async getGame(req, res) {
 		let gameId
 		try {
 			let {gameId} = req.body
@@ -46,15 +46,22 @@ const GameController = {
 		})
 	},
 
-	getActiveGames(req, res) {
+	async getActiveGames(req, res) {
 		//No hace falta try/catch porque si no hay username el middleware devuelve 400 antes de llegar aqui
 		const { username } = req.session
-		let game = GameModel.find({ 
+		GameModel.findAll({ 
 			where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : true} )
+		}).then(function(games) {
+			if (games === null) {
+				res.status(200).json({ response: {}, message: "No active games found"}).send()
+			}
+			res.status(200).json({ response: games }).send()
 		})
-		if (game === null) {
-			res.status(200).json({ response: {}, message: "No active games found"})
-		}
+		.catch(function(error) {
+			res.status(400).json({ error }).send()
+		})
+
+
 	},
 
 	move(req, res) {
