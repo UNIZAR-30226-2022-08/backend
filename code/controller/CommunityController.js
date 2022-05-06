@@ -1,7 +1,5 @@
-import { Router } from 'express';
 import Sequelize from "sequelize";
 import User, { UserFriendList } from "../models/User";
-import Sequelize from "sequelize";
 
 const CommunityController = {
     async getPublicProfile(req,res) {
@@ -24,8 +22,7 @@ const CommunityController = {
 			} else {
             var playedGames = await Project.findAndCountAll({
                 where: {
-                    inProgress: false,
-                    [Op.or]: [{ whitePlayer: username }, { blackPlayer: username }]
+                    where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : false} ),
                 },
             }).then(function (count, rows){
                 return count
@@ -34,7 +31,7 @@ const CommunityController = {
 			})
 
             var { count } = AsyncGame.findAndCountAll({ 
-			where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : false} )
+			where: Sequelize.and(Sequelize.or({ whitePlayer: username, whiteWon: true }, { blackPlayer: username, blackWon: true }), {inProgress : false} )
 			}).then(function (count, rows){
                 return count
             }).error(function(error) {
@@ -46,6 +43,7 @@ const CommunityController = {
             var stats = {
                 playedGames,
                 wonGames,
+				winrate: wonGames/playedGames,
                 playedTournaments : 0,
                 wonTournaments : 0
 				//TODO añadir torneos

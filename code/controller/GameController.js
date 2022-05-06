@@ -1,6 +1,7 @@
-import Game, { getInitialBoard } from "../game/Game";
-import AsyncGame from "../models/AsyncGame";
 import Sequelize from "sequelize";
+import Game from "../game/Game";
+import AsyncGame from "../models/AsyncGame";
+
 
 const GameController = {
 	createAsyncGame(req, res) {
