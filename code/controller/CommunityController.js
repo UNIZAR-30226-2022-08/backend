@@ -1,59 +1,57 @@
-import { Router } from 'express';
-import User from '../models/User';
+import Sequelize from "sequelize";
+import User, { UserFriendList } from "../models/User";
 
 const CommunityController = {
-    async getPublicProfile(req,res) {
-        const {username} = req.body
-        let user = User.findOne({
-            attributes: { include: ["username", "elo", "money"] },
-            where: {
-                username: username
-            }
-        })
+	async getPublicProfile(req, res) {
+		const { username } = req.body;
+		let user = User.findOne({
+			attributes: { include: ["username", "elo", "money"] },
+			where: {
+				username: username,
+			},
+		});
 		if (user === null) {
-			res.status(400).json({ error:"Couldn't find the game"})
-			res.send()
-			return
+			res.status(400).json({ error: "Couldn't find the game" });
+			res.send();
+			return;
+		} else {
+			var playedCount = await Project.findAndCountAll({
+				where: {
+					inProgress: false,
+					[Op.or]: [{ whitePlayer: username }, { blackPlayer: username }],
+				},
+			}).then(function (count, rows) {
+				return count;
+			});
+
+			var { count, rows } = await Project.findAndCountAll({
+				where: {
+					inProgress: false,
+					[Op.or]: [
+						{ [Op.and]: [{ whitePlayer: username }, { whiteWon: true }] },
+						{ [Op.and]: [{ blackPlayer: username }, { whiteWon: false }] },
+					],
+				},
+			});
+			var wonCount = count;
+
+			var stats = {
+				playedGames: playedCount,
+				wonGames: wonCount,
+				playedTournaments: 0,
+				wonTournaments: 0,
+			};
+
+			var response = {
+				user: user,
+				stats: stats,
+			};
+			res.status(200).json({ response: user });
+			res.send();
 		}
-        else {
-            var playedCount = await Project.findAndCountAll({
-                where: {
-                    inProgress: false,
-                    [Op.or]: [{ whitePlayer: username }, { blackPlayer: username }]
-                },
-            }).then(function (count, rows){
-                return count
-            });
+	},
 
-            var { count, rows } = await Project.findAndCountAll({
-                where: {
-                    inProgress: false,
-                    [Op.or]: [
-                        { [Op.and]: [{whitePlayer: username}, {whiteWon : true}] }, 
-                        { [Op.and]: [{blackPlayer: username}, {whiteWon : false}] }
-                    ]
-                },
-            });
-            var wonCount = count
-
-
-            var stats = {
-                playedGames: playedCount,
-                wonGames: wonCount,
-                playedTournaments : 0,
-                wonTournaments : 0
-            }
-
-            var response = {
-                user : user,
-                stats : stats
-            }
-            res.status(200).json({ response: user })
-			res.send()
-        }
-    },
-
-    async addFriend(req, res) {
+	async addFriend(req, res) {
 		if (req.session.username === null || req.body.friend === null)
 			return res.status(400).json({ error: "invalid request" }).send();
 
@@ -193,8 +191,6 @@ const CommunityController = {
 			})
 			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
+};
 
-}
-
-
-export default CommunityController
+export default CommunityController;
