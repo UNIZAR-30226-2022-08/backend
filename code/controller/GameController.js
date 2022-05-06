@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
 import Game from "../game/Game";
-import AsyncGame from "../models/AsyncGame";
+import GameModel from "../models/GameModel";
 
 
 const GameController = {
@@ -13,7 +13,7 @@ const GameController = {
 		}
 		let newGame = new Game(whitePlayer, blackPlayer);
 		
-		var game = AsyncGame.create({
+		var game = GameModel.create({
 			board: JSON.stringify(newGame.board),
 			whitePlayer: newGame.WhitePlayer,
 			blackPlayer: newGame.BlackPlayer,
@@ -32,7 +32,7 @@ const GameController = {
 		} catch (error) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send()
 		}
-		AsyncGame.findByPk(gameId)
+		GameModel.findByPk(gameId)
 		.then(function(game) {
 			if (game === null) {
 				res.status(400).json({ error:"Couldn't find the game, ID is wrong" })
@@ -49,7 +49,7 @@ const GameController = {
 	getActiveGames(req, res) {
 		//No hace falta try/catch porque si no hay username el middleware devuelve 400 antes de llegar aqui
 		const { username } = req.session
-		let game = AsyncGame.find({ 
+		let game = GameModel.find({ 
 			where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : true} )
 		})
 		if (game === null) {

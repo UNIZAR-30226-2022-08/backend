@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import User from "../models/User";
+import UserModel from "../models/UserModel";
 
 const AccountController = {
 	async register(req, res) {
@@ -24,7 +24,7 @@ const AccountController = {
 		}
 		const { email, password } = req.body;
 
-		return User.findOne({ where: { email } })
+		return UserModel.findOne({ where: { email } })
 			.then(async (user) => {
 				if (user === null) {
 					return res.status(400).json({ error: "User not found" });
@@ -47,7 +47,7 @@ const AccountController = {
 	async changePassword(req, res) {
 		const { newPassword } = req.body;
 		const { username } = req.session;
-		return User.update({
+		return UserModel.update({
 			password: newPassword,
 			where: {
 				username,

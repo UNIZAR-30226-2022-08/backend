@@ -1,6 +1,6 @@
 import DataTypes from "sequelize";
 import sequelize from "../database/database";
-import User from "./User";
+import UserModel from "./UserModel";
 
 const Game = sequelize.define(
 	"game",
@@ -43,7 +43,7 @@ const Game = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
-				model: User,
+				model: UserModel,
 				key: "username",
 			},
 		},
@@ -51,7 +51,7 @@ const Game = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
-				model: User,
+				model: UserModel,
 				key: "username",
 			},
 		},

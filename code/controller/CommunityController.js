@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
-import AsyncGame from "../models/AsyncGame";
-import User, { UserFriendList } from "../models/User";
+import GameModel from "../models/GameModel";
+import UserModel, { UserFriendList } from "../models/UserModel";
 
 const CommunityController = {
 	async getPublicProfile(req, res) {
@@ -10,7 +10,7 @@ const CommunityController = {
 		// }
 		let { username } = req.body;
 
-		return User.findOne({
+		return UserModel.findOne({
 			attributes: { include: ["username", "elo", "money"] },
 			where: {
 				username,
@@ -22,14 +22,14 @@ const CommunityController = {
 					res.send();
 					return;
 				}
-				const playedGames = AsyncGame.findAndCountAll({
+				const playedGames = GameModel.findAndCountAll({
 					where: Sequelize.and(
 						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 						{ inProgress: false }
 					),
 				}).count;
 
-				const wonGames = AsyncGame.findAndCountAll({
+				const wonGames = GameModel.findAndCountAll({
 					where: Sequelize.and(
 						Sequelize.or(
 							{ whitePlayer: username, whiteWon: true },
@@ -48,7 +48,7 @@ const CommunityController = {
 					//TODO añadir torneos
 				};
 
-				const recentGames = AsyncGame.find({
+				const recentGames = GameModel.find({
 					where: Sequelize.and(
 						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 						{ inProgress: false }
@@ -103,9 +103,9 @@ const CommunityController = {
 
 		console.log(friendship);
 
-		return User.findOne({ where: { username: req.session.username } })
+		return UserModel.findOne({ where: { username: req.session.username } })
 			.then((user) => {
-				User.findOne({ where: { username: req.body.friend } }).then((other) =>
+				UserModel.findOne({ where: { username: req.body.friend } }).then((other) =>
 					other.addFriend(user)
 				);
 			})
