@@ -4,14 +4,13 @@ import User, { UserFriendList } from "../models/User";
 
 const CommunityController = {
 	async getPublicProfile(req, res) {
-		console.log(req.body);
 		// try {
 		// } catch (error) {
 		// 	return res.status(400).json({ error: "Parametros incorrectos" }).send();
 		// }
 		let { username } = req.body;
 
-		User.findOne({
+		return User.findOne({
 			attributes: { include: ["username", "elo", "money"] },
 			where: {
 				username,
@@ -24,22 +23,17 @@ const CommunityController = {
 					return;
 				}
 				const playedGames = AsyncGame.findAndCountAll({
-					where: {
-						where: Sequelize.and(
-							Sequelize.or(
-								{ whitePlayer: username },
-								{ blackPlayer: username }
-							),
-							{ inProgress: false }
-						),
-					},
+					where: Sequelize.and(
+						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
+						{ inProgress: false }
+					),
 				}).count;
 
 				const wonGames = AsyncGame.findAndCountAll({
 					where: Sequelize.and(
 						Sequelize.or(
 							{ whitePlayer: username, whiteWon: true },
-							{ blackPlayer: username, blackWon: true }
+							{ blackPlayer: username, whiteWon: false }
 						),
 						{ inProgress: false }
 					),
@@ -75,9 +69,9 @@ const CommunityController = {
 					recentGames,
 				};
 				res.status(200).json({ response }).send();
-				res.send();
 			})
 			.catch(function (error) {
+				console.log(error);
 				res.status(400).json({ error: error.message }).send();
 			});
 	},
