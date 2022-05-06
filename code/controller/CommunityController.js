@@ -9,7 +9,7 @@ const CommunityController = {
 			return
 		}
 
-		let { username } = req.body;
+		const { username } = req.body;
 
 		return UserModel.findOne({
 			attributes: { include: ["username", "elo", "money"] },
@@ -60,7 +60,7 @@ const CommunityController = {
 					.then(function (games) {
 						return games;
 					})
-					.error(function (error) {
+					.catch(function (error) {
 						return error;
 					});
 
@@ -82,14 +82,14 @@ const CommunityController = {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return
 		}
-
+		const {friend} = req.body
 		const friendship = await UserFriendList.findOne({
 			where: Sequelize.or(
 				{
-					userUsername: [req.session.username, req.body.friend],
+					userUsername: [req.session.username, friend],
 				},
 				{
-					FriendUsername: [req.session.username, req.body.friend],
+					FriendUsername: [req.session.username, friend],
 				}
 			),
 		});
@@ -108,7 +108,7 @@ const CommunityController = {
 
 		return UserModel.findOne({ where: { username: req.session.username } })
 			.then((user) => {
-				UserModel.findOne({ where: { username: req.body.friend } }).then((other) =>
+				UserModel.findOne({ where: { username: friend } }).then((other) =>
 					other.addFriend(user)
 				);
 			})
@@ -116,8 +116,11 @@ const CommunityController = {
 			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
 	async removeFriend(req, res) {
-		if (req.session.username === null || req.body.friend === null)
-			return res.status(400).json({ error: "invalid request" }).send();
+		if (!containsParams(["friend"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
+		}
+		const {friend} = req.body
 
 		const removed = await UserFriendList.destroy({
 			where: Sequelize.and(
@@ -125,10 +128,10 @@ const CommunityController = {
 				Sequelize.or(
 					{
 						userUsername: req.session.username,
-						FriendUsername: req.body.friend,
+						FriendUsername: friend,
 					},
 					{
-						userUsername: req.body.friend,
+						userUsername: friend,
 						FriendUsername: req.session.username,
 					}
 				)
@@ -142,16 +145,19 @@ const CommunityController = {
 		return res.status(200).send();
 	},
 	async acceptFriendRequest(req, res) {
-		if (req.session.username === null || req.body.friend === null)
-			res.status(400).json({ error: "user is already friend" }).send();
+		if (!containsParams(["friend"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
+		}
+		const {friend} = req.body
 
 		const friendship = await UserFriendList.findOne({
 			where: Sequelize.or(
 				{
-					userUsername: [req.session.username, req.body.friend],
+					userUsername: [req.session.username, friend],
 				},
 				{
-					FriendUsername: [req.session.username, req.body.friend],
+					FriendUsername: [req.session.username, friend],
 				}
 			),
 		});
@@ -219,6 +225,35 @@ const CommunityController = {
 			})
 			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
+	async sendMessage(req, res) {
+		if (!containsParams(["to", "body"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
+		}
+		const {username} = req.session
+		const {to, message} = req.body
+		const from = username
+
+		//todo comprobar que el socket estea abierto
+		let userisconnected = true
+		if(userisconnected) {
+
+		} else {
+			return Message.create({
+				from,
+				to,
+				message,
+			}).then((message) => {
+					if (messagge === null) {
+						throw new Error("error sending message");
+					}
+					return res.status(201).send();
+				})
+				.catch((err) => res.status(400).json({ error: err.message }).send());
+		}
+	},
+	async getAllChats(req, res) {
+	}
 };
 
 export default CommunityController;

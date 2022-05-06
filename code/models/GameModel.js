@@ -2,7 +2,7 @@ import DataTypes from "sequelize";
 import sequelize from "../database/database";
 import UserModel from "./UserModel";
 
-const Game = sequelize.define(
+const GameModel = sequelize.define(
 	"game",
 	{
 		id: {
@@ -61,4 +61,4 @@ const Game = sequelize.define(
 	}
 );
 
-export default Game;
+export default GameModel;

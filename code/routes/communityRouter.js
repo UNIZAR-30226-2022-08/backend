@@ -18,9 +18,8 @@ communityRouter.get(
 	CommunityController.getFriendRequests
 );
 communityRouter.get("/getFriends", CommunityController.getFriends);
-//communityRouter.get('/getAllChats', CommunityController.getAllChats)
-//communityRouter.get('/sendMessage', CommunityController.sendMessage)
-//TODO añadir estos metodos
+communityRouter.get('/sendMessage', CommunityController.sendMessage);
+communityRouter.get('/getAllChats', CommunityController.getAllChats);
 communityRouter.get("/getPublicProfile", CommunityController.getPublicProfile);
 
 export default communityRouter;

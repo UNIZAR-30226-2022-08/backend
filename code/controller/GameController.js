@@ -5,43 +5,44 @@ import GameModel from "../models/GameModel";
 
 const GameController = {
 	async createAsyncGame(req, res) {
-		let whitePlayer, blackPlayer
-		try {
-			let {whitePlayer, blackPlayer} = req.body
-		} catch (error) {
-			res.status(400).json({ error: "Parametros incorrectos" }).send()
+
+		if (!containsParams(["whitePlayer", "blackPlayer"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
 		}
+
+		let {whitePlayer, blackPlayer} = req.body
 		let newGame = new Game(whitePlayer, blackPlayer);
 		
-		var game = GameModel.create({
+		GameModel.create({
 			board: JSON.stringify(newGame.board),
 			whitePlayer: newGame.WhitePlayer,
 			blackPlayer: newGame.BlackPlayer,
 			turn: newGame.turn,
 		}).then(function(game) {
 			res.status(200).json({ response: game }).send()
-		}).error(function(error) {
+		}).catch(function(error) {
 			res.status(400).json({ error }).send()
 		})
 	},
 
 	async getGame(req, res) {
-		let gameId
-		try {
-			let {gameId} = req.body
-		} catch (error) {
-			res.status(400).json({ error: "Parametros incorrectos" }).send()
+		if (!containsParams(["whitePlayer", "blackPlayer"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
 		}
+		let {gameId} = req.body
+			
 		GameModel.findByPk(gameId)
 		.then(function(game) {
-			if (game === null) {
+			if (!game) {
 				res.status(400).json({ error:"Couldn't find the game, ID is wrong" })
 				res.send()
 				return
 			}
 			res.status(200).json({ response: game })
 		})
-		.error(function(error) {
+		.catch(function(error) {
 			res.status(400).json({ error }).send()
 		})
 	},
@@ -52,7 +53,7 @@ const GameController = {
 		GameModel.findAll({ 
 			where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : true} )
 		}).then(function(games) {
-			if (games === null) {
+			if (!games) {
 				res.status(200).json({ response: {}, message: "No active games found"}).send()
 			}
 			res.status(200).json({ response: games }).send()
