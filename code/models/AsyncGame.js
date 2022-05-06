@@ -39,7 +39,7 @@ const Game = sequelize.define(
 			type: DataTypes.DATE,
 			allowNull: true,
 		},
-		whitePlayerId: {
+		whitePlayer: {
 			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
@@ -47,7 +47,7 @@ const Game = sequelize.define(
 				key: "username",
 			},
 		},
-		blackPlayerId: {
+		blackPlayer: {
 			type: DataTypes.STRING,
 			allowNull: false,
 			references: {

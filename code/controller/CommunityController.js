@@ -4,12 +4,13 @@ import User, { UserFriendList } from "../models/User";
 
 const CommunityController = {
 	async getPublicProfile(req, res) {
-		let username;
-		try {
-			let { username } = req.body;
-		} catch (error) {
-			res.status(400).json({ error: "Parametros incorrectos" }).send();
-		}
+		console.log(req.body);
+		// try {
+		// } catch (error) {
+		// 	return res.status(400).json({ error: "Parametros incorrectos" }).send();
+		// }
+		let { username } = req.body;
+
 		User.findOne({
 			attributes: { include: ["username", "elo", "money"] },
 			where: {
@@ -76,8 +77,8 @@ const CommunityController = {
 				res.status(200).json({ response }).send();
 				res.send();
 			})
-			.error(function (error) {
-				res.status(400).json({ error }).send();
+			.catch(function (error) {
+				res.status(400).json({ error: error.message }).send();
 			});
 	},
 
