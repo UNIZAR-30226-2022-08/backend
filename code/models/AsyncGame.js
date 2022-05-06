@@ -35,6 +35,10 @@ const Game = sequelize.define(
 			allowNull: false,
 			default: true,
 		},
+		finishTimestamp: {
+			type: DataTypes.DATE,
+			allowNull: true,
+		},
 		whitePlayerId: {
 			type: DataTypes.STRING,
 			allowNull: false,

@@ -1,56 +1,78 @@
 import { Router } from 'express';
 import User from '../models/User';
+import Sequelize from "sequelize";
 
 const CommunityController = {
     async getPublicProfile(req,res) {
-        const {username} = req.body
+        let username
+		try {
+			let {username} = req.body
+		} catch (error) {
+			res.status(400).json({ error: "Parametros incorrectos" }).send()
+		}
         let user = User.findOne({
             attributes: { include: ["username", "elo", "money"] },
             where: {
                 username: username
             }
-        })
-		if (user === null) {
-			res.status(400).json({ error:"Couldn't find the game"})
-			res.send()
-			return
-		}
-        else {
-            var playedCount = await Project.findAndCountAll({
+        }).then(function(user) {
+			if (user === null) {
+				res.status(400).json({ error:"Couldn't find the game"})
+				res.send()
+				return
+			} else {
+            var playedGames = await Project.findAndCountAll({
                 where: {
                     inProgress: false,
                     [Op.or]: [{ whitePlayer: username }, { blackPlayer: username }]
                 },
             }).then(function (count, rows){
                 return count
-            });
+            }).error(function(error) {
+				return -1
+			})
 
-            var { count, rows } = await Project.findAndCountAll({
-                where: {
-                    inProgress: false,
-                    [Op.or]: [
-                        { [Op.and]: [{whitePlayer: username}, {whiteWon : true}] }, 
-                        { [Op.and]: [{blackPlayer: username}, {whiteWon : false}] }
-                    ]
-                },
-            });
-            var wonCount = count
+            var { count } = AsyncGame.findAndCountAll({ 
+			where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : false} )
+			}).then(function (count, rows){
+                return count
+            }).error(function(error) {
+				return -1
+			})
+            var wonGames = count
 
 
             var stats = {
-                playedGames: playedCount,
-                wonGames: wonCount,
+                playedGames,
+                wonGames,
                 playedTournaments : 0,
                 wonTournaments : 0
+				//TODO añadir torneos
             }
 
+			var recentGames = AsyncGame.find({ 
+			where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : false}, ),
+			order: [
+				['finishTimestamp', 'DESC']
+			],
+			limit: 10
+			}).then(function (games){
+                return games
+            }).error(function(error) {
+				return error
+			})
+
             var response = {
-                user : user,
-                stats : stats
+                user,
+                stats,
+				recentGames
             }
-            res.status(200).json({ response: user })
+            res.status(200).json({ response }).send()
 			res.send()
         }
+		}).error(function(error) {
+			res.status(400).json({ error }).send()
+		})
     },
 
     async addFriend(req, res) {
