@@ -1,7 +1,5 @@
 import bcrypt from "bcrypt";
-import { request } from "express";
-import Sequelize from "sequelize";
-import User, { UserFriendList, UserFriendRequests } from "../models/User";
+import User from "../models/User";
 
 const AccountController = {
 	async register(req, res) {
@@ -69,7 +67,6 @@ const AccountController = {
 			.json({ status: "success", message: "Logged out" })
 			.send();
 	},
-
 };
 
 export default AccountController;
