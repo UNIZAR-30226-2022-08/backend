@@ -1,80 +1,87 @@
 import Sequelize from "sequelize";
+import AsyncGame from "../models/AsyncGame";
 import User, { UserFriendList } from "../models/User";
 
 const CommunityController = {
-    async getPublicProfile(req,res) {
-        let username
+	async getPublicProfile(req, res) {
+		let username;
 		try {
-			let {username} = req.body
+			let { username } = req.body;
 		} catch (error) {
-			res.status(400).json({ error: "Parametros incorrectos" }).send()
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
 		}
-        let user = User.findOne({
-            attributes: { include: ["username", "elo", "money"] },
-            where: {
-                username: username
-            }
-        }).then(function(user) {
-			if (user === null) {
-				res.status(400).json({ error:"Couldn't find the game"})
-				res.send()
-				return
-			} else {
-            var playedGames = await Project.findAndCountAll({
-                where: {
-                    where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : false} ),
-                },
-            }).then(function (count, rows){
-                return count
-            }).error(function(error) {
-				return -1
-			})
-
-            var { count } = AsyncGame.findAndCountAll({ 
-			where: Sequelize.and(Sequelize.or({ whitePlayer: username, whiteWon: true }, { blackPlayer: username, blackWon: true }), {inProgress : false} )
-			}).then(function (count, rows){
-                return count
-            }).error(function(error) {
-				return -1
-			})
-            var wonGames = count
-
-
-            var stats = {
-                playedGames,
-                wonGames,
-				winrate: wonGames/playedGames,
-                playedTournaments : 0,
-                wonTournaments : 0
-				//TODO añadir torneos
-            }
-
-			var recentGames = AsyncGame.find({ 
-			where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : false}, ),
-			order: [
-				['finishTimestamp', 'DESC']
-			],
-			limit: 10
-			}).then(function (games){
-                return games
-            }).error(function(error) {
-				return error
-			})
-
-            var response = {
-                user,
-                stats,
-				recentGames
-            }
-            res.status(200).json({ response }).send()
-			res.send()
-        }
-		}).error(function(error) {
-			res.status(400).json({ error }).send()
+		User.findOne({
+			attributes: { include: ["username", "elo", "money"] },
+			where: {
+				username,
+			},
 		})
-    },
+			.then(function (user) {
+				if (user === null) {
+					res.status(400).json({ error: "Couldn't find the game" });
+					res.send();
+					return;
+				}
+				const playedGames = AsyncGame.findAndCountAll({
+					where: {
+						where: Sequelize.and(
+							Sequelize.or(
+								{ whitePlayer: username },
+								{ blackPlayer: username }
+							),
+							{ inProgress: false }
+						),
+					},
+				}).count;
 
-    async addFriend(req, res) {
+				const wonGames = AsyncGame.findAndCountAll({
+					where: Sequelize.and(
+						Sequelize.or(
+							{ whitePlayer: username, whiteWon: true },
+							{ blackPlayer: username, blackWon: true }
+						),
+						{ inProgress: false }
+					),
+				}).count;
+
+				const stats = {
+					playedGames,
+					wonGames,
+					winrate: wonGames / playedGames,
+					playedTournaments: 0,
+					wonTournaments: 0,
+					//TODO añadir torneos
+				};
+
+				const recentGames = AsyncGame.find({
+					where: Sequelize.and(
+						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
+						{ inProgress: false }
+					),
+					order: [["finishTimestamp", "DESC"]],
+					limit: 10,
+				})
+					.then(function (games) {
+						return games;
+					})
+					.error(function (error) {
+						return error;
+					});
+
+				const response = {
+					user,
+					stats,
+					recentGames,
+				};
+				res.status(200).json({ response }).send();
+				res.send();
+			})
+			.error(function (error) {
+				res.status(400).json({ error }).send();
+			});
+	},
+
+	async addFriend(req, res) {
 		if (req.session.username === null || req.body.friend === null)
 			return res.status(400).json({ error: "invalid request" }).send();
 
