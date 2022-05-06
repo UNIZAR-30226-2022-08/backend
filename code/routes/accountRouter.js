@@ -1,12 +1,13 @@
 import { Router } from "express";
-import UserController from "../controller/UserController";
+import AccountController from "../controller/AccountController";
 import validSession from "../util/validSession";
 
 const accountRouter = Router();
 
-accountRouter.post("/register", UserController.register);
-accountRouter.post("/login", UserController.login);
+accountRouter.post("/register", AccountController.register);
+accountRouter.post("/login", AccountController.login);
 
+//metodo de debug
 accountRouter.get("/checkSession", (req, res) => {
 	res.json({ response: req.session });
 });
@@ -14,14 +15,9 @@ accountRouter.get("/checkSession", (req, res) => {
 // session validation middleware
 accountRouter.use(validSession);
 
-accountRouter.post("/changePassword", UserController.changePassword);
-accountRouter.post("/logout", UserController.logout);
-// router.get('/getPublicProfile', UserController.getPublicProfile)
-// router.post("/editInfo", UserController.editInfo);
-accountRouter.put("/addFriend", UserController.addFriend);
-accountRouter.delete("/removeFriend", UserController.removeFriend);
-accountRouter.put("/acceptFriendRequest", UserController.acceptFriendRequest);
-accountRouter.get("/getFriendRequests", UserController.getFriendRequests);
-accountRouter.get("/getFriends", UserController.getFriends);
+accountRouter.post("/changePassword", AccountController.changePassword);
+accountRouter.post("/logout", AccountController.logout);
+// router.post("/editInfo", AccountController.editInfo);
+//Todo añadir??? porque no hay en requisitos
 
 export default accountRouter;
