@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import User from '../models/User';
+import Sequelize from "sequelize";
+import User, { UserFriendList } from "../models/User";
 import Sequelize from "sequelize";
 
 const CommunityController = {
@@ -215,8 +216,6 @@ const CommunityController = {
 			})
 			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
+};
 
-}
-
-
-export default CommunityController
+export default CommunityController;
