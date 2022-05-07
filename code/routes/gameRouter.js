@@ -9,6 +9,9 @@ gameRouter.use(validSession);
 
 gameRouter.put("/newAsyncGame", GameController.createAsyncGame);
 gameRouter.get("/getGame", GameController.getGame);
+gameRouter.post("/startMatchmaking", GameController.startMatchMaking);
+gameRouter.post("/directGame", GameController.startCasualGame);
+gameRouter.get("/getState", GameController.getGame);
 gameRouter.get("/getActiveGames", GameController.getActiveGames);
 gameRouter.get("/move", GameController.move);
 gameRouter.get("/getMoves", GameController.getMoves);
