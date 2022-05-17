@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
 import sequelize from "../database/database";
 
-const User = sequelize.define(
+const UserModel = sequelize.define(
 	"user",
 	{
 		username: {
@@ -39,7 +39,7 @@ const User = sequelize.define(
 			validate: {
 				min: 0,
 			},
-		}
+		},
 	},
 	{
 		hooks: {
@@ -72,16 +72,10 @@ const UserFriendList = sequelize.define("friendList", {
 	},
 });
 
-User.belongsToMany(User, {
+UserModel.belongsToMany(UserModel, {
 	through: UserFriendList,
 	as: "Friend",
 });
 
-User.belongsToMany(User, {
-	through: UserFriendList,
-	as: "Friend2",
-});
-
-
-export default User;
+export default UserModel;
 export { UserFriendList };
