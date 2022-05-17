@@ -4,7 +4,7 @@ import UserModel from "../models/UserModel";
 const AccountController = {
 	async register(req, res) {
 		const { username, email, password } = req.body;
-		return User.create({
+		return UserModel.create({
 			username,
 			email,
 			password,
