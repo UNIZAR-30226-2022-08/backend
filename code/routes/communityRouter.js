@@ -1,6 +1,6 @@
 import { Router } from "express";
 import CommunityController from "../controller/CommunityController";
-import validSession from "../util/validSession";
+import { validSession } from "../util/util";
 
 const communityRouter = Router();
 
@@ -18,8 +18,8 @@ communityRouter.get(
 	CommunityController.getFriendRequests
 );
 communityRouter.get("/getFriends", CommunityController.getFriends);
-communityRouter.get('/sendMessage', CommunityController.sendMessage);
-communityRouter.get('/getAllChats', CommunityController.getAllChats);
+communityRouter.get("/sendMessage", CommunityController.sendMessage);
+communityRouter.get("/getAllChats", CommunityController.getAllChats);
 communityRouter.get("/getPublicProfile", CommunityController.getPublicProfile);
 
 export default communityRouter;
