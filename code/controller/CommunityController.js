@@ -179,12 +179,22 @@ const CommunityController = {
 					}
 				)
 			),
-			attributes: ["id", "FriendUsername", "accepted"],
+			attributes: ["id", "userUsername", "FriendUsername"],
 		})
 			.then((requests) => {
 				const friendRequests = [];
 				requests.forEach((friendRequest) => {
-					friendRequests.push(friendRequest);
+					if (friendRequest.userUsername === req.session.username) {
+						friendRequests.push({
+							id: friendRequest.id,
+							FriendUsername: friendRequest.FriendUsername,
+						});
+					} else {
+						friendRequests.push({
+							id: friendRequest.id,
+							FriendUsername: friendRequest.userUsername,
+						});
+					}
 				});
 
 				res.status(200).json(friendRequests);
@@ -204,15 +214,25 @@ const CommunityController = {
 					}
 				)
 			),
-			attributes: ["id", "FriendUsername", "accepted"],
+			attributes: ["id", "userUsername", "FriendUsername"],
 		})
 			.then((requests) => {
-				const friendRequests = [];
-				requests.forEach((friendRequest) => {
-					friendRequests.push(friendRequest);
+				const friends = [];
+				requests.forEach((friendship) => {
+					if (friendship.userUsername === req.session.username) {
+						friends.push({
+							id: friendship.id,
+							FriendUsername: friendship.FriendUsername,
+						});
+					} else {
+						friends.push({
+							id: friendship.id,
+							FriendUsername: friendship.userUsername,
+						});
+					}
 				});
 
-				res.status(200).json(friendRequests);
+				res.status(200).json(friends);
 			})
 			.catch((err) => res.status(400).json({ error: err.message }));
 	},
