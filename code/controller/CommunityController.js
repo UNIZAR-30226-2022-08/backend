@@ -1,18 +1,19 @@
 import Sequelize from "sequelize";
 import GameModel from "../models/GameModel";
 import UserModel, { UserFriendList } from "../models/UserModel";
-import {containsParams} from "../util/util.js";
+import { containsProperties } from "../util/util";
+
 const CommunityController = {
 	async getPublicProfile(req, res) {
-		if (!containsParams(["username"], req)){
+		if (!containsProperties(["username"], req.body)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
-			return
+			return;
 		}
 
 		const { username } = req.body;
 
-		return UserModel.findOne({
-			attributes: { include: ["username", "elo", "money"] },
+		UserModel.findOne({
+			attributes: ["username", "elo", "money"],
 			where: {
 				username,
 			},
@@ -43,10 +44,10 @@ const CommunityController = {
 				const stats = {
 					playedGames,
 					wonGames,
-					winrate: wonGames / playedGames,
+					winrate: playedGames === 0 ? wonGames / playedGames : 0,
 					playedTournaments: 0,
 					wonTournaments: 0,
-					//TODO añadir torneos
+					// TODO añadir torneos
 				};
 
 				const recentGames = GameModel.find({
@@ -56,13 +57,7 @@ const CommunityController = {
 					),
 					order: [["finishTimestamp", "DESC"]],
 					limit: 10,
-				})
-					.then(function (games) {
-						return games;
-					})
-					.catch(function (error) {
-						return error;
-					});
+				});
 
 				const response = {
 					user,
@@ -71,18 +66,15 @@ const CommunityController = {
 				};
 				res.status(200).json({ response }).send();
 			})
-			.catch(function (error) {
-				console.log(error);
-				res.status(400).json({ error: error.message }).send();
-			});
+			.catch((error) => res.status(400).json({ error: error.message }));
 	},
 
 	async addFriend(req, res) {
-		if (!containsParams(["friend"], req)){
+		if (!containsProperties(["friend"], req.body)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
-			return
+			return;
 		}
-		const {friend} = req.body
+		const { friend } = req.body;
 		const friendship = await UserFriendList.findOne({
 			where: Sequelize.or(
 				{
@@ -96,31 +88,32 @@ const CommunityController = {
 
 		if (friendship !== null) {
 			if (friendship.accepted) {
-				return res.status(400).json({ error: "user is already friend" }).send();
+				res.status(400).json({ error: "user is already friend" }).send();
 			}
-			return res
-				.status(400)
-				.json({ error: "a friend request is already pending" })
-				.send();
+			res.status(400).json({ error: "a friend request is already pending" });
+			return;
 		}
 
-		console.log(friendship);
-
-		return UserModel.findOne({ where: { username: req.session.username } })
-			.then((user) => {
-				UserModel.findOne({ where: { username: friend } }).then((other) =>
-					other.addFriend(user)
-				);
-			})
+		UserModel.findOne({ where: { username: req.session.username } })
+			.then((user) =>
+				UserModel.findOne({ where: { username: req.body.friend } }).then(
+					(other) => {
+						if (other === null) {
+							throw new Error("user does not exist");
+						}
+						other.addFriend(user);
+					}
+				)
+			)
 			.then(() => res.status(200).send())
 			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
 	async removeFriend(req, res) {
-		if (!containsParams(["friend"], req)){
+		if (!containsProperties(["friend"], req.body)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
-			return
+			return;
 		}
-		const {friend} = req.body
+		const { friend } = req.body;
 
 		const removed = await UserFriendList.destroy({
 			where: Sequelize.and(
@@ -139,17 +132,17 @@ const CommunityController = {
 		});
 
 		if (removed < 1) {
-			return res.status(400).json({ error: "user is not friend" }).send();
+			res.status(400).json({ error: "user is not friend" });
+		} else {
+			res.status(200);
 		}
-
-		return res.status(200).send();
 	},
 	async acceptFriendRequest(req, res) {
-		if (!containsParams(["friend"], req)){
-			res.status(400).json({ error: "Parametros incorrectos" }).send();
-			return
+		if (!containsProperties(["friend"], req.body)) {
+			res.status(400).json({ error: "Parametros incorrectos" });
+			return;
 		}
-		const {friend} = req.body
+		const { friend } = req.body;
 
 		const friendship = await UserFriendList.findOne({
 			where: Sequelize.or(
@@ -163,17 +156,15 @@ const CommunityController = {
 		});
 
 		if (friendship === null || friendship.accepted) {
-			return res
-				.status(400)
-				.json({ error: "no pending friend requests from user" })
-				.send();
+			res.status(400).json({ error: "no pending friend requests from user" });
+			return;
 		}
 
 		friendship.accepted = true;
-		return friendship
+		friendship
 			.save()
-			.then(() => res.status(200).send())
-			.catch((err) => res.status(400).json({ error: err.message }).send());
+			.then(() => res.status(200))
+			.catch((err) => res.status(400).json({ error: err.message }));
 	},
 	async getFriendRequests(req, res) {
 		return UserFriendList.findAll({
@@ -196,9 +187,9 @@ const CommunityController = {
 					friendRequests.push(friendRequest);
 				});
 
-				res.status(200).json(friendRequests).send();
+				res.status(200).json(friendRequests);
 			})
-			.catch((err) => res.status(400).json({ error: err.message }).send());
+			.catch((err) => res.status(400).json({ error: err.message }));
 	},
 	async getFriends(req, res) {
 		return UserFriendList.findAll({
@@ -221,39 +212,38 @@ const CommunityController = {
 					friendRequests.push(friendRequest);
 				});
 
-				res.status(200).json(friendRequests).send();
+				res.status(200).json(friendRequests);
 			})
-			.catch((err) => res.status(400).json({ error: err.message }).send());
+			.catch((err) => res.status(400).json({ error: err.message }));
 	},
 	async sendMessage(req, res) {
-		if (!containsParams(["to", "body"], req)){
-			res.status(400).json({ error: "Parametros incorrectos" }).send();
-			return
+		if (!containsParams(["to", "body"], req)) {
+			res.status(400).json({ error: "Parametros incorrectos" });
+			return;
 		}
-		const {username} = req.session
-		const {to, message} = req.body
-		const from = username
+		const { username } = req.session;
+		const { to, message } = req.body;
+		const from = username;
 
 		//todo comprobar que el socket estea abierto
-		let userisconnected = true
-		if(userisconnected) {
-
+		let userisconnected = true;
+		if (userisconnected) {
 		} else {
-			return Message.create({
+			Message.create({
 				from,
 				to,
 				message,
-			}).then((message) => {
+			})
+				.then((message) => {
 					if (messagge === null) {
 						throw new Error("error sending message");
 					}
-					return res.status(201).send();
+					return res.status(201);
 				})
-				.catch((err) => res.status(400).json({ error: err.message }).send());
+				.catch((err) => res.status(400).json({ error: err.message }));
 		}
 	},
-	async getAllChats(req, res) {
-	}
+	async getAllChats(req, res) {},
 };
 
 export default CommunityController;
