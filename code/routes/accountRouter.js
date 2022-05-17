@@ -1,6 +1,6 @@
 import { Router } from "express";
 import AccountController from "../controller/AccountController";
-import Util from "../util/util";
+import { validSession } from "../util/util";
 
 const accountRouter = Router();
 
@@ -17,7 +17,7 @@ accountRouter.get("/checkSession", (req, res) => {
 });
 
 // session validation middleware
-accountRouter.use(Util.validSession);
+accountRouter.use(validSession);
 
 accountRouter.post("/changePassword", AccountController.changePassword);
 accountRouter.post("/logout", AccountController.logout);
