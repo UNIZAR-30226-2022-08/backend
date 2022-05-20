@@ -1,7 +1,5 @@
-/* eslint-disable class-methods-use-this */
-
-const WhitePlayer = "white";
-const BlackPlayer = "black";
+const WhitePlayer = true;
+const BlackPlayer = false;
 
 /**
  * @class Piece represents an abstract chess piece
@@ -10,13 +8,14 @@ const BlackPlayer = "black";
 class Piece {
 	/**
 	 *
-	 * @param {[Piece]} board initial board setup
+	 * @param {Game} game initial board setup
 	 * @param {number} xPos x position of the piece
 	 * @param {number} yPos y position of the piece
 	 */
-	constructor(player, xPos, yPos) {
+	constructor(player, game, xPos, yPos) {
 		this.pos = { x: xPos, y: yPos };
 		this.player = player;
+		this.game = game;
 	}
 
 	/**
@@ -34,12 +33,7 @@ class Piece {
 	 * @returns true if the move is inside the board, false if not
 	 */
 	checkMoveRange(x, y) {
-		return (
-			this.pos.x + x >= 0 &&
-			this.pos.x + x < 8 &&
-			this.pos.y + y >= 0 &&
-			this.pos.y + y < 8
-		);
+		return x >= 0 && x < 8 && y >= 0 && y < 8;
 	}
 
 	/**
