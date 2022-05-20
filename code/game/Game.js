@@ -1,83 +1,90 @@
+import Bishop from "./piezas/Bishop";
 import King from "./piezas/King";
+import Knight from "./piezas/Knight";
+import Pawn from "./piezas/Pawn";
+import Queen from "./piezas/Queen";
+import Rook from "./piezas/Rook";
 
 const WhitePlayer = true;
 const BlackPlayer = false;
 
-function getInitialBoard() {
+function getInitialBoard(gameInst) {
 	return {
 		whitePieces: [
 			// Pawns
-			{ x: 1, y: 0 },
-			{ x: 1, y: 1 },
-			{ x: 1, y: 2 },
-			{ x: 1, y: 3 },
-			{ x: 1, y: 4 },
-			{ x: 1, y: 5 },
-			{ x: 1, y: 6 },
-			{ x: 1, y: 7 },
+			new Pawn(WhitePlayer, gameInst, 0, 1 ),
+			new Pawn(WhitePlayer, gameInst, 1, 1 ),
+			new Pawn(WhitePlayer, gameInst, 2, 1 ),
+			new Pawn(WhitePlayer, gameInst, 3, 1 ),
+			new Pawn(WhitePlayer, gameInst, 4, 1 ),
+			new Pawn(WhitePlayer, gameInst, 5, 1 ),
+			new Pawn(WhitePlayer, gameInst, 6, 1 ),
+			new Pawn(WhitePlayer, gameInst, 7, 1 ),
 			// Queen and king
-			{ x: 0, y: 0 },
-			{ x: 0, y: 0 },
+			new King(WhitePlayer, gameInst, 3, 0 ),
+			new Queen(WhitePlayer, gameInst, 4, 0 ),
 			// Bishops
-			{ x: 0, y: 0 },
-			{ x: 0, y: 0 },
-			// Rooks
-			{ x: 0, y: 0 },
-			{ x: 0, y: 0 },
+			new Bishop(WhitePlayer, gameInst, 2, 0 ),
+			new Bishop(WhitePlayer, gameInst, 5, 0 ),
 			// Knights
-			{ x: 0, y: 0 },
-			{ x: 0, y: 0 },
+			new Knight(WhitePlayer, gameInst, 1, 0 ),
+			new Knight(WhitePlayer, gameInst, 6, 0 ),
+			// Rooks
+			new Rook(WhitePlayer, gameInst, 0, 0 ),
+			new Rook(WhitePlayer, gameInst, 7, 0 ),
 		],
 		blackPieces: [
 			// Pawns
-			{ x: 6, y: 0 },
-			{ x: 6, y: 1 },
-			{ x: 6, y: 2 },
-			{ x: 6, y: 3 },
-			{ x: 6, y: 4 },
-			{ x: 6, y: 5 },
-			{ x: 6, y: 6 },
-			{ x: 6, y: 7 },
+			new Pawn(BlackPlayer, gameInst, 0, 6 ),
+			new Pawn(BlackPlayer, gameInst, 1, 6 ),
+			new Pawn(BlackPlayer, gameInst, 2, 6 ),
+			new Pawn(BlackPlayer, gameInst, 3, 6 ),
+			new Pawn(BlackPlayer, gameInst, 4, 6 ),
+			new Pawn(BlackPlayer, gameInst, 5, 6 ),
+			new Pawn(BlackPlayer, gameInst, 6, 6 ),
+			new Pawn(BlackPlayer, gameInst, 7, 6 ),
 			// Queen and king
-			{ x: 7, y: 0 },
-			{ x: 7, y: 0 },
+			new King(BlackPlayer, gameInst, 4, 6 ),
+			new Queen(BlackPlayer, gameInst, 3, 6 ),
 			// Bishops
-			{ x: 7, y: 0 },
-			{ x: 7, y: 0 },
-			// Rooks
-			{ x: 7, y: 0 },
-			{ x: 7, y: 0 },
+			new Bishop(BlackPlayer, gameInst, 2, 6 ),
+			new Bishop(BlackPlayer, gameInst, 5, 6 ),
 			// Knights
-			{ x: 7, y: 0 },
-			{ x: 7, y: 0 },
+			new Knight(BlackPlayer, gameInst, 1, 6 ),
+			new Knight(BlackPlayer, gameInst, 6, 6 ),
+			// Rooks
+			new Rook(BlackPlayer, gameInst, 0, 6 ),
+			new Rook(BlackPlayer, gameInst, 7, 6 ),
 		],
 	};
 }
 
 class Game {
-	_ongoing = "ongoing";
 
-	_complete = "complete";
-
+	/**
+	 * 
+	 * @param {*} whitePlayerOrGame 
+	 * @param {*} blackPlayer 
+	 */
 	constructor(whitePlayerOrGame, blackPlayer) {
 		if (blackPlayer) {
 			this.turn = WhitePlayer;
 			this.whitePlayer = whitePlayerOrGame;
 			this.blackPlayer = blackPlayer;
 	
-			this.board = getInitialBoard();
+			this.board = getInitialBoard(this);
 		} else {
 			this.turn = whitePlayerOrGame.turn;
 			this.whitePlayer = whitePlayerOrGame.whitePlayer;
 			this.blackPlayer = whitePlayerOrGame.blackPlayer;
 	
-			this.board = whitePlayerOrGame.board;
+			this.board = JSON.parse(whitePlayerOrGame.board);
 		}
 	}
 
 	/**
 	 *
-	 * @param {enum} player player trying to move
+	 * @param {boolean} player player trying to move
 	 * @param {number} x1 Current x position of the piece
 	 * @param {number} y1 Current y position of the piece
 	 * @param {number} x2 Wished x position of the piece

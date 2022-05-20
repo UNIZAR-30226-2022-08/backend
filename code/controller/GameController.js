@@ -12,7 +12,7 @@ const GameController = {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 
 		let newGame = new Game(req.session.username, req.body.otherPlayer);
-
+		
 		return GameModel.create({
 			board: JSON.stringify(newGame.board),
 			whitePlayer: newGame.WhitePlayer,
@@ -25,12 +25,6 @@ const GameController = {
 			.catch(function (error) {
 				res.status(400).json({ error }).send();
 			})
-			.then(function (game) {
-				res.status(200).json({ response: game }).send();
-			})
-			.catch(function (error) {
-				res.status(400).json({ error }).send();
-			});
 	},
 
 	async getGame(req, res) {
@@ -99,12 +93,14 @@ const GameController = {
 						res.send();
 						return;
 					}
+					//Es el turno del usuario, ahora comprobamos que el movimiento sea valido
 					let gameObj = new Game(game);
 					let successful = gameObj.moveFromTo(game.whiteTurn, x1, y1, x2, y2);
 					if (successful) {
-						game.board = JSON.stringify(gameObj.board);
-						game.update(); //Sequelize call to update the saved model in the db
-						res.status(200).json(game.board).send();
+						game.board = JSON.stringify(gameObj.board)
+						game.whiteTurn = !game.whiteTurn
+						game.update() //Sequelize call to update the saved model in the db
+						res.status(200).json(game.board).send()
 						return;
 					}
 					res.status(400).json({ error: "You cannot make this move" }).send();

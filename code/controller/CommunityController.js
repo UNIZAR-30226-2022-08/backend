@@ -50,7 +50,7 @@ const CommunityController = {
 					// TODO añadir torneos
 				};
 
-				const recentGames = GameModel.find({
+				const recentGames = GameModel.findAll({
 					where: Sequelize.and(
 						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 						{ inProgress: false }
