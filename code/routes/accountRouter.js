@@ -21,7 +21,5 @@ accountRouter.use(validSession);
 
 accountRouter.post("/changePassword", AccountController.changePassword);
 accountRouter.post("/logout", AccountController.logout);
-// router.get('/getPublicProfile', AccountController.getPublicProfile)
-// router.post("/editInfo", AccountController.editInfo);
 
 export default accountRouter;
