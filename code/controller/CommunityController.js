@@ -148,8 +148,10 @@ const CommunityController = {
 			where: {
 				userUsername: friend,
 				FriendUsername: req.session.username,
-				},
-		}).catch((err) => res.status(400).json({ error: err.message }));
+			},
+		}).catch((err) => {
+			throw err;
+		});
 
 		if (friendship === null || friendship.accepted) {
 			res.status(400).json({ error: "no pending friend requests from user" });
@@ -166,7 +168,7 @@ const CommunityController = {
 		return UserFriendList.findAll({
 			where: {
 				accepted: false,
-						FriendUsername: req.session.username,
+				FriendUsername: req.session.username,
 			},
 			attributes: ["id", "userUsername", "FriendUsername"],
 		})
@@ -180,9 +182,10 @@ const CommunityController = {
 					}
 				});
 
-				res.status(200).json({ friendRequests });
+				res.status(200).json({ friendRequests }).send();
+				return;
 			})
-			.catch((err) => res.status(400).json({ error: err.message }));
+			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
 	async getFriends(req, res) {
 		return UserFriendList.findAll({
