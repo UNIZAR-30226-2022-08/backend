@@ -145,14 +145,12 @@ const CommunityController = {
 		const { friend } = req.body;
 
 		const friendship = await UserFriendList.findOne({
-			where: Sequelize.or(
-				{
-					userUsername: [req.session.username, friend],
-				},
-				{
-					FriendUsername: [req.session.username, friend],
-				}
-			),
+			where: {
+				userUsername: friend,
+				FriendUsername: req.session.username,
+			},
+		}).catch((err) => {
+			throw err;
 		});
 
 		if (friendship === null || friendship.accepted) {
@@ -168,17 +166,10 @@ const CommunityController = {
 	},
 	async getFriendRequests(req, res) {
 		return UserFriendList.findAll({
-			where: Sequelize.and(
-				{ accepted: false },
-				Sequelize.or(
-					{
-						userUsername: req.session.username,
-					},
-					{
-						FriendUsername: req.session.username,
-					}
-				)
-			),
+			where: {
+				accepted: false,
+				FriendUsername: req.session.username,
+			},
 			attributes: ["id", "userUsername", "FriendUsername"],
 		})
 			.then((requests) => {
@@ -191,9 +182,10 @@ const CommunityController = {
 					}
 				});
 
-				res.status(200).json(friendRequests);
+				res.status(200).json({ friendRequests }).send();
+				return;
 			})
-			.catch((err) => res.status(400).json({ error: err.message }));
+			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
 	async getFriends(req, res) {
 		return UserFriendList.findAll({
@@ -220,7 +212,7 @@ const CommunityController = {
 					}
 				});
 
-				res.status(200).json(friends);
+				res.status(200).json({ friends });
 			})
 			.catch((err) => res.status(400).json({ error: err.message }));
 	},
@@ -233,7 +225,7 @@ const CommunityController = {
 		const { to, message } = req.body;
 		const from = username;
 
-		//todo comprobar que el socket estea abierto
+		// todo comprobar que el socket estea abierto
 		let userisconnected = true;
 		if (userisconnected) {
 		} else {
