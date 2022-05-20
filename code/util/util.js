@@ -11,11 +11,11 @@ function validSession(req, res, next) {
  * @returns {boolean} True if object 'includedIn' contains all properties specified
  * 	in the 'props' array.
  */
-function containsProperties(props, includedIn) {
+function containsParams(props, includedIn) {
 	return props.reduce(
-		(prev, elem) => (prev ? elem in includedIn : false),
+		(prev, elem) => (prev ? elem in includedIn.body : false),
 		true
 	);
 }
 
-export { validSession, containsProperties };
+export { validSession, containsParams };
