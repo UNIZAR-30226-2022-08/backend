@@ -145,14 +145,10 @@ const CommunityController = {
 		const { friend } = req.body;
 
 		const friendship = await UserFriendList.findOne({
-			where: Sequelize.or(
-				{
-					userUsername: [req.session.username, friend],
+			where: {
+				userUsername: friend,
+				FriendUsername: req.session.username,
 				},
-				{
-					FriendUsername: [req.session.username, friend],
-				}
-			),
 		}).catch((err) => res.status(400).json({ error: err.message }));
 
 		if (friendship === null || friendship.accepted) {
@@ -168,17 +164,10 @@ const CommunityController = {
 	},
 	async getFriendRequests(req, res) {
 		return UserFriendList.findAll({
-			where: Sequelize.and(
-				{ accepted: false },
-				Sequelize.or(
-					{
-						userUsername: req.session.username,
-					},
-					{
+			where: {
+				accepted: false,
 						FriendUsername: req.session.username,
-					}
-				)
-			),
+			},
 			attributes: ["id", "userUsername", "FriendUsername"],
 		})
 			.then((requests) => {
