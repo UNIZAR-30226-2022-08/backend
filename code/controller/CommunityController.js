@@ -153,7 +153,7 @@ const CommunityController = {
 					FriendUsername: [req.session.username, friend],
 				}
 			),
-		});
+		}).catch((err) => res.status(400).json({ error: err.message }));
 
 		if (friendship === null || friendship.accepted) {
 			res.status(400).json({ error: "no pending friend requests from user" });
@@ -191,7 +191,7 @@ const CommunityController = {
 					}
 				});
 
-				res.status(200).json(friendRequests);
+				res.status(200).json({ friendRequests });
 			})
 			.catch((err) => res.status(400).json({ error: err.message }));
 	},
@@ -220,7 +220,7 @@ const CommunityController = {
 					}
 				});
 
-				res.status(200).json(friends);
+				res.status(200).json({ friends });
 			})
 			.catch((err) => res.status(400).json({ error: err.message }));
 	},
@@ -233,7 +233,7 @@ const CommunityController = {
 		const { to, message } = req.body;
 		const from = username;
 
-		//todo comprobar que el socket estea abierto
+		// todo comprobar que el socket estea abierto
 		let userisconnected = true;
 		if (userisconnected) {
 		} else {
