@@ -1,6 +1,7 @@
 import Sequelize from "sequelize";
 import Game from "../game/Game";
 import GameModel from "../models/GameModel";
+import { containsParams } from "../util/util";
 
 const matchmakingWaitingList = [];
 
@@ -16,12 +17,14 @@ const GameController = {
 			board: JSON.stringify(newGame.board),
 			whitePlayer: newGame.WhitePlayer,
 			blackPlayer: newGame.BlackPlayer,
-			turn: newGame.turn
-		}).then(function(game) {
-			res.status(200).json({ response: game }).send()
-		}).catch(function(error) {
-			res.status(400).json({ error }).send()
+			turn: newGame.turn,
 		})
+			.then(function (game) {
+				res.status(200).json({ response: game }).send();
+			})
+			.catch(function (error) {
+				res.status(400).json({ error }).send();
+			})
 			.then(function (game) {
 				res.status(200).json({ response: game }).send();
 			})
@@ -31,7 +34,7 @@ const GameController = {
 	},
 
 	async getGame(req, res) {
-		if (!containsParams(["gameId"], req)){
+		if (!containsParams(["gameId"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
@@ -61,57 +64,58 @@ const GameController = {
 				Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 				{ inProgress: true }
 			),
-		})
-		.catch(function(error) {
-			res.status(400).json({ error }).send()
-		})
+		}).catch(function (error) {
+			res.status(400).json({ error }).send();
+		});
 	},
 
 	move(req, res) {
-		const { username } = req.session
-		if (!containsParams(["gameId, x1, y1, x2, y2"], req)){
-			res.status(400).json({ error: "Parametros incorrectos" }).send()
-			return
+		const { username } = req.session;
+		if (!containsParams(["gameId, x1, y1, x2, y2"], req)) {
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return;
 		}
-		let {gameId, x1, y1, x2, y2} = req.body
+		let { gameId, x1, y1, x2, y2 } = req.body;
 		GameModel.findByPk(gameId)
-		.then(function(game) {
-			if (!game) {
-				res.status(400).json({ error:"Couldn't find the game, ID is wrong" }).send()
-				return
-			} else {
-				if (game.blackPlayer != username && game.whitePlayer != username)
-				{
-					res.status(400).json({ error:"You aren't a player of that game" }).send()
-					return
-				} else if (game.blackPlayer == username && game.whiteTurn || !game.whiteTurn && game.whitePlayer != username)
-				{
-					res.status(400).json({ error:"It's not your turn" })
-					res.send()
-					return
-				}
-				var gameObj = new Game(game)
-				var successful = gameObj.moveFromTo(game.whiteTurn, x1, y1, x2, y2)
-				if (successful) {
-					game.board = JSON.stringify(gameObj.board)
-					game.update() //Sequelize call to update the saved model in the db
-					res.status(200).json(game.board).send()
-					return
+			.then(function (game) {
+				if (!game) {
+					res
+						.status(400)
+						.json({ error: "Couldn't find the game, ID is wrong" })
+						.send();
 				} else {
-					res.status(400).json({ error:"You cannot make this move" }).send()
-					return
+					if (game.blackPlayer !== username && game.whitePlayer !== username) {
+						res
+							.status(400)
+							.json({ error: "You aren't a player of that game" })
+							.send();
+						return;
+					}
+					if (
+						(game.blackPlayer === username && game.whiteTurn) ||
+						(!game.whiteTurn && game.whitePlayer !== username)
+					) {
+						res.status(400).json({ error: "It's not your turn" });
+						res.send();
+						return;
+					}
+					let gameObj = new Game(game);
+					let successful = gameObj.moveFromTo(game.whiteTurn, x1, y1, x2, y2);
+					if (successful) {
+						game.board = JSON.stringify(gameObj.board);
+						game.update(); //Sequelize call to update the saved model in the db
+						res.status(200).json(game.board).send();
+						return;
+					}
+					res.status(400).json({ error: "You cannot make this move" }).send();
 				}
-				
-			}
-		})
-		.catch(function(error) {
-			res.status(400).json({ error }).send()
-		})
+			})
+			.catch(function (error) {
+				res.status(400).json({ error }).send();
+			});
 	},
 
-	getMoves(req, res) {
-		
-	},
+	getMoves(req, res) {},
 };
 
 export default GameController;
