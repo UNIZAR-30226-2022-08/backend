@@ -79,7 +79,7 @@ User.belongsToMany(User, {
 
 User.belongsToMany(User, {
 	through: UserFriendList,
-	as: "Friend",
+	as: "Friend2",
 });
 
 

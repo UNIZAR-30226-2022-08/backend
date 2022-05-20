@@ -19,13 +19,9 @@ accountRouter.get("/checkSession", (req, res) => {
 // session validation middleware
 accountRouter.use(validSession);
 
-accountRouter.post("/changePassword", UserController.changePassword);
-accountRouter.post("/logout", UserController.logout);
-// router.get('/getPublicProfile', UserController.getPublicProfile)
-// router.post("/editInfo", UserController.editInfo);
-accountRouter.put("/addFriend", UserController.addFriend);
-accountRouter.put("/acceptFriendRequest", UserController.acceptFriendRequest);
-accountRouter.get("/getFriendRequests", UserController.getFriendRequests);
-accountRouter.get("/getFriends", UserController.getFriends);
+accountRouter.post("/changePassword", AccountController.changePassword);
+accountRouter.post("/logout", AccountController.logout);
+// router.get('/getPublicProfile', AccountController.getPublicProfile)
+// router.post("/editInfo", AccountController.editInfo);
 
 export default accountRouter;

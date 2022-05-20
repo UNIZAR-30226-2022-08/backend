@@ -59,20 +59,20 @@ class Game {
 
 	_complete = "complete";
 
-	constructor(whitePlayer, blackPlayer) {
-		this.turn = WhitePlayer;
-		this.whitePlayer = whitePlayer;
-		this.blackPlayer = blackPlayer;
-
-		this.board = getInitialBoard();
-	}
-
-	constructor(game) {
-		this.turn = game.turn;
-		this.whitePlayer = game.whitePlayer;
-		this.blackPlayer = game.blackPlayer;
-
-		this.board = game.board;
+	constructor(whitePlayerOrGame, blackPlayer) {
+		if (blackPlayer) {
+			this.turn = WhitePlayer;
+			this.whitePlayer = whitePlayerOrGame;
+			this.blackPlayer = blackPlayer;
+	
+			this.board = getInitialBoard();
+		} else {
+			this.turn = whitePlayerOrGame.turn;
+			this.whitePlayer = whitePlayerOrGame.whitePlayer;
+			this.blackPlayer = whitePlayerOrGame.blackPlayer;
+	
+			this.board = whitePlayerOrGame.board;
+		}
 	}
 
 	/**
