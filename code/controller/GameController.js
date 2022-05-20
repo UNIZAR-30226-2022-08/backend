@@ -7,7 +7,7 @@ const matchmakingWaitingList = [];
 
 const GameController = {
 	async startMatchMaking(req, res) {},
-	async startCasualGame(req, res) {
+	async startAsyncGame(req, res) {
 		if (!("otherPlayer" in req.body))
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 

@@ -7,10 +7,9 @@ const gameRouter = Router();
 // session validation middleware
 gameRouter.use(validSession);
 
-gameRouter.put("/newAsyncGame", GameController.createAsyncGame);
+gameRouter.put("/newAsyncGame", GameController.startAsyncGame);
 gameRouter.get("/getGame", GameController.getGame);
 gameRouter.post("/startMatchmaking", GameController.startMatchMaking);
-gameRouter.post("/directGame", GameController.startCasualGame);
 gameRouter.get("/getState", GameController.getGame);
 gameRouter.get("/getActiveGames", GameController.getActiveGames);
 gameRouter.get("/move", GameController.move);
