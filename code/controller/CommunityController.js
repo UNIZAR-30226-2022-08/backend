@@ -1,11 +1,11 @@
 import Sequelize from "sequelize";
 import GameModel from "../models/GameModel";
 import UserModel, { UserFriendList } from "../models/UserModel";
-import { containsProperties } from "../util/util";
+import { containsParams } from "../util/util";
 
 const CommunityController = {
 	async getPublicProfile(req, res) {
-		if (!containsProperties(["username"], req.body)) {
+		if (!containsParams(["username"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
@@ -70,7 +70,7 @@ const CommunityController = {
 	},
 
 	async addFriend(req, res) {
-		if (!containsProperties(["friend"], req.body)) {
+		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
@@ -109,7 +109,7 @@ const CommunityController = {
 			.catch((err) => res.status(400).json({ error: err.message }).send());
 	},
 	async removeFriend(req, res) {
-		if (!containsProperties(["friend"], req.body)) {
+		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
@@ -138,7 +138,7 @@ const CommunityController = {
 		}
 	},
 	async acceptFriendRequest(req, res) {
-		if (!containsProperties(["friend"], req.body)) {
+		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
 		}
@@ -185,15 +185,9 @@ const CommunityController = {
 				const friendRequests = [];
 				requests.forEach((friendRequest) => {
 					if (friendRequest.userUsername === req.session.username) {
-						friendRequests.push({
-							id: friendRequest.id,
-							FriendUsername: friendRequest.FriendUsername,
-						});
+						friendRequests.push(friendRequest.FriendUsername);
 					} else {
-						friendRequests.push({
-							id: friendRequest.id,
-							FriendUsername: friendRequest.userUsername,
-						});
+						friendRequests.push(friendRequest.userUsername);
 					}
 				});
 
@@ -220,15 +214,9 @@ const CommunityController = {
 				const friends = [];
 				requests.forEach((friendship) => {
 					if (friendship.userUsername === req.session.username) {
-						friends.push({
-							id: friendship.id,
-							FriendUsername: friendship.FriendUsername,
-						});
+						friends.push(friendship.FriendUsername);
 					} else {
-						friends.push({
-							id: friendship.id,
-							FriendUsername: friendship.userUsername,
-						});
+						friends.push(friendship.userUsername);
 					}
 				});
 
