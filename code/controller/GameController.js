@@ -1,53 +1,72 @@
-import Game, { getInitialBoard } from "../game/Game";
-import AsyncGame from "../models/AsyncGame";
+import Sequelize from "sequelize";
+import Game from "../game/Game";
+import GameModel from "../models/GameModel";
+
 
 const GameController = {
-	createAsyncGame(req, res) {
-		const {username} = req.session
-		const {otherPlayer, startingSide} = req.body;
-		let newGame = new Game(username, "", getInitialBoard(), WhitePlayer);
-		//TODO mirar este metodo..
-		AsyncGame.create({
+	async createAsyncGame(req, res) {
+
+		if (!containsParams(["whitePlayer", "blackPlayer"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
+		}
+
+		let {whitePlayer, blackPlayer} = req.body
+		let newGame = new Game(whitePlayer, blackPlayer);
+		
+		GameModel.create({
 			board: JSON.stringify(newGame.board),
 			whitePlayer: newGame.WhitePlayer,
 			blackPlayer: newGame.BlackPlayer,
 			turn: newGame.turn,
-		});
+		}).then(function(game) {
+			res.status(200).json({ response: game }).send()
+		}).catch(function(error) {
+			res.status(400).json({ error }).send()
+		})
 	},
 
-	getGame(req, res) {
-		const {gameId} = req.body
-		let game = AsyncGame.findByPk(gameId)
-		if (game === null) {
-			res.status(400).json({ error:"Couldn't find the game"})
-			res.send()
+	async getGame(req, res) {
+		if (!containsParams(["whitePlayer", "blackPlayer"], req)){
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return
 		}
-		let newGame = {
-			gameId: game.gameId,
-			whitePlayer: game.whitePlayer,
-			blackPlayer: game.blackPlayer,
-			//TODO aqui devolvemos las piezas?
-			//...porque creamos nuevo si ya tenemos game?
-		};
-		res.status(200).json({ response: game})
+		let {gameId} = req.body
+			
+		GameModel.findByPk(gameId)
+		.then(function(game) {
+			if (!game) {
+				res.status(400).json({ error:"Couldn't find the game, ID is wrong" })
+				res.send()
+				return
+			}
+			res.status(200).json({ response: game })
+		})
+		.catch(function(error) {
+			res.status(400).json({ error }).send()
+		})
 	},
 
-	getActiveGames(req, res) {
-		const {username } = req.session
-		let game = AsyncGame.find({ 
-			where: { 
-				inProgress: true,
-				[Op.or]: [{ whitePlayer: username }, { blackPlayer: username }],
+	async getActiveGames(req, res) {
+		//No hace falta try/catch porque si no hay username el middleware devuelve 400 antes de llegar aqui
+		const { username } = req.session
+		GameModel.findAll({ 
+			where: Sequelize.and(Sequelize.or({ whitePlayer: username }, { blackPlayer: username }), {inProgress : true} )
+		}).then(function(games) {
+			if (!games) {
+				res.status(200).json({ response: {}, message: "No active games found"}).send()
 			}
+			res.status(200).json({ response: games }).send()
 		})
-		if (game === null) {
-			res.status(200).json({ response: {}, message: "No active games found"})
-		}
+		.catch(function(error) {
+			res.status(400).json({ error }).send()
+		})
+
+
 	},
 
 	move(req, res) {
-
+		
 	},
 
 	getMoves(req, res) {

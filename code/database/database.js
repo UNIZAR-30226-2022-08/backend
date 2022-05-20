@@ -13,7 +13,7 @@ const database = new Sequelize(process.env.DB_CONN_URI, {
 		min: 0,
 		idle: 10000,
 	},
-	logging: process.env.NODE_ENV === "dev" ? false : console.log,
+	logging: console.log,
 });
 
 database
@@ -24,6 +24,8 @@ database
 	.catch((err) => {
 		console.log(err);
 	});
+
 database.sync({ alter: true });
+console.log("All models were synchronized successfully.");
 
 export default database;

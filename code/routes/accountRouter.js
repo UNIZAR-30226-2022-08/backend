@@ -1,11 +1,16 @@
 import { Router } from "express";
-import UserController from "../controller/UserController";
+import AccountController from "../controller/AccountController";
 import validSession from "../util/validSession";
 
 const accountRouter = Router();
 
-accountRouter.post("/register", UserController.register);
-accountRouter.post("/login", UserController.login);
+accountRouter.post("/register", AccountController.register);
+accountRouter.post("/login", AccountController.login);
+
+//metodo de debug
+accountRouter.get("/checkSession", (req, res) => {
+	res.json({ response: req.session });
+});
 
 accountRouter.get("/checkSession", (req, res) => {
 	res.json({ response: req.session });

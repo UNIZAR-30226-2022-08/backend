@@ -1,8 +1,8 @@
 import DataTypes from "sequelize";
 import sequelize from "../database/database";
-import User from "./User";
+import UserModel from "./UserModel";
 
-const Game = sequelize.define(
+const GameModel = sequelize.define(
 	"game",
 	{
 		id: {
@@ -35,19 +35,23 @@ const Game = sequelize.define(
 			allowNull: false,
 			default: true,
 		},
-		whitePlayerId: {
+		finishTimestamp: {
+			type: DataTypes.DATE,
+			allowNull: true,
+		},
+		whitePlayer: {
 			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
-				model: User,
+				model: UserModel,
 				key: "username",
 			},
 		},
-		blackPlayerId: {
+		blackPlayer: {
 			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
-				model: User,
+				model: UserModel,
 				key: "username",
 			},
 		},
@@ -57,4 +61,4 @@ const Game = sequelize.define(
 	}
 );
 
-export default Game;
+export default GameModel;

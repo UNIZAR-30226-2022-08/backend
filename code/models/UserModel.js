@@ -39,7 +39,7 @@ const User = sequelize.define(
 			validate: {
 				min: 0,
 			},
-		},
+		}
 	},
 	{
 		hooks: {
@@ -76,6 +76,12 @@ User.belongsToMany(User, {
 	through: UserFriendList,
 	as: "Friend",
 });
+
+User.belongsToMany(User, {
+	through: UserFriendList,
+	as: "Friend",
+});
+
 
 export default User;
 export { UserFriendList };
