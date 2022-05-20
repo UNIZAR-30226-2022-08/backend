@@ -8,7 +8,7 @@ const gameRouter = Router();
 gameRouter.use(validSession);
 
 gameRouter.put("/newAsyncGame", GameController.createAsyncGame);
-gameRouter.get("/getState", GameController.getGame);
+gameRouter.get("/getGame", GameController.getGame);
 gameRouter.get("/getActiveGames", GameController.getActiveGames);
 gameRouter.get("/move", GameController.move);
 gameRouter.get("/getMoves", GameController.getMoves);

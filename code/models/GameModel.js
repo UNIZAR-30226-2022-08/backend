@@ -14,7 +14,7 @@ const GameModel = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
-		whiteTurn: {
+		turn: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
 			default: true,

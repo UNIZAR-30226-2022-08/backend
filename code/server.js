@@ -27,6 +27,7 @@ app.use(
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
 	sessions({
+		SameSite: 'none',
 		secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
 		saveUninitialized: true,
 		cookie: { maxAge: oneDay },

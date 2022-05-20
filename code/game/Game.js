@@ -67,6 +67,23 @@ class Game {
 		this.board = getInitialBoard();
 	}
 
+	constructor(game) {
+		this.turn = game.turn;
+		this.whitePlayer = game.whitePlayer;
+		this.blackPlayer = game.blackPlayer;
+
+		this.board = game.board;
+	}
+
+	/**
+	 *
+	 * @param {enum} player player trying to move
+	 * @param {number} x1 Current x position of the piece
+	 * @param {number} y1 Current y position of the piece
+	 * @param {number} x2 Wished x position of the piece
+	 * @param {number} y2 Wished y position of the piece
+	 * @returns {boolean} If the move was possible
+	 */
 	moveFromTo(player, x1, y1, x2, y2) {
 		const piece = this.getPiece(player, x1, y1);
 		if (piece && piece.move(x2, y2)) {
@@ -84,7 +101,7 @@ class Game {
 	 *
 	 * @param {enum} player player trying to move
 	 * @param {number} x x position of the piece
-	 * @param {number} y x position of the piece
+	 * @param {number} y y position of the piece
 	 * @returns
 	 */
 	getPiece(player, x, y) {
