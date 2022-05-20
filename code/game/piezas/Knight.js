@@ -1,8 +1,8 @@
 import Piece from "./Piece";
 
 class Knight extends Piece {
-	constructor(board, xPos = 1, yPos = 1) {
-		super(board, xPos, yPos);
+	constructor(player, game, xPos = 1, yPos = 1) {
+		super(player, game, xPos, yPos);
 	}
 
 	getAllowedMoves() {
