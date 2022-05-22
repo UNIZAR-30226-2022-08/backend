@@ -6,16 +6,18 @@ function validSession(req, res, next) {
 
 /**
  *
- * @param {Array} props Array of properties
- * @param {Object} includedIn Object to check
- * @returns {boolean} True if object 'includedIn' contains all properties specified
- * 	in the 'props' array.
+ * @param {Array} pars Array of strings with names of properties
+ * @param {Object} req Request object
+ * @returns {boolean} True if object 'req.body' contains all properties specified
+ * 	in the 'pars' array.
  */
-function containsParams(props, includedIn) {
-	return props.reduce(
-		(prev, elem) => (prev ? elem in includedIn.body : false),
-		true
-	);
+function containsParams (pars, req) {
+	pars.forEach(par => {
+		if (!(par in req.body)){
+			return false;
+		}
+	});
+	return true
 }
 
 export { validSession, containsParams };

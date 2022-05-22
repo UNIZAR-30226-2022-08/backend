@@ -12,7 +12,7 @@ gameRouter.get("/getGame", GameController.getGame);
 gameRouter.post("/startMatchmaking", GameController.startMatchMaking);
 gameRouter.get("/getState", GameController.getGame);
 gameRouter.get("/getActiveGames", GameController.getActiveGames);
-gameRouter.get("/move", GameController.move);
+gameRouter.post("/move", GameController.move);
 gameRouter.get("/getMoves", GameController.getMoves);
 
 export default gameRouter;

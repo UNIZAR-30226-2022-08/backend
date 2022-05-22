@@ -11,7 +11,7 @@ const GameModel = sequelize.define(
 			primaryKey: true,
 		},
 		boardState: {
-			type: DataTypes.STRING,
+			type: DataTypes.TEXT,
 			allowNull: false,
 		},
 		turn: {
@@ -22,7 +22,7 @@ const GameModel = sequelize.define(
 		inProgress: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
-			default: false,
+			default: true,
 		},
 		isAsync: {
 			type: DataTypes.BOOLEAN,
@@ -32,7 +32,7 @@ const GameModel = sequelize.define(
 		// then the value of this is useless
 		whiteWon: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
+			allowNull: true,
 			default: true,
 		},
 		finishTimestamp: {

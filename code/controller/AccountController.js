@@ -44,6 +44,18 @@ const AccountController = {
 				res.status(400).json({ error: error.message }).send();
 			});
 	},
+	async findAllUsers(req, res) {
+		return UserModel.findAll()
+			.then(async (user) => {
+				if (user === null) {
+					return res.status(400).json({ error: "User not found" });
+				}
+				return res.status(200).json(user).send();
+			})
+			.catch((error) => {
+				res.status(400).json({ error: error.message }).send();
+			});
+	},
 	async changePassword(req, res) {
 		const { newPassword } = req.body;
 		const { username } = req.session;

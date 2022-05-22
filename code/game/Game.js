@@ -220,6 +220,19 @@ class Game {
 			)
 			.some((res) => res);
 	}
+	boardToJSONString () {
+		var toRet = "{whitePieces:["
+		this.board.whitePieces.forEach(el => {
+			toRet += "{type:" + el.constructor.name + ",x:" + el.pos.x + ",y:" + el.pos.y + "},"
+		});
+		toRet+="], blackPieces:["
+		this.board.blackPieces.forEach(el => {
+			toRet += "{type:" + el.constructor.name + ",x:" + el.pos.x + ",y:" + el.pos.y + "},"
+		})
+		toRet+="]}";
+		console.log("Stringified board: " + toRet)
+		return toRet;
+	}
 }
 
 export { getInitialBoard, WhitePlayer, BlackPlayer };

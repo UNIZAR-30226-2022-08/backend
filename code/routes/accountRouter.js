@@ -12,9 +12,7 @@ accountRouter.get("/checkSession", (req, res) => {
 	res.json({ response: req.session });
 });
 
-accountRouter.get("/checkSession", (req, res) => {
-	res.json({ response: req.session });
-});
+accountRouter.get("/findAllUsers", AccountController.findAllUsers);
 
 // session validation middleware
 accountRouter.use(validSession);

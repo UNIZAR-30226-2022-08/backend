@@ -8,16 +8,20 @@ const matchmakingWaitingList = [];
 const GameController = {
 	async startMatchMaking(req, res) {},
 	async startAsyncGame(req, res) {
-		if (!("otherPlayer" in req.body))
+		if (!containsParams(["whitePlayer, blackPlayer"], req)) {
+			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
-
-		let newGame = new Game(req.session.username, req.body.otherPlayer);
-		
+			return
+		}
+		let newGame = new Game(req.body.whitePlayer, req.body.blackPlayer);
 		return GameModel.create({
-			board: JSON.stringify(newGame.board),
-			whitePlayer: newGame.WhitePlayer,
-			blackPlayer: newGame.BlackPlayer,
+			boardState: newGame.boardToJSONString(),
+			whitePlayer: newGame.whitePlayer,
+			blackPlayer: newGame.blackPlayer,
 			turn: newGame.turn,
+			whiteWon: null,
+			inProgress: true,
+			isAsync: true
 		})
 			.then(function (game) {
 				res.status(200).json({ response: game }).send();
@@ -53,12 +57,15 @@ const GameController = {
 	async getActiveGames(req, res) {
 		// No hace falta try/catch porque si no hay username el middleware devuelve 400 antes de llegar aqui
 		const { username } = req.session;
-		GameModel.findAll({
+		return GameModel.findAll({
 			where: Sequelize.and(
 				Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 				{ inProgress: true }
 			),
-		}).catch(function (error) {
+		}).then(function (games) {
+			res.status(200).json({ response: games }).send();
+		})
+		.catch(function (error) {
 			res.status(400).json({ error }).send();
 		});
 	},
@@ -70,7 +77,7 @@ const GameController = {
 			return;
 		}
 		let { gameId, x1, y1, x2, y2 } = req.body;
-		GameModel.findByPk(gameId)
+		return GameModel.findByPk(gameId)
 			.then(function (game) {
 				if (!game) {
 					res
@@ -83,27 +90,33 @@ const GameController = {
 							.status(400)
 							.json({ error: "You aren't a player of that game" })
 							.send();
-						return;
 					}
 					if (
 						(game.blackPlayer === username && game.whiteTurn) ||
 						(!game.whiteTurn && game.whitePlayer !== username)
 					) {
-						res.status(400).json({ error: "It's not your turn" });
-						res.send();
-						return;
+						res.status(400)
+						.json({ error: "It's not your turn" })
+						.send();
 					}
+					console.log("First checks passed")
 					//Es el turno del usuario, ahora comprobamos que el movimiento sea valido
 					let gameObj = new Game(game);
+					console.log("Successfully created game object")
 					let successful = gameObj.moveFromTo(game.whiteTurn, x1, y1, x2, y2);
 					if (successful) {
 						game.board = JSON.stringify(gameObj.board)
 						game.whiteTurn = !game.whiteTurn
 						game.update() //Sequelize call to update the saved model in the db
-						res.status(200).json(game.board).send()
+						res.status(200)
+						.json(game.board)
+						.send()
 						return;
+					} else {
+						res.status(400)
+						.json({ error: "You cannot make this move" })
+						.send();
 					}
-					res.status(400).json({ error: "You cannot make this move" }).send();
 				}
 			})
 			.catch(function (error) {
