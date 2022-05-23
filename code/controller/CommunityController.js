@@ -208,7 +208,7 @@ const CommunityController = {
 					}
 				});
 
-				res.status(200).json({ friends }).send();
+				res.status(200).json({ response : friends }).send();
 				return;
 			})
 			.catch((err) => res.status(400).json({ error: err.message }).send());
