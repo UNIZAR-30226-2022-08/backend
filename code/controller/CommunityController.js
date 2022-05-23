@@ -214,7 +214,9 @@ const CommunityController = {
 				res.status(200).json({ response : friends }).send();
 				return;
 			})
-			.catch((err) => res.status(400).json({ error: err.message }).send());
+			.catch((err) => {
+				return res.status(400).json({ error: err }).send();
+			})
 	},
 	async sendMessage(req, res) {
 		if (!containsParams(["to", "body"], req)) {
