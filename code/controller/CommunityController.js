@@ -210,12 +210,15 @@ const CommunityController = {
 						friends.push(friendship.userUsername);
 					}
 				});
-
+				console.log("Antes de hacer el .send")
 				res.status(200).json({ response : friends }).send();
+				console.log("Acabo de hacer el .send")
 				return;
 			})
 			.catch((err) => {
+				console.log("Antes de hacer el .err")
 				return res.status(400).json({ error: err }).send();
+				console.log("Acabo de hacer el .err")
 			})
 	},
 	async sendMessage(req, res) {
