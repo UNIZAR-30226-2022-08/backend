@@ -101,7 +101,7 @@ const CommunityController = {
 						if (other === null) {
 							throw new Error("user does not exist");
 						}
-						other.addFriend(user);
+						user.addFriend(other)
 					}
 				)
 			)
