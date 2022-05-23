@@ -76,7 +76,7 @@ const CommunityController = {
 		}
 		const { friend } = req.body;
 		const friendship = await UserFriendList.findOne({
-			where: Sequelize.or(
+			where: Sequelize.and(
 				{
 					userUsername: [req.session.username, friend],
 				},
