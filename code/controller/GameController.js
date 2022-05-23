@@ -124,6 +124,56 @@ const GameController = {
 			});
 	},
 
+	promotePawn(req, res) {},
+
+	castle(req, res) {
+		if (!containsParams(["gameId", "side"], req)) {
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return;
+		}
+
+		const { username } = req.session;
+		const { gameId, side } = req.body;
+
+		GameModel.findByPk(gameId).then(function (game) {
+			const curGame = new Game(game);
+			if (
+				(game.blackPlayer === username && game.whiteTurn) ||
+				(!game.whiteTurn && game.whitePlayer !== username)
+			) {
+				res.status(400).json({ error: "It's not your turn" }).send();
+			}
+
+			let y;
+			if (curGame.whiteTurn) {
+				y = 0;
+			} else {
+				y = 6;
+			}
+
+			if (side === "left") {
+				if (
+					curGame.getPiece(curGame.whiteTurn, 4, y) instanceof King &&
+					curGame.getPiece(curGame.whiteTurn, 0, y) instanceof Rook &&
+					!curGame.getPiece(curGame.whiteTurn, 1, y) &&
+					!curGame.getPiece(curGame.whiteTurn, 2, y) &&
+					!curGame.getPiece(curGame.whiteTurn, 3, y)
+				) {
+					//enrocar
+				}
+			} else if (side === "right") {
+				if (
+					curGame.getPiece(curGame.whiteTurn, 4, y) instanceof King &&
+					curGame.getPiece(curGame.whiteTurn, 7, y) instanceof Rook &&
+					!curGame.getPiece(curGame.whiteTurn, 5, y) &&
+					!curGame.getPiece(curGame.whiteTurn, 6, y)
+				) {
+					//enrocar
+				}
+			}
+		});
+	},
+
 	getMoves(req, res) {},
 };
 
