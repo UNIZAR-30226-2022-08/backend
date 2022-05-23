@@ -212,7 +212,9 @@ const CommunityController = {
 				});
 				console.log("Antes de hacer el .send")
 				console.log(friends)
-				console.log(res.status(200).json({ response : friends }).send());
+				var temp = { response : friends }
+				console.log(temp)
+				console.log(res.status(200).json( temp ).send());
 				console.log("Acabo de hacer el .send")
 				return;
 			})
