@@ -178,7 +178,7 @@ const CommunityController = {
 					friendRequests.push(friendRequest.userUsername)
 				});
 
-				res.status(200).json({ friendRequests }).send();
+				res.status(200).json({ response : friendRequests}).send();
 				return;
 			})
 			.catch((err) => res.status(400).json({ error: err.message }).send());
