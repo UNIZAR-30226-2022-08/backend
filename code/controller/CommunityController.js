@@ -199,6 +199,9 @@ const CommunityController = {
 			attributes: ["id", "userUsername", "FriendUsername"],
 		})
 			.then((requests) => {
+				if (requests == null) {
+					console.log("No hay amigos")
+				}
 				const friends = [];
 				requests.forEach((friendship) => {
 					if (friendship.userUsername === req.session.username) {
