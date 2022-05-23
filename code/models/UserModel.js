@@ -10,6 +10,9 @@ const UserModel = sequelize.define(
 			unique: true,
 			allowNull: false,
 			primaryKey: true,
+			validate: {
+				len: [4, 12],
+			},
 		},
 		email: {
 			type: DataTypes.STRING,
@@ -23,7 +26,7 @@ const UserModel = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 			validate: {
-				len: [6, 12],
+				len: [4, 12],
 			},
 		},
 		elo: {
