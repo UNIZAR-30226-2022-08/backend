@@ -178,10 +178,17 @@ const CommunityController = {
 					friendRequests.push(friendRequest.userUsername)
 				});
 
-				res.status(200).json({ response : friendRequests}).send();
+				console.log("Antes de hacer el .send")
+				console.log(friendRequests)
+				var temp = { response : friendRequests }
+				console.log(temp)
+				res.status(200).json( temp ).send()
+				console.log("Acabo de hacer el .send")
 				return;
 			})
-			.catch((err) => res.status(400).json({ error: err.message }).send());
+			.catch((err) => {
+				// return res.status(400).json({ error: err }).send();
+			})
 	},
 	async getFriends(req, res) {
 		UserFriendList.findAll({
@@ -214,7 +221,7 @@ const CommunityController = {
 				console.log(friends)
 				var temp = { response : friends }
 				console.log(temp)
-				console.log(res.status(200).json( temp ).send());
+				res.status(200).json( temp ).send()
 				console.log("Acabo de hacer el .send")
 				return;
 			})
