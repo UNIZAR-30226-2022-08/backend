@@ -211,14 +211,13 @@ const CommunityController = {
 					}
 				});
 				console.log("Antes de hacer el .send")
-				res.status(200).json({ response : friends }).send();
+				console.log(friends)
+				console.log(res.status(200).json({ response : friends }).send());
 				console.log("Acabo de hacer el .send")
 				return;
 			})
 			.catch((err) => {
-				console.log("Antes de hacer el .err")
-				return res.status(400).json({ error: err }).send();
-				console.log("Acabo de hacer el .err")
+				// return res.status(400).json({ error: err }).send();
 			})
 	},
 	async sendMessage(req, res) {
