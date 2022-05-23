@@ -165,6 +165,7 @@ const CommunityController = {
 			.catch((err) => res.status(400).json({ error: err.message }));
 	},
 	async getFriendRequests(req, res) {
+		var friendRequests = [];
 		UserFriendList.findAll({
 			where: {
 				accepted: false,
@@ -173,13 +174,9 @@ const CommunityController = {
 			attributes: ["id", "userUsername", "FriendUsername"],
 		})
 			.then((requests) => {
-				const friendRequests = [];
+				
 				requests.forEach((friendRequest) => {
-					if (friendRequest.userUsername === req.session.username) {
-						friendRequests.push(friendRequest.FriendUsername);
-					} else {
-						friendRequests.push(friendRequest.userUsername);
-					}
+					friendRequests.push(friendRequest.userUsername)
 				});
 
 				res.status(200).json({ friendRequests }).send();

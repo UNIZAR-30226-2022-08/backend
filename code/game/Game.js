@@ -131,8 +131,9 @@ class Game {
 	 * @param {number} y x position of the piece
 	 */
 	addPiece(player, type, x, y) {
+		let arr
 		if (player === WhitePlayer)
-			let arr = this.whitePieces
+			arr = this.whitePieces
 		else
 			arr = this.blackPieces
 		switch(type.toLowerCase()) {
@@ -152,7 +153,9 @@ class Game {
 				arr.push(new Pawn(player, this, x, y))
 				break;
 				//Todo finire qua
+		}
 	}
+
 
 	/**
 	 *
