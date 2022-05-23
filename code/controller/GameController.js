@@ -1,5 +1,5 @@
 import Sequelize from "sequelize";
-import Game from "../game/Game";
+import Game, { WhitePlayer } from "../game/Game";
 import GameModel from "../models/GameModel";
 import { containsParams } from "../util/util";
 
@@ -124,7 +124,34 @@ const GameController = {
 			});
 	},
 
-	promotePawn(req, res) {},
+	promotePawn(req, res) {
+		if (!containsParams(["x", "y", "wantedPiece"], req)) {
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return;
+		}
+		let x, y, {wantedPiece} = req.body
+		let player
+		return GameModel.findByPk(gameId).then(function (game) {
+			const curGame = new Game(game);
+			if ( curGame.whitePlayer == req.session.username) {
+				player = WhitePlayer
+				if (y!=7) {
+					res.status(400).json({ error: "You can't promote that piece" }).send();
+					return;
+				}
+			} else {
+				player = BlackPlayer
+				if (y!=0) {
+					res.status(400).json({ error: "You can't promote that piece" }).send();
+					return;
+				}
+			}
+			curGame.deletePiece(player, x, y)
+			curGame.addPiece(player, x, y)
+		}).catch(function (error) {
+			res.status(400).json({ error }).send();
+		});
+	},
 
 	castle(req, res) {
 		if (!containsParams(["gameId", "side"], req)) {
@@ -148,7 +175,7 @@ const GameController = {
 			if (curGame.whiteTurn) {
 				y = 0;
 			} else {
-				y = 6;
+				y = 7;
 			}
 
 			if (side === "left") {

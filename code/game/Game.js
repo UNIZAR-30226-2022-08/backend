@@ -124,8 +124,39 @@ class Game {
 	}
 
 	/**
+	 * 
+	 * @param {boolean} player player for which to delete the piece
+	 * @param {string} type type of piece to add
+	 * @param {number} x x position of the piece
+	 * @param {number} y x position of the piece
+	 */
+	addPiece(player, type, x, y) {
+		if (player === WhitePlayer)
+			let arr = this.whitePieces
+		else
+			arr = this.blackPieces
+		switch(type.toLowerCase()) {
+			case "pawn":
+				arr.push(new Pawn(player, this, x, y))
+				break;
+			case "knight":
+				arr.push(new Pawn(player, this, x, y))
+				break;
+			case "queen":
+				arr.push(new Pawn(player, this, x, y))
+				break;
+			case "rook":
+				arr.push(new Pawn(player, this, x, y))
+				break;
+			case "bishop":
+				arr.push(new Pawn(player, this, x, y))
+				break;
+				//Todo finire qua
+	}
+
+	/**
 	 *
-	 * @param {enum} player player for which to delete the piece
+	 * @param {boolean} player player for which to delete the piece
 	 * @param {number} x x position of the piece
 	 * @param {number} y x position of the piece
 	 * @returns
