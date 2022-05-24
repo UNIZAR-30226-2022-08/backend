@@ -8,7 +8,7 @@ const AccountController = {
 		if (!containsParams(["username", "email", "password"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
-			return
+			return;
 		}
 		const { username, email, password } = req.body;
 		return UserModel.create({
@@ -23,7 +23,10 @@ const AccountController = {
 
 				return res.status(201).send();
 			})
-			.catch((err) => res.status(400).json({ error: err.message }).send());
+			.catch((err) => {
+				console.log(error);
+				res.status(400).json({ error: err.message }).send();
+			});
 	},
 	async login(req, res) {
 		if (req.session.username) {
@@ -52,6 +55,7 @@ const AccountController = {
 				return res.status(200).send();
 			})
 			.catch((error) => {
+				console.log(error);
 				res.status(400).json({ error: error.message }).send();
 			});
 	},
@@ -64,6 +68,7 @@ const AccountController = {
 				return res.status(200).json(user).send();
 			})
 			.catch((error) => {
+				console.log(error);
 				res.status(400).json({ error: error.message }).send();
 			});
 	},
@@ -71,7 +76,7 @@ const AccountController = {
 		if (!containsParams(["username", "newPassword"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
-			return
+			return;
 		}
 		const { newPassword } = req.body;
 		const { username } = req.session;
