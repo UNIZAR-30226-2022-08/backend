@@ -12,12 +12,13 @@ function validSession(req, res, next) {
  * 	in the 'pars' array.
  */
 function containsParams (pars, req) {
+	let foundAll = true;
 	pars.forEach(par => {
 		if (!(par in req.body)){
-			return false;
+			foundAll = false;
 		}
 	});
-	return true
+	return foundAll
 }
 
 export { validSession, containsParams };

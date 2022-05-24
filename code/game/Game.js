@@ -278,8 +278,14 @@ class Game {
 	 * @returns Un array con dos campos whitePieces y blackPieces, de Objetos que extenden Piece 
 	 */
 	static JSONStringtoBoard (str) {
+		const tempBoard
 		console.log(str)
-		const tempBoard = JSON.parse(str)
+		try {
+			tempBoard = JSON.parse(str)
+		} catch (e) {
+			console.log(e)
+		}
+		
 		console.log("Despues del parse")
 		const builtBoard = { }
 		console.log("Parsed board: ")
