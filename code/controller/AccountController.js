@@ -7,7 +7,7 @@ const AccountController = {
 	async register(req, res) {
 		if (!containsParams(["username", "email", "password"], req)) {
 			console.log(req.body);
-			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
 		}
 		const { username, email, password } = req.body;
@@ -21,12 +21,12 @@ const AccountController = {
 					throw new Error("error creating user");
 				}
 
-				return res.status(201).send();
+				return res.status(201);
 			})
 			.catch((err) => {
 				console.trace();
 				console.log(error);
-				res.status(400).json({ error: err.message }).send();
+				res.status(400).json({ error: err.message });
 			});
 	},
 	async login(req, res) {
@@ -34,7 +34,7 @@ const AccountController = {
 			return res.status(400).json({ message: "User already logged in" });
 		}
 		if (!containsParams(["email", "password"], req)) {
-			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
 		}
 		const { email, password } = req.body;
@@ -53,12 +53,12 @@ const AccountController = {
 				const { session } = req;
 				session.username = user.username;
 				session.email = user.email;
-				return res.status(200).send();
+				return res.status(200);
 			})
 			.catch((error) => {
 				console.trace();
 				console.log(error);
-				res.status(400).json({ error: error.message }).send();
+				res.status(400).json({ error: error.message });
 			});
 	},
 	async findAllUsers(req, res) {
@@ -67,18 +67,18 @@ const AccountController = {
 				if (user === null) {
 					return res.status(400).json({ error: "User not found" });
 				}
-				return res.status(200).json(user).send();
+				return res.status(200).json(user);
 			})
 			.catch((error) => {
 				console.trace();
 				console.log(error);
-				res.status(400).json({ error: error.message }).send();
+				res.status(400).json({ error: error.message });
 			});
 	},
 	async changePassword(req, res) {
 		if (!containsParams(["username", "newPassword"], req)) {
 			console.log(req.body);
-			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
 		}
 		const { newPassword } = req.body;
@@ -90,18 +90,15 @@ const AccountController = {
 			},
 		})
 			.then(function () {
-				res.status(201).send();
+				res.status(201);
 			})
 			.catch(function (err) {
-				res.status(400).json({ error: err.errors }).send();
+				res.status(400).json({ error: err.errors });
 			});
 	},
 	async logout(req, res) {
 		req.session.destroy();
-		return res
-			.status(201)
-			.json({ status: "success", message: "Logged out" })
-			.send();
+		return res.status(201).json({ status: "success", message: "Logged out" });
 	},
 };
 
