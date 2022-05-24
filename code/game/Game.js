@@ -274,7 +274,13 @@ class Game {
 
 	JSONStringToBoard (str) {
 		console.log("antes de parsed")
-		const parsed = JSON.parse(str)
+		let parsed
+		try {
+			parsed = JSON.parse(str)
+		} catch (error) {
+			console.log(error)
+		}
+		
 		const toRet = { whitePieces : [], blackPieces : [] }
 		parsed.whitePieces.forEach(el => {
 			// eslint-disable-next-line default-case
