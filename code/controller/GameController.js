@@ -23,7 +23,7 @@ const GameController = {
 			boardState: newGame.boardToJSONString(),
 			whitePlayer: newGame.whitePlayer,
 			blackPlayer: newGame.blackPlayer,
-			turn: newGame.turn,
+			turn: newGame.whiteTurn,
 			whiteWon: null,
 			inProgress: true,
 			isAsync: true,
