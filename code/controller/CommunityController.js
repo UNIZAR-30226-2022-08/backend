@@ -111,14 +111,13 @@ const CommunityController = {
 					}
 				)
 			)
-			.then(() => res.status(200))
+			.then(() => res.status(200).send())
 			.catch((err) => res.status(400).json({ error: err.message }));
 		next();
 	},
 	async removeFriend(req, res, next) {
 		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
-			next();
 		}
 		const { friend } = req.body;
 
@@ -138,14 +137,12 @@ const CommunityController = {
 		if (removed < 1) {
 			res.status(400).json({ error: "user is not friend" });
 		} else {
-			res.status(200);
+			res.status(200).send();
 		}
-		next();
 	},
 	async acceptFriendRequest(req, res, next) {
 		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
-			next();
 			return;
 		}
 		const { friend } = req.body;
@@ -161,7 +158,7 @@ const CommunityController = {
 
 		if (friendship === null || friendship.accepted) {
 			res.status(400).json({ error: "no pending friend requests from user" });
-			next();
+
 			return;
 		}
 
@@ -169,12 +166,10 @@ const CommunityController = {
 		friendship
 			.save()
 			.then(() => {
-				res.status(200);
-				next();
+				res.status(200).send();
 			})
 			.catch((err) => {
 				res.status(400).json({ error: err.message });
-				next();
 			});
 	},
 	async getFriendRequests(req, res, next) {
@@ -193,12 +188,11 @@ const CommunityController = {
 
 				let temp = { response: friendRequests };
 				res.status(200).json(temp);
-				next();
+
 				return;
 			})
 			.catch((err) => {
 				res.status(400).json({ error: err });
-				next();
 			});
 	},
 	async getFriends(req, res, next) {
@@ -231,7 +225,6 @@ const CommunityController = {
 
 				let temp = { response: friends };
 				res.status(200).json(temp);
-				next();
 				return;
 			})
 			.catch((err) => {
@@ -241,7 +234,6 @@ const CommunityController = {
 	async sendMessage(req, res, next) {
 		if (!containsParams(["to", "body"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
-			next();
 			return;
 		}
 		const { username } = req.session;
@@ -261,12 +253,10 @@ const CommunityController = {
 					if (messagge === null) {
 						throw new Error("error sending message");
 					}
-					res.status(201);
-					next();
+					res.status(201).send();
 				})
 				.catch((err) => {
 					res.status(400).json({ error: err.message });
-					next();
 				});
 		}
 	},

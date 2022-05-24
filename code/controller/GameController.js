@@ -85,7 +85,6 @@ const GameController = {
 				console.trace();
 				console.log(error);
 				res.status(400).json(error);
-				next();
 				return;
 			});
 	},
@@ -94,7 +93,6 @@ const GameController = {
 		const { username } = req.session;
 		if (!containsParams(["gameId", "x1", "y1", "x2", "y2"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
-			next();
 			return;
 		}
 		const { gameId, x1, y1, x2, y2 } = req.body;
@@ -104,7 +102,6 @@ const GameController = {
 					res
 						.status(400)
 						.json({ error: "Couldn't find the game, ID is wrong" });
-					next();
 					return;
 				}
 				if (game.blackPlayer !== username && game.whitePlayer !== username) {
@@ -131,24 +128,20 @@ const GameController = {
 					game.turn = !game.turn;
 					game.save(); // Sequelize call to update the saved model in the db
 					res.status(200).json(JSON.parse(game.boardState));
-					next();
 				} else {
 					res.status(400).json({ error: "You cannot make this move" });
-					next();
 				}
 			})
 			.catch(function (error) {
 				console.trace();
 				console.log(error);
 				res.status(400).json(error);
-				next();
 			});
 	},
 
 	promotePawn(req, res, next) {
 		if (!containsParams(["x", "y", "wantedPiece"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
-			next();
 			return;
 		}
 		const { x, y, wantedPiece, gameId } = req.body;
@@ -167,7 +160,6 @@ const GameController = {
 					player = BlackPlayer;
 					if (y !== 0) {
 						res.status(400).json({ error: "You can't promote that piece" });
-						next();
 						return;
 					}
 				}
@@ -178,7 +170,6 @@ const GameController = {
 				console.trace();
 				console.log(error);
 				res.status(400).json(error);
-				next();
 			});
 	},
 
@@ -198,7 +189,6 @@ const GameController = {
 				(!game.whiteTurn && game.whitePlayer !== username)
 			) {
 				res.status(400).json({ error: "It's not your turn" });
-				next();
 				return;
 			}
 
