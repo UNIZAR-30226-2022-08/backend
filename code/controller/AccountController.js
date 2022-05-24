@@ -24,6 +24,7 @@ const AccountController = {
 				return res.status(201).send();
 			})
 			.catch((err) => {
+				console.trace();
 				console.log(error);
 				res.status(400).json({ error: err.message }).send();
 			});
@@ -55,6 +56,7 @@ const AccountController = {
 				return res.status(200).send();
 			})
 			.catch((error) => {
+				console.trace();
 				console.log(error);
 				res.status(400).json({ error: error.message }).send();
 			});
@@ -68,6 +70,7 @@ const AccountController = {
 				return res.status(200).json(user).send();
 			})
 			.catch((error) => {
+				console.trace();
 				console.log(error);
 				res.status(400).json({ error: error.message }).send();
 			});
