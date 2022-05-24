@@ -80,19 +80,9 @@ class Game {
 			this.turn = whitePlayerOrGame.turn;
 			this.whitePlayer = whitePlayerOrGame.whitePlayer;
 			this.blackPlayer = whitePlayerOrGame.blackPlayer;
-			console.log("COonstruyendo board")
-			console.log("le paso ", whitePlayerOrGame.boardState)
-			let tempBoard
-			try {
-				tempBoard = JSON.parse(whitePlayerOrGame.boardState)
-			} catch (e) {
-				console.log(e)
-			}
+			const tempBoard = this.JSONStringToBoard(whitePlayerOrGame.boardState)
 			
 			console.log("Despues del parse: ", tempBoard)
-			// const builtBoard = { }
-			console.log("Parsed board: ")
-			// console.log(tempBoard)
 		}
 	}
 
@@ -276,7 +266,7 @@ class Game {
 			delete el.game
 		});
 		clone.blackPieces.forEach(el => {
-			el.game = null
+			delete el.game
 		});
 		return JSON.stringify(clone)
 	}
@@ -284,51 +274,53 @@ class Game {
 	JSONStringToBoard (str) {
 		const parsed = JSON.parse(str)
 		const toRet = { whitePieces : [], blackPieces : [] }
-		clone.whitePieces.forEach(el => {
+		parsed.whitePieces.forEach(el => {
+			// eslint-disable-next-line default-case
 			switch ( el.type ) {
 				case "pawn" : 
-					toRet.whitePieces.push(new Pawn(WhitePlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Pawn(WhitePlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "rook" : 
-					toRet.whitePieces.push(new Rook(WhitePlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Rook(WhitePlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "king" : 
-					toRet.whitePieces.push(new King(WhitePlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new King(WhitePlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "queen" : 
-					toRet.whitePieces.push(new Queen(WhitePlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Queen(WhitePlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "bishop" : 
-					toRet.whitePieces.push(new Bishop(WhitePlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Bishop(WhitePlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "knight" : 
-					toRet.whitePieces.push(new Knight(WhitePlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Knight(WhitePlayer, this, el.pos.x, el.y.pos))
 					break;
 			}
 		});
-		clone.blackPieces.forEach(el => {
+		toRet.blackPieces.forEach(el => {
+			// eslint-disable-next-line default-case
 			switch ( el.type ) {
 				case "pawn" : 
-					toRet.whitePieces.push(new Pawn(BlackPlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Pawn(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "rook" : 
-					toRet.whitePieces.push(new Rook(BlackPlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Rook(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "king" : 
-					toRet.whitePieces.push(new King(BlackPlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new King(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "queen" : 
-					toRet.whitePieces.push(new Queen(BlackPlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Queen(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "bishop" : 
-					toRet.whitePieces.push(new Bishop(BlackPlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Bishop(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "knight" : 
-					toRet.whitePieces.push(new Knight(BlackPlayer, this, el.xPos, el.yPos))
+					toRet.whitePieces.push(new Knight(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 			}
 		});
-		return JSON.stringify(clone)
+		return JSON.stringify(toRet)
 	}
 
 }

@@ -104,13 +104,12 @@ const GameController = {
 						.json({ error: "It's not your turn" })
 						.send();
 					}
-					console.log("First checks passed")
 					// Es el turno del usuario, ahora comprobamos que el movimiento sea valido
 					const gameObj = new Game(game.dataValues);
 					console.log("Successfully created game object")
 					const successful = gameObj.moveFromTo(game.whiteTurn, x1, y1, x2, y2);
 					if (successful) {
-						game.board = JSON.stringify(gameObj.board)
+						game.board = gameObj.boardToJSONString()
 						game.whiteTurn = !game.whiteTurn
 						game.update() // Sequelize call to update the saved model in the db
 						res.status(200)
