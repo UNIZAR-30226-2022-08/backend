@@ -5,10 +5,10 @@ import UserModel, { UserFriendList } from "../models/UserModel";
 import { containsParams } from "../util/util";
 
 const CommunityController = {
-	async getPublicProfile(req, res) {
+	async getPublicProfile(req, res, next) {
 		if (!containsParams(["username"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
-			return;
+			next();
 		}
 
 		const { username } = req.body;
@@ -22,7 +22,7 @@ const CommunityController = {
 			.then(function (user) {
 				if (user === null) {
 					res.status(400).json({ error: "Couldn't find the game" });
-					res;
+					next();
 					return;
 				}
 				const playedGames = GameModel.findAndCountAll({
@@ -66,11 +66,15 @@ const CommunityController = {
 					recentGames,
 				};
 				res.status(200).json({ response });
+				next();
 			})
-			.catch((error) => res.status(400).json({ error: error.message }));
+			.catch((error) => {
+				res.status(400).json({ error: error.message });
+				next();
+			});
 	},
 
-	async addFriend(req, res) {
+	async addFriend(req, res, next) {
 		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -92,6 +96,7 @@ const CommunityController = {
 				res.status(400).json({ error: "user is already friend" });
 			}
 			res.status(400).json({ error: "a friend request is already pending" });
+			next();
 			return;
 		}
 
@@ -108,11 +113,12 @@ const CommunityController = {
 			)
 			.then(() => res.status(200))
 			.catch((err) => res.status(400).json({ error: err.message }));
+		next();
 	},
-	async removeFriend(req, res) {
+	async removeFriend(req, res, next) {
 		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
-			return;
+			next();
 		}
 		const { friend } = req.body;
 
@@ -134,10 +140,12 @@ const CommunityController = {
 		} else {
 			res.status(200);
 		}
+		next();
 	},
-	async acceptFriendRequest(req, res) {
+	async acceptFriendRequest(req, res, next) {
 		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
+			next();
 			return;
 		}
 		const { friend } = req.body;
@@ -153,16 +161,23 @@ const CommunityController = {
 
 		if (friendship === null || friendship.accepted) {
 			res.status(400).json({ error: "no pending friend requests from user" });
+			next();
 			return;
 		}
 
 		friendship.accepted = true;
 		friendship
 			.save()
-			.then(() => res.status(200))
-			.catch((err) => res.status(400).json({ error: err.message }));
+			.then(() => {
+				res.status(200);
+				next();
+			})
+			.catch((err) => {
+				res.status(400).json({ error: err.message });
+				next();
+			});
 	},
-	async getFriendRequests(req, res) {
+	async getFriendRequests(req, res, next) {
 		var friendRequests = [];
 		UserFriendList.findAll({
 			where: {
@@ -176,19 +191,17 @@ const CommunityController = {
 					friendRequests.push(friendRequest.userUsername);
 				});
 
-				// console.log("Antes de hacer el .send")
-				// console.log(friendRequests)
-				var temp = { response: friendRequests };
-				// console.log(temp)
+				let temp = { response: friendRequests };
 				res.status(200).json(temp);
-				// console.log("Acabo de hacer el .send")
+				next();
 				return;
 			})
 			.catch((err) => {
-				// return res.status(400).json({ error: err });
+				res.status(400).json({ error: err });
+				next();
 			});
 	},
-	async getFriends(req, res) {
+	async getFriends(req, res, next) {
 		UserFriendList.findAll({
 			where: Sequelize.and(
 				{ accepted: true },
@@ -215,21 +228,20 @@ const CommunityController = {
 						friends.push(friendship.userUsername);
 					}
 				});
-				// console.log("Antes de hacer el .send")
-				// console.log(friends)
-				var temp = { response: friends };
-				// console.log(temp)
+
+				let temp = { response: friends };
 				res.status(200).json(temp);
-				// console.log("Acabo de hacer el .send")
+				next();
 				return;
 			})
 			.catch((err) => {
 				// return res.status(400).json({ error: err });
 			});
 	},
-	async sendMessage(req, res) {
+	async sendMessage(req, res, next) {
 		if (!containsParams(["to", "body"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
+			next();
 			return;
 		}
 		const { username } = req.session;
@@ -249,14 +261,16 @@ const CommunityController = {
 					if (messagge === null) {
 						throw new Error("error sending message");
 					}
-					return res.status(201);
+					res.status(201);
+					next();
 				})
 				.catch((err) => {
-					return res.status(400).json({ error: err.message });
+					res.status(400).json({ error: err.message });
+					next();
 				});
 		}
 	},
-	async getAllChats(req, res) {},
+	async getAllChats(req, res, next) {},
 };
 
 export default CommunityController;

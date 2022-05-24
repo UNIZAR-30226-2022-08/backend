@@ -4,11 +4,11 @@ import UserModel from "../models/UserModel";
 import { containsParams } from "../util/util";
 
 const AccountController = {
-	async register(req, res) {
+	async register(req, res, next) {
 		if (!containsParams(["username", "email", "password"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" });
-			return;
+			next();
 		}
 		const { username, email, password } = req.body;
 		return UserModel.create({
@@ -21,15 +21,17 @@ const AccountController = {
 					throw new Error("error creating user");
 				}
 
-				return res.status(201);
+				res.status(201);
+				next();
 			})
 			.catch((err) => {
 				console.trace();
 				console.log(error);
 				res.status(400).json({ error: err.message });
+				next();
 			});
 	},
-	async login(req, res) {
+	async login(req, res, next) {
 		if (req.session.username) {
 			return res.status(400).json({ message: "User already logged in" });
 		}
@@ -53,33 +55,37 @@ const AccountController = {
 				const { session } = req;
 				session.username = user.username;
 				session.email = user.email;
-				return res.status(200);
+				res.status(200);
+				next();
 			})
 			.catch((error) => {
 				console.trace();
 				console.log(error);
 				res.status(400).json({ error: error.message });
+				next();
 			});
 	},
-	async findAllUsers(req, res) {
+	async findAllUsers(req, res, next) {
 		return UserModel.findAll()
 			.then(async (user) => {
 				if (user === null) {
 					return res.status(400).json({ error: "User not found" });
 				}
-				return res.status(200).json(user);
+				res.status(200).json(user);
+				next();
 			})
 			.catch((error) => {
 				console.trace();
 				console.log(error);
 				res.status(400).json({ error: error.message });
+				next();
 			});
 	},
-	async changePassword(req, res) {
+	async changePassword(req, res, next) {
 		if (!containsParams(["username", "newPassword"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" });
-			return;
+			next();
 		}
 		const { newPassword } = req.body;
 		const { username } = req.session;
@@ -91,14 +97,17 @@ const AccountController = {
 		})
 			.then(function () {
 				res.status(201);
+				next();
 			})
 			.catch(function (err) {
 				res.status(400).json({ error: err.errors });
+				next();
 			});
 	},
-	async logout(req, res) {
+	async logout(req, res, next) {
 		req.session.destroy();
-		return res.status(201).json({ status: "success", message: "Logged out" });
+		res.status(201).json({ status: "success", message: "Logged out" });
+		next();
 	},
 };
 

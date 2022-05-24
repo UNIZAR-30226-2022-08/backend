@@ -11,8 +11,8 @@ import { containsParams } from "../util/util";
 const matchmakingWaitingList = [];
 
 const GameController = {
-	async startMatchMaking(req, res) {},
-	async startAsyncGame(req, res) {
+	async startMatchMaking(req, res, next) {},
+	async startAsyncGame(req, res, next) {
 		if (!containsParams(["whitePlayer", "blackPlayer"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" });
@@ -41,7 +41,7 @@ const GameController = {
 			});
 	},
 
-	async getGame(req, res) {
+	async getGame(req, res, next) {
 		if (req.query.gameId === undefined) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -68,7 +68,7 @@ const GameController = {
 			});
 	},
 
-	async getActiveGames(req, res) {
+	async getActiveGames(req, res, next) {
 		// No hace falta try/catch porque si no hay username el middleware devuelve 400 antes de llegar aqui
 		const { username } = req.session;
 		return GameModel.findAll({
@@ -85,14 +85,16 @@ const GameController = {
 				console.trace();
 				console.log(error);
 				res.status(400).json(error);
+				next();
 				return;
 			});
 	},
 
-	move(req, res) {
+	move(req, res, next) {
 		const { username } = req.session;
 		if (!containsParams(["gameId", "x1", "y1", "x2", "y2"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
+			next();
 			return;
 		}
 		const { gameId, x1, y1, x2, y2 } = req.body;
@@ -102,46 +104,51 @@ const GameController = {
 					res
 						.status(400)
 						.json({ error: "Couldn't find the game, ID is wrong" });
+					next();
+					return;
+				}
+				if (game.blackPlayer !== username && game.whitePlayer !== username) {
+					res.status(400).json({ error: "You aren't a player of that game" });
+				}
+				if (
+					(game.blackPlayer === username && game.turn) ||
+					(!game.turn && game.whitePlayer !== username)
+				) {
+					res.status(400).json({ error: "It's not your turn" });
+				}
+				// Es el turno del usuario, ahora comprobamos que el movimiento sea valido
+				const gameObj = new Game(game.dataValues);
+				console.log("Successfully created game object");
+				const successful = gameObj.moveFromTo(
+					game.turn,
+					Number(x1),
+					Number(y1),
+					Number(x2),
+					Number(y2)
+				);
+				if (successful) {
+					game.boardState = gameObj.boardToJSONString();
+					game.turn = !game.turn;
+					game.save(); // Sequelize call to update the saved model in the db
+					res.status(200).json(JSON.parse(game.boardState));
+					next();
 				} else {
-					if (game.blackPlayer !== username && game.whitePlayer !== username) {
-						res.status(400).json({ error: "You aren't a player of that game" });
-					}
-					if (
-						(game.blackPlayer === username && game.turn) ||
-						(!game.turn && game.whitePlayer !== username)
-					) {
-						res.status(400).json({ error: "It's not your turn" });
-					}
-					// Es el turno del usuario, ahora comprobamos que el movimiento sea valido
-					const gameObj = new Game(game.dataValues);
-					console.log("Successfully created game object");
-					const successful = gameObj.moveFromTo(
-						game.turn,
-						Number(x1),
-						Number(y1),
-						Number(x2),
-						Number(y2)
-					);
-					if (successful) {
-						game.boardState = gameObj.boardToJSONString();
-						game.turn = !game.turn;
-						game.save(); // Sequelize call to update the saved model in the db
-						res.status(200).json(JSON.parse(game.boardState));
-					} else {
-						res.status(400).json({ error: "You cannot make this move" });
-					}
+					res.status(400).json({ error: "You cannot make this move" });
+					next();
 				}
 			})
 			.catch(function (error) {
 				console.trace();
 				console.log(error);
 				res.status(400).json(error);
+				next();
 			});
 	},
 
-	promotePawn(req, res) {
+	promotePawn(req, res, next) {
 		if (!containsParams(["x", "y", "wantedPiece"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
+			next();
 			return;
 		}
 		const { x, y, wantedPiece, gameId } = req.body;
@@ -153,12 +160,14 @@ const GameController = {
 					player = WhitePlayer;
 					if (y !== 7) {
 						res.status(400).json({ error: "You can't promote that piece" });
+						next();
 						return;
 					}
 				} else {
 					player = BlackPlayer;
 					if (y !== 0) {
 						res.status(400).json({ error: "You can't promote that piece" });
+						next();
 						return;
 					}
 				}
@@ -169,10 +178,11 @@ const GameController = {
 				console.trace();
 				console.log(error);
 				res.status(400).json(error);
+				next();
 			});
 	},
 
-	castle(req, res) {
+	castle(req, res, next) {
 		if (!containsParams(["gameId", "side"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -188,6 +198,8 @@ const GameController = {
 				(!game.whiteTurn && game.whitePlayer !== username)
 			) {
 				res.status(400).json({ error: "It's not your turn" });
+				next();
+				return;
 			}
 
 			let y;
@@ -220,7 +232,7 @@ const GameController = {
 		});
 	},
 
-	getMoves(req, res) {},
+	getMoves(req, res, next) {},
 };
 
 export default GameController;
