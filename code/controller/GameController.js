@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 import Sequelize from "sequelize";
@@ -31,9 +32,11 @@ const GameController = {
 			.then(function (game) {
 				game.boardState = JSON.parse(game.boardState)
 				res.status(200).json({ response: game }).send();
+				return
 			})
 			.catch(function (error) {
-				res.status(400).json({ error }).send();
+				res.status(400).json( error ).send();
+				return
 			})
 	},
 
@@ -54,10 +57,12 @@ const GameController = {
 					return;
 				}
 				game.boardState = JSON.parse(game.boardState)
-				res.status(200).json({ response: game });
+				res.status(200).json({ response: game }).send();
+				return
 			})
 			.catch(function (error) {
-				res.status(400).json({ error }).send();
+				res.status(400).json( error ).send();
+				return
 			});
 	},
 
@@ -71,9 +76,11 @@ const GameController = {
 			),
 		}).then(function (games) {
 			res.status(200).json({ response: games }).send();
+			return
 		})
 		.catch(function (error) {
-			res.status(400).json({ error }).send();
+			res.status(400).json( error ).send();
+			return
 		});
 	},
 
@@ -126,7 +133,7 @@ const GameController = {
 				}
 			})
 			.catch(function (error) {
-				res.status(400).json({ error }).send();
+				res.status(400).json( error ).send();
 			});
 	},
 
@@ -155,7 +162,7 @@ const GameController = {
 			curGame.deletePiece(player, x, y)
 			curGame.addPiece(player, wantedPiece, x, y)
 		}).catch(function (error) {
-			res.status(400).json({ error }).send();
+			res.status(400).json( error ).send();
 		});
 	},
 
