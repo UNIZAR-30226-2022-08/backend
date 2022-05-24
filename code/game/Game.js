@@ -68,6 +68,7 @@ class Game {
 	 */
 	constructor(whitePlayerOrGame, blackPlayer) {
 		if (blackPlayer) {
+			console.log("Llamando constructor de partido nuevo")
 			this.turn = WhitePlayer;
 			this.whitePlayer = whitePlayerOrGame;
 			this.blackPlayer = blackPlayer;
@@ -77,8 +78,9 @@ class Game {
 			this.turn = whitePlayerOrGame.turn;
 			this.whitePlayer = whitePlayerOrGame.whitePlayer;
 			this.blackPlayer = whitePlayerOrGame.blackPlayer;
-	
-			this.board = JSON.parse(whitePlayerOrGame.board);
+			console.log("COonstruyendo board")
+			this.board = this.JSONStringtoBoard(whitePlayerOrGame.boardState);
+			console.log(this.board)
 		}
 	}
 
@@ -152,7 +154,8 @@ class Game {
 			case "bishop":
 				arr.push(new Pawn(player, this, x, y))
 				break;
-				//Todo finire qua
+			default:
+				break;
 		}
 	}
 
@@ -254,18 +257,35 @@ class Game {
 			)
 			.some((res) => res);
 	}
+
 	boardToJSONString () {
-		var toRet = "{whitePieces:["
+		let toRet = "{whitePieces:["
 		this.board.whitePieces.forEach(el => {
-			toRet += "{type:" + el.constructor.name + ",x:" + el.pos.x + ",y:" + el.pos.y + "},"
+			toRet += `{type:${  el.constructor.name  },x:${  el.pos.x  },y:${  el.pos.y  }},`
 		});
 		toRet+="], blackPieces:["
 		this.board.blackPieces.forEach(el => {
-			toRet += "{type:" + el.constructor.name + ",x:" + el.pos.x + ",y:" + el.pos.y + "},"
+			toRet += `{type:${  el.constructor.name  },x:${  el.pos.x  },y:${  el.pos.y  }},`
 		})
 		toRet+="]}";
-		console.log("Stringified board: " + toRet)
+		console.log(`Stringified board: ${  toRet}`)
 		return toRet;
+	}
+
+	/**
+	 * Devuelve el array construido con los objetos de las piezas
+	 * @param {string} str La stringa que se guarda en la base de datos
+	 * @returns Un array con dos campos whitePieces y blackPieces, de Objetos que extenden Piece 
+	 */
+	static JSONStringtoBoard (str) {
+		console.log(str)
+		const tempBoard = JSON.parse(str)
+		console.log("Despues del parse")
+		const builtBoard = { }
+		console.log("Parsed board: ")
+		console.log(tempBoard)
+		
+		return builtBoard
 	}
 }
 

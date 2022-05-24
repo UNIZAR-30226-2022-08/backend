@@ -1,19 +1,24 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable consistent-return */
 import Sequelize from "sequelize";
-import Game, { WhitePlayer } from "../game/Game";
+import Game, { BlackPlayer, WhitePlayer } from "../game/Game";
+import King from "../game/piezas/King";
+import Rook from "../game/piezas/Rook";
 import GameModel from "../models/GameModel";
 import { containsParams } from "../util/util";
 
 const matchmakingWaitingList = [];
 
 const GameController = {
-	async startMatchMaking(req, res) {},
+	async startMatchMaking(req, res) {
+	},
 	async startAsyncGame(req, res) {
 		if (!containsParams(["whitePlayer, blackPlayer"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return
 		}
-		let newGame = new Game(req.body.whitePlayer, req.body.blackPlayer);
+		const newGame = new Game(req.body.whitePlayer, req.body.blackPlayer);
 		return GameModel.create({
 			boardState: newGame.boardToJSONString(),
 			whitePlayer: newGame.whitePlayer,
@@ -36,7 +41,7 @@ const GameController = {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
-		let { gameId } = req.body;
+		const { gameId } = req.body;
 
 		GameModel.findByPk(gameId)
 			.then(function (game) {
@@ -76,7 +81,7 @@ const GameController = {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
-		let { gameId, x1, y1, x2, y2 } = req.body;
+		const { gameId, x1, y1, x2, y2 } = req.body;
 		return GameModel.findByPk(gameId)
 			.then(function (game) {
 				if (!game) {
@@ -100,18 +105,18 @@ const GameController = {
 						.send();
 					}
 					console.log("First checks passed")
-					//Es el turno del usuario, ahora comprobamos que el movimiento sea valido
-					let gameObj = new Game(game);
+					// Es el turno del usuario, ahora comprobamos que el movimiento sea valido
+					const gameObj = new Game(game.dataValues);
 					console.log("Successfully created game object")
-					let successful = gameObj.moveFromTo(game.whiteTurn, x1, y1, x2, y2);
+					const successful = gameObj.moveFromTo(game.whiteTurn, x1, y1, x2, y2);
 					if (successful) {
 						game.board = JSON.stringify(gameObj.board)
 						game.whiteTurn = !game.whiteTurn
-						game.update() //Sequelize call to update the saved model in the db
+						game.update() // Sequelize call to update the saved model in the db
 						res.status(200)
 						.json(game.board)
 						.send()
-						return;
+						
 					} else {
 						res.status(400)
 						.json({ error: "You cannot make this move" })
@@ -129,25 +134,25 @@ const GameController = {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
-		let x, y, {wantedPiece} = req.body
+		const {x, y, wantedPiece, gameId} = req.body
 		let player
 		return GameModel.findByPk(gameId).then(function (game) {
 			const curGame = new Game(game);
-			if ( curGame.whitePlayer == req.session.username) {
+			if ( curGame.whitePlayer === req.session.username) {
 				player = WhitePlayer
-				if (y!=7) {
+				if (y!==7) {
 					res.status(400).json({ error: "You can't promote that piece" }).send();
 					return;
 				}
 			} else {
 				player = BlackPlayer
-				if (y!=0) {
+				if (y!==0) {
 					res.status(400).json({ error: "You can't promote that piece" }).send();
 					return;
 				}
 			}
 			curGame.deletePiece(player, x, y)
-			curGame.addPiece(player, x, y)
+			curGame.addPiece(player, wantedPiece, x, y)
 		}).catch(function (error) {
 			res.status(400).json({ error }).send();
 		});
@@ -186,7 +191,7 @@ const GameController = {
 					!curGame.getPiece(curGame.whiteTurn, 2, y) &&
 					!curGame.getPiece(curGame.whiteTurn, 3, y)
 				) {
-					//enrocar
+					// enrocar
 				}
 			} else if (side === "right") {
 				if (
@@ -195,7 +200,7 @@ const GameController = {
 					!curGame.getPiece(curGame.whiteTurn, 5, y) &&
 					!curGame.getPiece(curGame.whiteTurn, 6, y)
 				) {
-					//enrocar
+					// enrocar
 				}
 			}
 		});

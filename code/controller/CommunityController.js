@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-return */
 import Sequelize from "sequelize";
 import GameModel from "../models/GameModel";
 import UserModel, { UserFriendList } from "../models/UserModel";
