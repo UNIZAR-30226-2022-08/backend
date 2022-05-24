@@ -13,6 +13,7 @@ function validSession(req, res, next) {
  */
 function containsParams (pars, req) {
 	let foundAll = true;
+	console.log("Pars is ", pars)
 	pars.forEach(par => {
 		if (!(par in req.body)){
 			console.log(par)

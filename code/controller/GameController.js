@@ -29,6 +29,7 @@ const GameController = {
 			isAsync: true
 		})
 			.then(function (game) {
+				game.boardState = JSON.parse(game.boardState)
 				res.status(200).json({ response: game }).send();
 			})
 			.catch(function (error) {
@@ -52,6 +53,7 @@ const GameController = {
 					res.send();
 					return;
 				}
+				game.boardState = JSON.parse(game.boardState)
 				res.status(200).json({ response: game });
 			})
 			.catch(function (error) {

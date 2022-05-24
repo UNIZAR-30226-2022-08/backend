@@ -80,6 +80,7 @@ class Game {
 			this.turn = whitePlayerOrGame.turn;
 			this.whitePlayer = whitePlayerOrGame.whitePlayer;
 			this.blackPlayer = whitePlayerOrGame.blackPlayer;
+			console.log("Instanciando partida de DB")
 			const tempBoard = this.JSONStringToBoard(whitePlayerOrGame.boardState)
 			
 			console.log("Despues del parse: ", tempBoard)
@@ -272,6 +273,7 @@ class Game {
 	}
 
 	JSONStringToBoard (str) {
+		console.log("antes de parsed")
 		const parsed = JSON.parse(str)
 		const toRet = { whitePieces : [], blackPieces : [] }
 		parsed.whitePieces.forEach(el => {

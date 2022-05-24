@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import bcrypt from "bcrypt";
 import UserModel from "../models/UserModel";
 import { containsParams } from "../util/util";
@@ -28,7 +29,7 @@ const AccountController = {
 		if (req.session.username) {
 			return res.status(400).json({ message: "User already logged in" });
 		}
-		if (!containsParams(["email, password"], req)) {
+		if (!containsParams(["email", "password"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
