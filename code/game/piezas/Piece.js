@@ -16,7 +16,7 @@ class Piece {
 		this.pos = { x: xPos, y: yPos };
 		this.player = player;
 		this.game = game;
-		this.type = type
+		this.type = type;
 	}
 
 	/**

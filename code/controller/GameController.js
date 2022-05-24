@@ -34,6 +34,7 @@ const GameController = {
 				return;
 			})
 			.catch(function (error) {
+				console.trace();
 				console.log(error);
 				res.status(400).json(error).send();
 				return;
@@ -41,11 +42,11 @@ const GameController = {
 	},
 
 	async getGame(req, res) {
-		if (!containsParams(["gameId"], req)) {
+		if (req.query.gameId === undefined) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
-		const { gameId } = req.body;
+		const { gameId } = req.query;
 
 		GameModel.findByPk(gameId)
 			.then(function (game) {
@@ -61,6 +62,7 @@ const GameController = {
 				return;
 			})
 			.catch(function (error) {
+				console.trace();
 				console.log(error);
 				res.status(400).json(error).send();
 				return;
@@ -81,6 +83,7 @@ const GameController = {
 				return;
 			})
 			.catch(function (error) {
+				console.trace();
 				console.log(error);
 				res.status(400).json(error).send();
 				return;
@@ -109,26 +112,33 @@ const GameController = {
 							.send();
 					}
 					if (
-						(game.blackPlayer === username && game.whiteTurn) ||
-						(!game.whiteTurn && game.whitePlayer !== username)
+						(game.blackPlayer === username && game.turn) ||
+						(!game.turn && game.whitePlayer !== username)
 					) {
 						res.status(400).json({ error: "It's not your turn" }).send();
 					}
 					// Es el turno del usuario, ahora comprobamos que el movimiento sea valido
 					const gameObj = new Game(game.dataValues);
 					console.log("Successfully created game object");
-					const successful = gameObj.moveFromTo(game.whiteTurn, x1, y1, x2, y2);
+					const successful = gameObj.moveFromTo(
+						game.turn,
+						Number(x1),
+						Number(y1),
+						Number(x2),
+						Number(y2)
+					);
 					if (successful) {
-						game.board = gameObj.boardToJSONString();
-						game.whiteTurn = !game.whiteTurn;
-						game.update(); // Sequelize call to update the saved model in the db
-						res.status(200).json(game.board).send();
+						game.boardState = gameObj.boardToJSONString();
+						game.turn = !game.turn;
+						game.save(); // Sequelize call to update the saved model in the db
+						res.status(200).json(game.boardState).send();
 					} else {
 						res.status(400).json({ error: "You cannot make this move" }).send();
 					}
 				}
 			})
 			.catch(function (error) {
+				console.trace();
 				console.log(error);
 				res.status(400).json(error).send();
 			});
@@ -167,6 +177,7 @@ const GameController = {
 				curGame.addPiece(player, wantedPiece, x, y);
 			})
 			.catch(function (error) {
+				console.trace();
 				console.log(error);
 				res.status(400).json(error).send();
 			});

@@ -70,13 +70,13 @@ class Game {
 	constructor(whitePlayerOrGame, blackPlayer) {
 		if (blackPlayer) {
 			console.log("Llamando constructor de partido nuevo");
-			this.turn = WhitePlayer;
+			this.whiteTurn = WhitePlayer;
 			this.whitePlayer = whitePlayerOrGame;
 			this.blackPlayer = blackPlayer;
 
 			this.board = getInitialBoard(this);
 		} else {
-			this.turn = whitePlayerOrGame.turn;
+			this.whiteTurn = whitePlayerOrGame.turn;
 			this.whitePlayer = whitePlayerOrGame.whitePlayer;
 			this.blackPlayer = whitePlayerOrGame.blackPlayer;
 			this.board = this.JSONStringToBoard(whitePlayerOrGame.boardState);
@@ -94,7 +94,7 @@ class Game {
 	 */
 	moveFromTo(player, x1, y1, x2, y2) {
 		const piece = this.getPiece(player, x1, y1);
-		if (piece && piece.move(x2, y2)) {
+		if (piece !== undefined && piece.move(x2, y2)) {
 			const taken = this.deletePiece(!player, piece.pos.x, piece.pos.y);
 			if (taken) {
 				// notificar pieza tomada
@@ -117,9 +117,10 @@ class Game {
 		if (player === WhitePlayer) {
 			pieces = this.board.whitePieces;
 		}
-
 		return pieces.find((elem) => {
-			if (elem.pos.x === x && elem.pos.y === y) return true;
+			if (elem.pos.x === x && elem.pos.y === y) {
+				return true;
+			}
 			return false;
 		});
 	}
@@ -133,23 +134,23 @@ class Game {
 	 */
 	addPiece(player, type, x, y) {
 		let arr;
-		if (player === WhitePlayer) arr = this.whitePieces;
-		else arr = this.blackPieces;
+		if (player === WhitePlayer) arr = this.board.whitePieces;
+		else arr = this.board.blackPieces;
 		switch (type.toLowerCase()) {
 			case "pawn":
-				arr.push(new Pawn(player, this, x, y));
+				arr.push(new Pawn(player, this, Number(x), Number(y)));
 				break;
 			case "knight":
-				arr.push(new Pawn(player, this, x, y));
+				arr.push(new Pawn(player, this, Number(x), Number(y)));
 				break;
 			case "queen":
-				arr.push(new Pawn(player, this, x, y));
+				arr.push(new Pawn(player, this, Number(x), Number(y)));
 				break;
 			case "rook":
-				arr.push(new Pawn(player, this, x, y));
+				arr.push(new Pawn(player, this, Number(x), Number(y)));
 				break;
 			case "bishop":
-				arr.push(new Pawn(player, this, x, y));
+				arr.push(new Pawn(player, this, Number(x), Number(y)));
 				break;
 			default:
 				break;
@@ -175,9 +176,9 @@ class Game {
 		}
 
 		if (player === WhitePlayer) {
-			this.whitePieces = this.whitePieces.filter(comparePiece);
+			this.board.whitePieces = this.board.whitePieces.filter(comparePiece);
 		} else {
-			this.blackPieces = this.blackPieces.filter(comparePiece);
+			this.board.blackPieces = this.board.blackPieces.filter(comparePiece);
 		}
 		return piece;
 	}
@@ -187,13 +188,15 @@ class Game {
 	 */
 	getAllPieces(player) {
 		if (player === WhitePlayer) {
-			return this.whitePieces;
+			return this.board.whitePieces;
 		}
-		return this.blackPieces;
+		return this.board.blackPieces;
 	}
 
 	checkMate() {
-		const king = this.whitePieces.find((elem) => elem instanceof King);
+		const king = this.getAllPieces(this.whiteTurn).find(
+			(elem) => elem instanceof King
+		);
 		if (!king) {
 			return false;
 		}
@@ -224,7 +227,9 @@ class Game {
 	}
 
 	check() {
-		const king = this.whitePieces.find((piece) => piece instanceof King);
+		const king = this.getAllPieces(this.whiteTurn).find(
+			(piece) => piece instanceof King
+		);
 		if (!king) {
 			return false;
 		}
@@ -278,32 +283,32 @@ class Game {
 			switch (el.type) {
 				case "pawn":
 					toRet.whitePieces.push(
-						new Pawn(WhitePlayer, this, el.pos.x, el.pos.y)
+						new Pawn(WhitePlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "rook":
 					toRet.whitePieces.push(
-						new Rook(WhitePlayer, this, el.pos.x, el.pos.y)
+						new Rook(WhitePlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "king":
 					toRet.whitePieces.push(
-						new King(WhitePlayer, this, el.pos.x, el.pos.y)
+						new King(WhitePlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "queen":
 					toRet.whitePieces.push(
-						new Queen(WhitePlayer, this, el.pos.x, el.pos.y)
+						new Queen(WhitePlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "bishop":
 					toRet.whitePieces.push(
-						new Bishop(WhitePlayer, this, el.pos.x, el.pos.y)
+						new Bishop(WhitePlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "knight":
 					toRet.whitePieces.push(
-						new Knight(WhitePlayer, this, el.pos.x, el.pos.y)
+						new Knight(WhitePlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 			}
@@ -313,32 +318,32 @@ class Game {
 			switch (el.type) {
 				case "pawn":
 					toRet.blackPieces.push(
-						new Pawn(BlackPlayer, this, el.pos.x, el.pos.y)
+						new Pawn(BlackPlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "rook":
 					toRet.blackPieces.push(
-						new Rook(BlackPlayer, this, el.pos.x, el.pos.y)
+						new Rook(BlackPlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "king":
 					toRet.blackPieces.push(
-						new King(BlackPlayer, this, el.pos.x, el.pos.y)
+						new King(BlackPlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "queen":
 					toRet.blackPieces.push(
-						new Queen(BlackPlayer, this, el.pos.x, el.pos.y)
+						new Queen(BlackPlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "bishop":
 					toRet.blackPieces.push(
-						new Bishop(BlackPlayer, this, el.pos.x, el.pos.y)
+						new Bishop(BlackPlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 				case "knight":
 					toRet.blackPieces.push(
-						new Knight(BlackPlayer, this, el.pos.x, el.pos.y)
+						new Knight(BlackPlayer, this, Number(el.pos.x), Number(el.pos.y))
 					);
 					break;
 			}
