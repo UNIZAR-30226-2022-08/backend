@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import structuredClone from '@ungap/structured-clone'
+import structuredClone from "@ungap/structured-clone";
 import Bishop from "./piezas/Bishop";
 import King from "./piezas/King";
 import Knight from "./piezas/Knight";
@@ -14,76 +14,75 @@ function getInitialBoard(gameInst) {
 	return {
 		whitePieces: [
 			// Pawns
-			new Pawn(WhitePlayer, gameInst, 0, 1 ),
-			new Pawn(WhitePlayer, gameInst, 1, 1 ),
-			new Pawn(WhitePlayer, gameInst, 2, 1 ),
-			new Pawn(WhitePlayer, gameInst, 3, 1 ),
-			new Pawn(WhitePlayer, gameInst, 4, 1 ),
-			new Pawn(WhitePlayer, gameInst, 5, 1 ),
-			new Pawn(WhitePlayer, gameInst, 6, 1 ),
-			new Pawn(WhitePlayer, gameInst, 7, 1 ),
+			new Pawn(WhitePlayer, gameInst, 0, 1),
+			new Pawn(WhitePlayer, gameInst, 1, 1),
+			new Pawn(WhitePlayer, gameInst, 2, 1),
+			new Pawn(WhitePlayer, gameInst, 3, 1),
+			new Pawn(WhitePlayer, gameInst, 4, 1),
+			new Pawn(WhitePlayer, gameInst, 5, 1),
+			new Pawn(WhitePlayer, gameInst, 6, 1),
+			new Pawn(WhitePlayer, gameInst, 7, 1),
 			// Queen and king
-			new King(WhitePlayer, gameInst, 3, 0 ),
-			new Queen(WhitePlayer, gameInst, 4, 0 ),
+			new King(WhitePlayer, gameInst, 3, 0),
+			new Queen(WhitePlayer, gameInst, 4, 0),
 			// Bishops
-			new Bishop(WhitePlayer, gameInst, 2, 0 ),
-			new Bishop(WhitePlayer, gameInst, 5, 0 ),
+			new Bishop(WhitePlayer, gameInst, 2, 0),
+			new Bishop(WhitePlayer, gameInst, 5, 0),
 			// Knights
-			new Knight(WhitePlayer, gameInst, 1, 0 ),
-			new Knight(WhitePlayer, gameInst, 6, 0 ),
+			new Knight(WhitePlayer, gameInst, 1, 0),
+			new Knight(WhitePlayer, gameInst, 6, 0),
 			// Rooks
-			new Rook(WhitePlayer, gameInst, 0, 0 ),
-			new Rook(WhitePlayer, gameInst, 7, 0 ),
+			new Rook(WhitePlayer, gameInst, 0, 0),
+			new Rook(WhitePlayer, gameInst, 7, 0),
 		],
 		blackPieces: [
 			// Pawns
-			new Pawn(BlackPlayer, gameInst, 0, 6 ),
-			new Pawn(BlackPlayer, gameInst, 1, 6 ),
-			new Pawn(BlackPlayer, gameInst, 2, 6 ),
-			new Pawn(BlackPlayer, gameInst, 3, 6 ),
-			new Pawn(BlackPlayer, gameInst, 4, 6 ),
-			new Pawn(BlackPlayer, gameInst, 5, 6 ),
-			new Pawn(BlackPlayer, gameInst, 6, 6 ),
-			new Pawn(BlackPlayer, gameInst, 7, 6 ),
+			new Pawn(BlackPlayer, gameInst, 0, 6),
+			new Pawn(BlackPlayer, gameInst, 1, 6),
+			new Pawn(BlackPlayer, gameInst, 2, 6),
+			new Pawn(BlackPlayer, gameInst, 3, 6),
+			new Pawn(BlackPlayer, gameInst, 4, 6),
+			new Pawn(BlackPlayer, gameInst, 5, 6),
+			new Pawn(BlackPlayer, gameInst, 6, 6),
+			new Pawn(BlackPlayer, gameInst, 7, 6),
 			// Queen and king
-			new King(BlackPlayer, gameInst, 4, 6 ),
-			new Queen(BlackPlayer, gameInst, 3, 6 ),
+			new King(BlackPlayer, gameInst, 4, 6),
+			new Queen(BlackPlayer, gameInst, 3, 6),
 			// Bishops
-			new Bishop(BlackPlayer, gameInst, 2, 6 ),
-			new Bishop(BlackPlayer, gameInst, 5, 6 ),
+			new Bishop(BlackPlayer, gameInst, 2, 6),
+			new Bishop(BlackPlayer, gameInst, 5, 6),
 			// Knights
-			new Knight(BlackPlayer, gameInst, 1, 6 ),
-			new Knight(BlackPlayer, gameInst, 6, 6 ),
+			new Knight(BlackPlayer, gameInst, 1, 6),
+			new Knight(BlackPlayer, gameInst, 6, 6),
 			// Rooks
-			new Rook(BlackPlayer, gameInst, 0, 6 ),
-			new Rook(BlackPlayer, gameInst, 7, 6 ),
+			new Rook(BlackPlayer, gameInst, 0, 6),
+			new Rook(BlackPlayer, gameInst, 7, 6),
 		],
 	};
 }
 
 class Game {
-
 	/**
-	 * 
-	 * @param {*} whitePlayerOrGame 
-	 * @param {*} blackPlayer 
+	 *
+	 * @param {*} whitePlayerOrGame
+	 * @param {*} blackPlayer
 	 */
 	constructor(whitePlayerOrGame, blackPlayer) {
 		if (blackPlayer) {
-			console.log("Llamando constructor de partido nuevo")
+			console.log("Llamando constructor de partido nuevo");
 			this.turn = WhitePlayer;
 			this.whitePlayer = whitePlayerOrGame;
 			this.blackPlayer = blackPlayer;
-	
+
 			this.board = getInitialBoard(this);
 		} else {
 			this.turn = whitePlayerOrGame.turn;
 			this.whitePlayer = whitePlayerOrGame.whitePlayer;
 			this.blackPlayer = whitePlayerOrGame.blackPlayer;
-			console.log("Instanciando partida de DB")
-			const tempBoard = this.JSONStringToBoard(whitePlayerOrGame.boardState)
-			
-			console.log("Despues del parse: ", tempBoard)
+			console.log("Instanciando partida de DB");
+			const tempBoard = this.JSONStringToBoard(whitePlayerOrGame.boardState);
+
+			console.log("Despues del parse: ", tempBoard);
 		}
 	}
 
@@ -129,39 +128,36 @@ class Game {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {boolean} player player for which to delete the piece
 	 * @param {string} type type of piece to add
 	 * @param {number} x x position of the piece
 	 * @param {number} y x position of the piece
 	 */
 	addPiece(player, type, x, y) {
-		let arr
-		if (player === WhitePlayer)
-			arr = this.whitePieces
-		else
-			arr = this.blackPieces
-		switch(type.toLowerCase()) {
+		let arr;
+		if (player === WhitePlayer) arr = this.whitePieces;
+		else arr = this.blackPieces;
+		switch (type.toLowerCase()) {
 			case "pawn":
-				arr.push(new Pawn(player, this, x, y))
+				arr.push(new Pawn(player, this, x, y));
 				break;
 			case "knight":
-				arr.push(new Pawn(player, this, x, y))
+				arr.push(new Pawn(player, this, x, y));
 				break;
 			case "queen":
-				arr.push(new Pawn(player, this, x, y))
+				arr.push(new Pawn(player, this, x, y));
 				break;
 			case "rook":
-				arr.push(new Pawn(player, this, x, y))
+				arr.push(new Pawn(player, this, x, y));
 				break;
 			case "bishop":
-				arr.push(new Pawn(player, this, x, y))
+				arr.push(new Pawn(player, this, x, y));
 				break;
 			default:
 				break;
 		}
 	}
-
 
 	/**
 	 *
@@ -261,78 +257,97 @@ class Game {
 			.some((res) => res);
 	}
 
-	boardToJSONString () {
-		const clone = structuredClone(this.board)
-		clone.whitePieces.forEach(el => {
-			delete el.game
+	boardToJSONString() {
+		const clone = structuredClone(this.board);
+		clone.whitePieces.forEach((el) => {
+			delete el.game;
 		});
-		clone.blackPieces.forEach(el => {
-			delete el.game
+		clone.blackPieces.forEach((el) => {
+			delete el.game;
 		});
-		return JSON.stringify(clone)
+		return JSON.stringify(clone);
 	}
 
-	JSONStringToBoard (str) {
-		console.log("antes de parsed")
-		let parsed
+	JSONStringToBoard(str) {
+		let parsed;
 		try {
-			parsed = JSON.parse(str)
+			parsed = JSON.parse(str);
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
-		console.log("despues de parsed")
-		console.log("Primero parsed: ", parsed)
-		const toRet = { whitePieces : [], blackPieces : [] }
-		parsed.whitePieces.forEach(el => {
+		const toRet = { whitePieces: [], blackPieces: [] };
+		parsed.whitePieces.forEach((el) => {
 			// eslint-disable-next-line default-case
-			switch ( el.type ) {
-				case "pawn" : 
-					toRet.whitePieces.push(new Pawn(WhitePlayer, this, el.x.pos, el.y.pos))
+			switch (el.type) {
+				case "pawn":
+					toRet.whitePieces.push(
+						new Pawn(WhitePlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "rook" : 
-					toRet.whitePieces.push(new Rook(WhitePlayer, this, el.x.pos, el.y.pos))
+				case "rook":
+					toRet.whitePieces.push(
+						new Rook(WhitePlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "king" : 
-					toRet.whitePieces.push(new King(WhitePlayer, this, el.x.pos, el.y.pos))
+				case "king":
+					toRet.whitePieces.push(
+						new King(WhitePlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "queen" : 
-					toRet.whitePieces.push(new Queen(WhitePlayer, this, el.x.pos, el.y.pos))
+				case "queen":
+					toRet.whitePieces.push(
+						new Queen(WhitePlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "bishop" : 
-					toRet.whitePieces.push(new Bishop(WhitePlayer, this, el.x.pos, el.y.pos))
+				case "bishop":
+					toRet.whitePieces.push(
+						new Bishop(WhitePlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "knight" : 
-					toRet.whitePieces.push(new Knight(WhitePlayer, this, el.pos.x, el.y.pos))
+				case "knight":
+					toRet.whitePieces.push(
+						new Knight(WhitePlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
 			}
 		});
-		parsed.blackPieces.forEach(el => {
+		parsed.blackPieces.forEach((el) => {
 			// eslint-disable-next-line default-case
-			switch ( el.type ) {
-				case "pawn" : 
-					toRet.blackPieces.push(new Pawn(BlackPlayer, this, el.x.pos, el.y.pos))
+			switch (el.type) {
+				case "pawn":
+					toRet.blackPieces.push(
+						new Pawn(BlackPlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "rook" : 
-					toRet.blackPieces.push(new Rook(BlackPlayer, this, el.x.pos, el.y.pos))
+				case "rook":
+					toRet.blackPieces.push(
+						new Rook(BlackPlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "king" : 
-					toRet.blackPieces.push(new King(BlackPlayer, this, el.x.pos, el.y.pos))
+				case "king":
+					toRet.blackPieces.push(
+						new King(BlackPlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "queen" : 
-					toRet.blackPieces.push(new Queen(BlackPlayer, this, el.x.pos, el.y.pos))
+				case "queen":
+					toRet.blackPieces.push(
+						new Queen(BlackPlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "bishop" : 
-					toRet.blackPieces.push(new Bishop(BlackPlayer, this, el.x.pos, el.y.pos))
+				case "bishop":
+					toRet.blackPieces.push(
+						new Bishop(BlackPlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
-				case "knight" : 
-					toRet.blackPieces.push(new Knight(BlackPlayer, this, el.x.pos, el.y.pos))
+				case "knight":
+					toRet.blackPieces.push(
+						new Knight(BlackPlayer, this, el.pos.x, el.pos.y)
+					);
 					break;
 			}
 		});
-		console.log(toRet)
-		return toRet
+		return toRet;
 	}
-
 }
 
 export { getInitialBoard, WhitePlayer, BlackPlayer };
