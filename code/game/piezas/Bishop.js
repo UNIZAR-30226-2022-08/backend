@@ -1,9 +1,9 @@
-//alfil
-import Piece, { BlackPlayer } from "./Piece";
+// alfil
+import Piece from "./Piece";
 
 class Bishop extends Piece {
 	constructor(player, game, xPos = 1, yPos = 1) {
-		super(player, game, xPos, yPos);
+		super(player, game, xPos, yPos, "bishop");
 	}
 
 	#walk(x, y, xMov, yMov) {

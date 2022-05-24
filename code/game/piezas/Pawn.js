@@ -2,7 +2,7 @@ import Piece, { BlackPlayer, WhitePlayer } from "./Piece";
 
 class Pawn extends Piece {
 	constructor(player, game, xPos = 1, yPos = 1) {
-		super(player, game, xPos, yPos);
+		super(player, game, xPos, yPos, "pawn");
 	}
 
 	getAllowedMoves() {

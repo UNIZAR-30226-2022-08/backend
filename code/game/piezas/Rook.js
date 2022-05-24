@@ -3,7 +3,7 @@ import Piece, { BlackPlayer } from "./Piece";
 
 class Rook extends Piece {
 	constructor(player, game, xPos = 1, yPos = 1) {
-		super(player, game, xPos, yPos);
+		super(player, game, xPos, yPos, "rook");
 	}
 
 	#walk(x, y, xMov, yMov) {

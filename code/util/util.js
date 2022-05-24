@@ -15,7 +15,9 @@ function containsParams (pars, req) {
 	let foundAll = true;
 	pars.forEach(par => {
 		if (!(par in req.body)){
-			foundAll = false;
+			console.log(par)
+			console.log(" no encontrado")
+			foundAll = true;
 		}
 	});
 	return foundAll

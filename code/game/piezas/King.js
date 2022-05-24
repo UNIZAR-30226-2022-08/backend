@@ -2,7 +2,7 @@ import Piece from "./Piece";
 
 class King extends Piece {
 	constructor(player, game, xPos = 3, yPos = 3) {
-		super(player, game, xPos, yPos);
+		super(player, game, xPos, yPos, "king");
 	}
 
 	getAllowedMoves() {

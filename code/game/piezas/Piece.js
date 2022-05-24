@@ -12,10 +12,11 @@ class Piece {
 	 * @param {number} xPos x position of the piece
 	 * @param {number} yPos y position of the piece
 	 */
-	constructor(player, game, xPos, yPos) {
+	constructor(player, game, xPos, yPos, type) {
 		this.pos = { x: xPos, y: yPos };
 		this.player = player;
 		this.game = game;
+		this.type = type
 	}
 
 	/**

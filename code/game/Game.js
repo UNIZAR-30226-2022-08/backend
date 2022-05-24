@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+import structuredClone from '@ungap/structured-clone'
 import Bishop from "./piezas/Bishop";
 import King from "./piezas/King";
 import Knight from "./piezas/Knight";
@@ -79,8 +81,18 @@ class Game {
 			this.whitePlayer = whitePlayerOrGame.whitePlayer;
 			this.blackPlayer = whitePlayerOrGame.blackPlayer;
 			console.log("COonstruyendo board")
-			this.board = this.JSONStringtoBoard(whitePlayerOrGame.boardState);
-			console.log(this.board)
+			console.log("le paso ", whitePlayerOrGame.boardState)
+			let tempBoard
+			try {
+				tempBoard = JSON.parse(whitePlayerOrGame.boardState)
+			} catch (e) {
+				console.log(e)
+			}
+			
+			console.log("Despues del parse: ", tempBoard)
+			// const builtBoard = { }
+			console.log("Parsed board: ")
+			// console.log(tempBoard)
 		}
 	}
 
@@ -258,41 +270,30 @@ class Game {
 			.some((res) => res);
 	}
 
-	boardToJSONString () {
-		let toRet = "{whitePieces:["
+	/* boardToJSONString () {
+		let toRet = "{\"whitePieces\":["
 		this.board.whitePieces.forEach(el => {
-			toRet += `{type:${  el.constructor.name  },x:${  el.pos.x  },y:${  el.pos.y  }},`
+			toRet += `{"type":"${  el.constructor.name  }","x":${  el.pos.x  },"y":${  el.pos.y  }},`
 		});
 		toRet+="], blackPieces:["
 		this.board.blackPieces.forEach(el => {
-			toRet += `{type:${  el.constructor.name  },x:${  el.pos.x  },y:${  el.pos.y  }},`
+			toRet += `{"type":"${  el.constructor.name  }",x:${  el.pos.x  },"y":${  el.pos.y  }},`
 		})
 		toRet+="]}";
 		console.log(`Stringified board: ${  toRet}`)
 		return toRet;
+	} */
+	boardToJSONString () {
+		const clone = structuredClone(this.board)
+		clone.whitePieces.forEach(el => {
+			delete el.game
+		});
+		clone.blackPieces.forEach(el => {
+			el.game = null
+		});
+		return JSON.stringify(clone)
 	}
 
-	/**
-	 * Devuelve el array construido con los objetos de las piezas
-	 * @param {string} str La stringa que se guarda en la base de datos
-	 * @returns Un array con dos campos whitePieces y blackPieces, de Objetos que extenden Piece 
-	 */
-	static JSONStringtoBoard (str) {
-		const tempBoard
-		console.log(str)
-		try {
-			tempBoard = JSON.parse(str)
-		} catch (e) {
-			console.log(e)
-		}
-		
-		console.log("Despues del parse")
-		const builtBoard = { }
-		console.log("Parsed board: ")
-		console.log(tempBoard)
-		
-		return builtBoard
-	}
 }
 
 export { getInitialBoard, WhitePlayer, BlackPlayer };

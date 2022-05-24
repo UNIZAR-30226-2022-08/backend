@@ -117,8 +117,7 @@ const CommunityController = {
 		const { friend } = req.body;
 
 		const removed = await UserFriendList.destroy({
-			where: Sequelize.and(
-				{ accepted: true },
+			where: 
 				Sequelize.or(
 					{
 						userUsername: req.session.username,
@@ -129,7 +128,6 @@ const CommunityController = {
 						FriendUsername: req.session.username,
 					}
 				)
-			),
 		});
 
 		if (removed < 1) {
