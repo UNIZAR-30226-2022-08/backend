@@ -116,9 +116,9 @@ class Game {
 	 * @returns
 	 */
 	getPiece(player, x, y) {
-		let pieces = this.blackPieces;
+		let pieces = this.board.blackPieces;
 		if (player === WhitePlayer) {
-			pieces = this.whitePieces;
+			pieces = this.board.whitePieces;
 		}
 
 		return pieces.find((elem) => {
