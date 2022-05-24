@@ -328,7 +328,7 @@ class Game {
 					break;
 			}
 		});
-		return JSON.stringify(toRet)
+		return toRet
 	}
 
 }

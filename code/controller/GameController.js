@@ -31,7 +31,7 @@ const GameController = {
 		})
 			.then(function (game) {
 				game.boardState = JSON.parse(game.boardState)
-				res.status(200).json({ response: game }).send();
+				res.status(200).json({ response: games.dataValues }).send();
 				return
 			})
 			.catch(function (error) {
@@ -52,12 +52,12 @@ const GameController = {
 				if (!game) {
 					res
 						.status(400)
-						.json({ error: "Couldn't find the game, ID is wrong" });
-					res.send();
+						.json({ error: "Couldn't find the game, ID is wrong" })
+					.send()
 					return;
 				}
 				game.boardState = JSON.parse(game.boardState)
-				res.status(200).json({ response: game }).send();
+				res.status(200).json({ response: games.dataValues }).send();
 				return
 			})
 			.catch(function (error) {
@@ -75,7 +75,7 @@ const GameController = {
 				{ inProgress: true }
 			),
 		}).then(function (games) {
-			res.status(200).json({ response: games }).send();
+			res.status(200).json({ response: games.dataValues }).send();
 			return
 		})
 		.catch(function (error) {
