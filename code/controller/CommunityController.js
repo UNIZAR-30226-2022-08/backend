@@ -177,12 +177,12 @@ const CommunityController = {
 					friendRequests.push(friendRequest.userUsername)
 				});
 
-				console.log("Antes de hacer el .send")
-				console.log(friendRequests)
+				// console.log("Antes de hacer el .send")
+				// console.log(friendRequests)
 				var temp = { response : friendRequests }
-				console.log(temp)
+				// console.log(temp)
 				res.status(200).json( temp ).send()
-				console.log("Acabo de hacer el .send")
+				// console.log("Acabo de hacer el .send")
 				return;
 			})
 			.catch((err) => {
@@ -216,12 +216,12 @@ const CommunityController = {
 						friends.push(friendship.userUsername);
 					}
 				});
-				console.log("Antes de hacer el .send")
-				console.log(friends)
+				// console.log("Antes de hacer el .send")
+				// console.log(friends)
 				var temp = { response : friends }
-				console.log(temp)
+				// console.log(temp)
 				res.status(200).json( temp ).send()
-				console.log("Acabo de hacer el .send")
+				// console.log("Acabo de hacer el .send")
 				return;
 			})
 			.catch((err) => {

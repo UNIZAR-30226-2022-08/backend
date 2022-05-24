@@ -270,19 +270,6 @@ class Game {
 			.some((res) => res);
 	}
 
-	/* boardToJSONString () {
-		let toRet = "{\"whitePieces\":["
-		this.board.whitePieces.forEach(el => {
-			toRet += `{"type":"${  el.constructor.name  }","x":${  el.pos.x  },"y":${  el.pos.y  }},`
-		});
-		toRet+="], blackPieces:["
-		this.board.blackPieces.forEach(el => {
-			toRet += `{"type":"${  el.constructor.name  }",x:${  el.pos.x  },"y":${  el.pos.y  }},`
-		})
-		toRet+="]}";
-		console.log(`Stringified board: ${  toRet}`)
-		return toRet;
-	} */
 	boardToJSONString () {
 		const clone = structuredClone(this.board)
 		clone.whitePieces.forEach(el => {
@@ -290,6 +277,56 @@ class Game {
 		});
 		clone.blackPieces.forEach(el => {
 			el.game = null
+		});
+		return JSON.stringify(clone)
+	}
+
+	JSONStringToBoard (str) {
+		const parsed = JSON.parse(str)
+		const toRet = { whitePieces : [], blackPieces : [] }
+		clone.whitePieces.forEach(el => {
+			switch ( el.type ) {
+				case "pawn" : 
+					toRet.whitePieces.push(new Pawn(WhitePlayer, this, el.xPos, el.yPos))
+					break;
+				case "rook" : 
+					toRet.whitePieces.push(new Rook(WhitePlayer, this, el.xPos, el.yPos))
+					break;
+				case "king" : 
+					toRet.whitePieces.push(new King(WhitePlayer, this, el.xPos, el.yPos))
+					break;
+				case "queen" : 
+					toRet.whitePieces.push(new Queen(WhitePlayer, this, el.xPos, el.yPos))
+					break;
+				case "bishop" : 
+					toRet.whitePieces.push(new Bishop(WhitePlayer, this, el.xPos, el.yPos))
+					break;
+				case "knight" : 
+					toRet.whitePieces.push(new Knight(WhitePlayer, this, el.xPos, el.yPos))
+					break;
+			}
+		});
+		clone.blackPieces.forEach(el => {
+			switch ( el.type ) {
+				case "pawn" : 
+					toRet.whitePieces.push(new Pawn(BlackPlayer, this, el.xPos, el.yPos))
+					break;
+				case "rook" : 
+					toRet.whitePieces.push(new Rook(BlackPlayer, this, el.xPos, el.yPos))
+					break;
+				case "king" : 
+					toRet.whitePieces.push(new King(BlackPlayer, this, el.xPos, el.yPos))
+					break;
+				case "queen" : 
+					toRet.whitePieces.push(new Queen(BlackPlayer, this, el.xPos, el.yPos))
+					break;
+				case "bishop" : 
+					toRet.whitePieces.push(new Bishop(BlackPlayer, this, el.xPos, el.yPos))
+					break;
+				case "knight" : 
+					toRet.whitePieces.push(new Knight(BlackPlayer, this, el.xPos, el.yPos))
+					break;
+			}
 		});
 		return JSON.stringify(clone)
 	}
