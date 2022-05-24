@@ -17,7 +17,7 @@ function containsParams (pars, req) {
 		if (!(par in req.body)){
 			console.log(par)
 			console.log(" no encontrado")
-			foundAll = true;
+			foundAll = false;
 		}
 	});
 	return foundAll

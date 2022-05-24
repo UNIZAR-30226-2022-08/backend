@@ -1,8 +1,14 @@
 import bcrypt from "bcrypt";
 import UserModel from "../models/UserModel";
+import { containsParams } from "../util/util";
 
 const AccountController = {
 	async register(req, res) {
+		if (!containsParams(["username", "email", "password"], req)) {
+			console.log(req.body);
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
+		}
 		const { username, email, password } = req.body;
 		return UserModel.create({
 			username,
@@ -21,6 +27,10 @@ const AccountController = {
 	async login(req, res) {
 		if (req.session.username) {
 			return res.status(400).json({ message: "User already logged in" });
+		}
+		if (!containsParams(["email, password"], req)) {
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return;
 		}
 		const { email, password } = req.body;
 
@@ -57,6 +67,11 @@ const AccountController = {
 			});
 	},
 	async changePassword(req, res) {
+		if (!containsParams(["username", "newPassword"], req)) {
+			console.log(req.body);
+			res.status(400).json({ error: "Parametros incorrectos" }).send();
+			return
+		}
 		const { newPassword } = req.body;
 		const { username } = req.session;
 		return UserModel.update({
