@@ -280,7 +280,8 @@ class Game {
 		} catch (error) {
 			console.log(error)
 		}
-		
+		console.log("despues de parsed")
+		console.log("Primero parsed: ", parsed)
 		const toRet = { whitePieces : [], blackPieces : [] }
 		parsed.whitePieces.forEach(el => {
 			// eslint-disable-next-line default-case
@@ -305,29 +306,30 @@ class Game {
 					break;
 			}
 		});
-		toRet.blackPieces.forEach(el => {
+		parsed.blackPieces.forEach(el => {
 			// eslint-disable-next-line default-case
 			switch ( el.type ) {
 				case "pawn" : 
-					toRet.whitePieces.push(new Pawn(BlackPlayer, this, el.x.pos, el.y.pos))
+					toRet.blackPieces.push(new Pawn(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "rook" : 
-					toRet.whitePieces.push(new Rook(BlackPlayer, this, el.x.pos, el.y.pos))
+					toRet.blackPieces.push(new Rook(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "king" : 
-					toRet.whitePieces.push(new King(BlackPlayer, this, el.x.pos, el.y.pos))
+					toRet.blackPieces.push(new King(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "queen" : 
-					toRet.whitePieces.push(new Queen(BlackPlayer, this, el.x.pos, el.y.pos))
+					toRet.blackPieces.push(new Queen(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "bishop" : 
-					toRet.whitePieces.push(new Bishop(BlackPlayer, this, el.x.pos, el.y.pos))
+					toRet.blackPieces.push(new Bishop(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 				case "knight" : 
-					toRet.whitePieces.push(new Knight(BlackPlayer, this, el.x.pos, el.y.pos))
+					toRet.blackPieces.push(new Knight(BlackPlayer, this, el.x.pos, el.y.pos))
 					break;
 			}
 		});
+		console.log(toRet)
 		return toRet
 	}
 
