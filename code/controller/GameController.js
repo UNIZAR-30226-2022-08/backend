@@ -76,6 +76,9 @@ const GameController = {
 				Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 				{ inProgress: true }
 			),
+			attributes: {
+				exclude: ["boardState"],
+			},
 		})
 			.then(function (games) {
 				res.status(200).json({ response: games });
