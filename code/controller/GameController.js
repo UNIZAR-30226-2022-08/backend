@@ -31,7 +31,7 @@ const GameController = {
 		})
 			.then(function (game) {
 				game.boardState = JSON.parse(game.boardState)
-				res.status(200).json({ response: games.dataValues }).send();
+				res.status(200).json({ response: game.dataValues }).send();
 				return
 			})
 			.catch(function (error) {
@@ -57,7 +57,7 @@ const GameController = {
 					return;
 				}
 				game.boardState = JSON.parse(game.boardState)
-				res.status(200).json({ response: games.dataValues }).send();
+				res.status(200).json({ response: game.dataValues }).send();
 				return
 			})
 			.catch(function (error) {
@@ -75,7 +75,7 @@ const GameController = {
 				{ inProgress: true }
 			),
 		}).then(function (games) {
-			res.status(200).json({ response: games.dataValues }).send();
+			res.status(200).json({ response: games }).send();
 			return
 		})
 		.catch(function (error) {
