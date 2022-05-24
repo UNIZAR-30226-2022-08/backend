@@ -102,7 +102,7 @@ const CommunityController = {
 						if (other === null) {
 							throw new Error("user does not exist");
 						}
-						other.addFriend(user);
+						user.addFriend(other)
 					}
 				)
 			)
@@ -166,6 +166,7 @@ const CommunityController = {
 			.catch((err) => res.status(400).json({ error: err.message }));
 	},
 	async getFriendRequests(req, res) {
+		var friendRequests = [];
 		UserFriendList.findAll({
 			where: {
 				accepted: false,
@@ -174,19 +175,21 @@ const CommunityController = {
 			attributes: ["id", "userUsername", "FriendUsername"],
 		})
 			.then((requests) => {
-				const friendRequests = [];
 				requests.forEach((friendRequest) => {
-					if (friendRequest.userUsername === req.session.username) {
-						friendRequests.push(friendRequest.FriendUsername);
-					} else {
-						friendRequests.push(friendRequest.userUsername);
-					}
+					friendRequests.push(friendRequest.userUsername)
 				});
 
-				res.status(200).json({ friendRequests }).send();
+				console.log("Antes de hacer el .send")
+				console.log(friendRequests)
+				var temp = { response : friendRequests }
+				console.log(temp)
+				res.status(200).json( temp ).send()
+				console.log("Acabo de hacer el .send")
 				return;
 			})
-			.catch((err) => res.status(400).json({ error: err.message }).send());
+			.catch((err) => {
+				// return res.status(400).json({ error: err }).send();
+			})
 	},
 	async getFriends(req, res) {
 		UserFriendList.findAll({
@@ -204,6 +207,9 @@ const CommunityController = {
 			attributes: ["id", "userUsername", "FriendUsername"],
 		})
 			.then((requests) => {
+				if (requests == null) {
+					console.log("No hay amigos")
+				}
 				const friends = [];
 				requests.forEach((friendship) => {
 					if (friendship.userUsername === req.session.username) {
@@ -212,11 +218,17 @@ const CommunityController = {
 						friends.push(friendship.userUsername);
 					}
 				});
-
-				res.status(200).json({ friends }).send();
+				console.log("Antes de hacer el .send")
+				console.log(friends)
+				var temp = { response : friends }
+				console.log(temp)
+				res.status(200).json( temp ).send()
+				console.log("Acabo de hacer el .send")
 				return;
 			})
-			.catch((err) => res.status(400).json({ error: err.message }).send());
+			.catch((err) => {
+				// return res.status(400).json({ error: err }).send();
+			})
 	},
 	async sendMessage(req, res) {
 		if (!containsParams(["to", "body"], req)) {
