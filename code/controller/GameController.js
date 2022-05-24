@@ -13,7 +13,7 @@ const GameController = {
 	async startMatchMaking(req, res) {
 	},
 	async startAsyncGame(req, res) {
-		if (!containsParams(["whitePlayer, blackPlayer"], req)) {
+		if (!containsParams(["whitePlayer", "blackPlayer"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return
@@ -77,7 +77,7 @@ const GameController = {
 
 	move(req, res) {
 		const { username } = req.session;
-		if (!containsParams(["gameId, x1, y1, x2, y2"], req)) {
+		if (!containsParams(["gameId", "x1", "y1", "x2", "y2"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" }).send();
 			return;
 		}
