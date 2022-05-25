@@ -11,6 +11,7 @@ accountRouter.post("/login", AccountController.login);
 accountRouter.get("/checkSession", (req, res) => {
 	if (!req.session.username) {
 		res.status(400).json({ error : "Usuario no logueado"})
+		return
 	}
 	res.json({ response: req.session });
 });

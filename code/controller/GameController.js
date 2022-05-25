@@ -111,9 +111,9 @@ const GameController = {
 					res.status(400).json({ error: "You aren't a player of that game" });
 					return
 				}
-				if (
-					(game.blackPlayer === username && game.turn) ||
-					(!game.turn && game.whitePlayer !== username)
+				if ((game.blackPlayer === username && game.turn) 
+					||
+					(!game.turn && game.whitePlayer === username)
 				) {
 					res.status(400).json({ error: "It's not your turn" });
 					return
