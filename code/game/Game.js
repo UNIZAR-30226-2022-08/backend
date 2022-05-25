@@ -70,13 +70,13 @@ class Game {
 	constructor(whitePlayerOrGame, blackPlayer) {
 		if (blackPlayer) {
 			console.log("Llamando constructor de partido nuevo");
-			this.whiteTurn = WhitePlayer;
+			this.turn = WhitePlayer;
 			this.whitePlayer = whitePlayerOrGame;
 			this.blackPlayer = blackPlayer;
 
 			this.board = getInitialBoard(this);
 		} else {
-			this.whiteTurn = whitePlayerOrGame.turn;
+			this.turn = whitePlayerOrGame.turn;
 			this.whitePlayer = whitePlayerOrGame.whitePlayer;
 			this.blackPlayer = whitePlayerOrGame.blackPlayer;
 			this.board = this.JSONStringToBoard(whitePlayerOrGame.boardState);
@@ -199,7 +199,7 @@ class Game {
 	}
 
 	checkMate() {
-		const king = this.getAllPieces(this.whiteTurn).find(
+		const king = this.getAllPieces(this.turn).find(
 			(elem) => elem instanceof King
 		);
 		if (!king) {
@@ -232,7 +232,7 @@ class Game {
 	}
 
 	check() {
-		const king = this.getAllPieces(this.whiteTurn).find(
+		const king = this.getAllPieces(this.turn).find(
 			(piece) => piece instanceof King
 		);
 		if (!king) {

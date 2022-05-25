@@ -23,7 +23,7 @@ const GameController = {
 			boardState: newGame.boardToJSONString(),
 			whitePlayer: newGame.whitePlayer,
 			blackPlayer: newGame.blackPlayer,
-			turn: newGame.whiteTurn,
+			turn: newGame.turn,
 			whiteWon: null,
 			inProgress: true,
 			isAsync: true,
@@ -189,15 +189,15 @@ const GameController = {
 		GameModel.findByPk(gameId).then(function (game) {
 			const gameObj = new Game(game);
 			if (
-				(game.blackPlayer === username && game.whiteTurn) ||
-				(!game.whiteTurn && game.whitePlayer !== username)
-			) {
+				(game.blackPlayer === username && game.turn) ||
+				(!game.turn && game.whitePlayer !== username)
+			){
 				res.status(400).json({ error: "It's not your turn" });
 				return;
 			}
 
 			let y;
-			if (gameObj.whiteTurn) {
+			if (gameObj.turn) {
 				y = 0;
 			} else {
 				y = 7;
@@ -205,24 +205,24 @@ const GameController = {
 			let successful = true
 			if (side === "left") {
 				if (
-					gameObj.getPiece(gameObj.whiteTurn, 4, y) instanceof King &&
-					gameObj.getPiece(gameObj.whiteTurn, 0, y) instanceof Rook &&
-					!gameObj.getPiece(gameObj.whiteTurn, 1, y) &&
-					!gameObj.getPiece(gameObj.whiteTurn, 2, y) &&
-					!gameObj.getPiece(gameObj.whiteTurn, 3, y)
+					gameObj.getPiece(gameObj.turn, 4, y) instanceof King &&
+					gameObj.getPiece(gameObj.turn, 0, y) instanceof Rook &&
+					!gameObj.getPiece(gameObj.turn, 1, y) &&
+					!gameObj.getPiece(gameObj.turn, 2, y) &&
+					!gameObj.getPiece(gameObj.turn, 3, y)
 				) {
-					successful &&= gameObj.moveFromTo(gameObj.whiteTurn, 4, y, 2, y)
-					successful &&= gameObj.moveFromTo(gameObj.whiteTurn, 0, y, 3, y)
+					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 2, y)
+					successful &&= gameObj.moveFromTo(gameObj.turn, 0, y, 3, y)
 				}
 			} else if (side === "right") {
 				if (
-					gameObj.getPiece(gameObj.whiteTurn, 4, y) instanceof King &&
-					gameObj.getPiece(gameObj.whiteTurn, 7, y) instanceof Rook &&
-					!gameObj.getPiece(gameObj.whiteTurn, 5, y) &&
-					!gameObj.getPiece(gameObj.whiteTurn, 6, y)
+					gameObj.getPiece(gameObj.turn, 4, y) instanceof King &&
+					gameObj.getPiece(gameObj.turn, 7, y) instanceof Rook &&
+					!gameObj.getPiece(gameObj.turn, 5, y) &&
+					!gameObj.getPiece(gameObj.turn, 6, y)
 				) {
-					successful &&= gameObj.moveFromTo(gameObj.whiteTurn, 4, y, 6, y)
-					successful &&= gameObj.moveFromTo(gameObj.whiteTurn, 5, y, 7, y)
+					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 6, y)
+					successful &&= gameObj.moveFromTo(gameObj.turn, 5, y, 7, y)
 				}
 			}
 			if (successful) {
