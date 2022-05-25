@@ -169,13 +169,10 @@ class Game {
 	 * @returns
 	 */
 	deletePiece(player, x, y) {
-		let piece = null;
-
 		function comparePiece(elem) {
 			if (elem.pos.x !== x || elem.pos.y !== y) {
 				return true;
 			}
-			piece = elem;
 			return false;
 		}
 
@@ -184,7 +181,6 @@ class Game {
 		} else {
 			this.board.blackPieces = this.board.blackPieces.filter(comparePiece);
 		}
-		return piece;
 	}
 
 	/**

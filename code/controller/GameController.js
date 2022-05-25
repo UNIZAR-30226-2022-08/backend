@@ -169,6 +169,9 @@ const GameController = {
 				}
 				curGame.deletePiece(player, Number(x), Number(y));
 				curGame.addPiece(player, wantedPiece, Number(x), Number(y));
+				game.boardState = curGame.boardToJSONString();
+				game.save(); // Sequelize call to update the saved model in the db
+				res.status(200).send();
 			})
 			.catch(function (error) {
 				console.trace();
