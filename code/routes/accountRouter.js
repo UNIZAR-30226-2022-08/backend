@@ -9,6 +9,9 @@ accountRouter.post("/login", AccountController.login);
 
 //metodo de debug
 accountRouter.get("/checkSession", (req, res) => {
+	if (!req.session.username) {
+		res.status(400).json({ error : "Usuario no logueado"})
+	}
 	res.json({ response: req.session });
 });
 
