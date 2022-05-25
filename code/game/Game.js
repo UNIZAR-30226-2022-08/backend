@@ -97,7 +97,7 @@ class Game {
 		console.log("pieza:  ", piece)
 		if (!piece)
 			return false;
-		var result = piece.move(x2, y2)
+		var result = piece.move(Number(x2), Number(y2))
 		console.log("movePiece devuelve ", result)
 		if (result){
 			const taken = this.deletePiece(!player, x2, y2);
