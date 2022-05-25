@@ -176,7 +176,7 @@ const GameController = {
 			});
 	},
 
-	castle(req, res, next) {
+	castle(req, res) {
 		if (!containsParams(["gameId", "side"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -210,8 +210,8 @@ const GameController = {
 					!gameObj.getPiece(gameObj.whiteTurn, 2, y) &&
 					!gameObj.getPiece(gameObj.whiteTurn, 3, y)
 				) {
-					successful &= gameObj.moveFromTo(gameObj.whiteTurn, 4, y, 2, y)
-					successful &= gameObj.moveFromTo(gameObj.whiteTurn, 0, y, 3, y)
+					successful &&= gameObj.moveFromTo(gameObj.whiteTurn, 4, y, 2, y)
+					successful &&= gameObj.moveFromTo(gameObj.whiteTurn, 0, y, 3, y)
 				}
 			} else if (side === "right") {
 				if (
@@ -220,8 +220,8 @@ const GameController = {
 					!gameObj.getPiece(gameObj.whiteTurn, 5, y) &&
 					!gameObj.getPiece(gameObj.whiteTurn, 6, y)
 				) {
-					successful &= gameObj.moveFromTo(gameObj.whiteTurn, 4, y, 6, y)
-					successful &= gameObj.moveFromTo(gameObj.whiteTurn, 5, y, 7, y)
+					successful &&= gameObj.moveFromTo(gameObj.whiteTurn, 4, y, 6, y)
+					successful &&= gameObj.moveFromTo(gameObj.whiteTurn, 5, y, 7, y)
 				}
 			}
 			if (successful) {
@@ -234,8 +234,34 @@ const GameController = {
 			}
 		});
 	},
+	async endGame(req, res) {
+		if (!containsParams(["gameId", "winnerPlayer"], req)) {
+			res.status(400).json({ error: "Parametros incorrectos" });
+			return;
+		}
+		const { gameId, winnerPlayer } = req.body;
 
-	getMoves(req, res, next) {},
+		GameModel.findByPk(gameId)
+			.then(function (game) {
+				if (!game) {
+					res
+						.status(400)
+						.json({ error: "Couldn't find the game, ID is wrong" });
+					return;
+				}
+				game.inProgress = false
+				game.whiteWon = (winnerPlayer.toLowerCase() === "white")
+				game.finishTimestamp = Date.now()
+				game.update()
+				res.status(200).json({ response: game.dataValues });
+			})
+			.catch(function (error) {
+				console.trace();
+				console.log(error);
+				res.status(400).json(error);
+				return;
+			});
+	},
 };
 
 export default GameController;

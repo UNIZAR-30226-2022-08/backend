@@ -50,8 +50,8 @@ class Piece {
 		});
 
 		if (found) {
-			this.pos.x += x;
-			this.pos.y += y;
+			this.pos.x = x;
+			this.pos.y = y;
 			return true;
 		}
 		return false;
