@@ -13,11 +13,10 @@ accountRouter.get("/checkSession", (req, res) => {
 });
 
 accountRouter.get("/findAllUsers", AccountController.findAllUsers);
-
+accountRouter.post("/logout", AccountController.logout);
 // session validation middleware
 accountRouter.use(validSession);
 
 accountRouter.post("/changePassword", AccountController.changePassword);
-accountRouter.post("/logout", AccountController.logout);
 
 export default accountRouter;
