@@ -94,9 +94,8 @@ class Game {
 	 */
 	moveFromTo(player, x1, y1, x2, y2) {
 		const piece = this.getPiece(player, x1, y1);
-		if (!piece)
-			console.log("pieza no encontrada")
-		if (!piece && piece.move(x2, y2)) {
+		console.log("pieza:  ", piece)
+		if (piece && piece.move(x2, y2)) {
 			const taken = this.deletePiece(!player, piece.pos.x, piece.pos.y);
 			if (taken) {
 				// notificar pieza tomada
