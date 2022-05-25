@@ -94,10 +94,13 @@ class Game {
 	 */
 	moveFromTo(player, x1, y1, x2, y2) {
 		const piece = this.getPiece(player, x1, y1);
+		console.log("pieza:  ", piece)
 		if (!piece)
-			console.log("pieza no encontrada")
-		if (!piece && piece.move(x2, y2)) {
-			const taken = this.deletePiece(!player, piece.pos.x, piece.pos.y);
+			return false;
+		var result = piece.move(x2, y2)
+		console.log("movePiece devuelve ", result)
+		if (result){
+			const taken = this.deletePiece(!player, x2, y2);
 			if (taken) {
 				// notificar pieza tomada
 				console.log("eliminada pieza %s", taken.constructor.name);
@@ -170,7 +173,7 @@ class Game {
 		let piece = null;
 
 		function comparePiece(elem) {
-			if (elem.pos.x !== x && elem.pos.y !== y) {
+			if (elem.pos.x !== x || elem.pos.y !== y) {
 				return true;
 			}
 			piece = elem;

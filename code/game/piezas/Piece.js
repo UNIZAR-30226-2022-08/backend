@@ -49,7 +49,6 @@ class Piece {
 			return false;
 		}); */
 		const found = true
-
 		if (found) {
 			this.pos.x = x;
 			this.pos.y = y;
