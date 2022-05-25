@@ -24,7 +24,6 @@ class Piece {
 	 * @returns array of allowed moves relative to the current position
 	 */
 	getAllowedMoves() {
-		console.log("utilizando getAllowedMoves generico")
 		return [];
 	}
 
@@ -45,10 +44,15 @@ class Piece {
 	 * @returns true if the move was successful, false if not
 	 */
 	move(x, y) {
-		/** const found = this.getAllowedMoves().find((elem) => {
-			if (elem.x === x && elem.y === y) return true;
+		console.log("LLamando move con x: ", x, " y:", y)
+		console.log("Numeros:", Number(x), " y:", Number(y))
+		const found2 = this.getAllowedMoves().find((elem) => {
+			if (elem.x === Number(x) && elem.y === Number(y)) {
+				console.log("Encontrado ", elem.x, elem.y)
+				return true;
+			}
 			return false;
-		}); */
+		});
 		const found = true
 		if (found) {
 			this.pos.x = x;
