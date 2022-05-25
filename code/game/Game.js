@@ -145,16 +145,16 @@ class Game {
 				arr.push(new Pawn(player, this, Number(x), Number(y)));
 				break;
 			case "knight":
-				arr.push(new Pawn(player, this, Number(x), Number(y)));
+				arr.push(new Knight(player, this, Number(x), Number(y)));
 				break;
 			case "queen":
-				arr.push(new Pawn(player, this, Number(x), Number(y)));
+				arr.push(new Queen(player, this, Number(x), Number(y)));
 				break;
 			case "rook":
-				arr.push(new Pawn(player, this, Number(x), Number(y)));
+				arr.push(new Rook(player, this, Number(x), Number(y)));
 				break;
 			case "bishop":
-				arr.push(new Pawn(player, this, Number(x), Number(y)));
+				arr.push(new Bishop(player, this, Number(x), Number(y)));
 				break;
 			default:
 				break;
