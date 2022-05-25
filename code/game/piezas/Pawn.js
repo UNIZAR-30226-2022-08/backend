@@ -19,18 +19,18 @@ class Pawn extends Piece {
 		}
 
 		if (this.player == WhitePlayer) {
-			if (this.game.getPiece(BlackPlayer, this.x - 1, this.y + 1)) {
-				possibleMoves.push({ x: this.x - 1, y: this.y + 1 });
+			if (this.game.getPiece(BlackPlayer, 1, 1)) {
+				possibleMoves.push({ x: 1, y: 1 });
 			}
-			if (this.game.getPiece(BlackPlayer, this.x + 1, this.y + 1)) {
-				possibleMoves.push({ x: this.x + 1, y: this.y + 1 });
+			if (this.game.getPiece(BlackPlayer, 1, 1)) {
+				possibleMoves.push({ x: 1, y: 1 });
 			}
 		} else {
-			if (this.game.getPiece(WhitePlayer, this.x - 1, this.y - 1)) {
-				possibleMoves.push({ x: this.x - 1, y: this.y - 1 });
+			if (this.game.getPiece(WhitePlayer, 1, 1)) {
+				possibleMoves.push({ x: 1, y: 1 });
 			}
-			if (this.game.getPiece(WhitePlayer, this.x + 1, this.y - 1)) {
-				possibleMoves.push({ x: this.x + 1, y: this.y - 1 });
+			if (this.game.getPiece(WhitePlayer, 1, 1)) {
+				possibleMoves.push({ x: 1, y: 1 });
 			}
 		}
 

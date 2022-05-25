@@ -94,12 +94,11 @@ class Game {
 	 */
 	moveFromTo(player, x1, y1, x2, y2) {
 		const piece = this.getPiece(player, x1, y1);
-		console.log("pieza:  ", piece)
-		if (!piece)
-			return false;
-		var result = piece.move(Number(x2), Number(y2))
-		console.log("movePiece devuelve ", result)
-		if (result){
+		console.log("pieza:  ", piece);
+		if (!piece) return false;
+		const result = piece.move(Number(x2), Number(y2));
+		console.log("movePiece devuelve ", result);
+		if (result) {
 			const taken = this.deletePiece(!player, x2, y2);
 			if (taken) {
 				// notificar pieza tomada
