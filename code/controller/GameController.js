@@ -233,7 +233,7 @@ const GameController = {
 			const gameObj = new Game(game);
 			if (
 				(game.blackPlayer === username && game.turn) ||
-				(!game.turn && game.whitePlayer !== username)
+				(!game.turn && game.whitePlayer === username)
 			) {
 				res.status(400).json({ error: "It's not your turn" });
 				return;
