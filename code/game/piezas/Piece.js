@@ -48,7 +48,7 @@ class Piece {
 			if (elem.x === x && elem.y === y) return true;
 			return false;
 		}); */
-
+		const found = true
 		if (found) {
 			this.pos.x = x;
 			this.pos.y = y;
