@@ -350,6 +350,29 @@ class Game {
 		});
 		return toRet;
 	}
+
+	getAllowedMoves(player) {
+		if (player === WhitePlayer) {
+			return this.board.whitePieces.map((elem) => ({
+				piece: {
+					type: elem.type,
+					player: elem.player,
+					x: elem.pos.x,
+					y: elem.pos.y,
+				},
+				moves: elem.getAllowedMoves(),
+			}));
+		}
+		return this.board.blackPieces.map((elem) => ({
+			piece: {
+				type: elem.type,
+				player: elem.player,
+				x: elem.pos.x,
+				y: elem.pos.y,
+			},
+			moves: elem.getAllowedMoves(),
+		}));
+	}
 }
 
 export { getInitialBoard, WhitePlayer, BlackPlayer };

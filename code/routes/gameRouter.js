@@ -16,5 +16,6 @@ gameRouter.post("/move", GameController.move);
 gameRouter.post("/promotePawn", GameController.promotePawn);
 gameRouter.post("/castle", GameController.castle); // Enroque
 gameRouter.get("/endGame", GameController.endGame);
+gameRouter.get("/getAllowedMoves", GameController.getAllowedMoves);
 
 export default gameRouter;
