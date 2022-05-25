@@ -11,8 +11,8 @@ import { containsParams } from "../util/util";
 const matchmakingWaitingList = [];
 
 const GameController = {
-	async startMatchMaking(req, res, next) {},
-	async startAsyncGame(req, res, next) {
+	async startMatchMaking(req, res) {},
+	async startAsyncGame(req, res) {
 		if (!containsParams(["whitePlayer", "blackPlayer"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" });
@@ -41,7 +41,7 @@ const GameController = {
 			});
 	},
 
-	async getGame(req, res, next) {
+	async getGame(req, res) {
 		if (req.query.gameId === undefined) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -68,7 +68,7 @@ const GameController = {
 			});
 	},
 
-	async getActiveGames(req, res, next) {
+	async getActiveGames(req, res) {
 		// No hace falta try/catch porque si no hay username el middleware devuelve 400 antes de llegar aqui
 		const { username } = req.session;
 		return GameModel.findAll({
@@ -92,7 +92,7 @@ const GameController = {
 			});
 	},
 
-	move(req, res, next) {
+	move(req, res) {
 		const { username } = req.session;
 		if (!containsParams(["gameId", "x1", "y1", "x2", "y2"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
@@ -109,12 +109,14 @@ const GameController = {
 				}
 				if (game.blackPlayer !== username && game.whitePlayer !== username) {
 					res.status(400).json({ error: "You aren't a player of that game" });
+					return
 				}
 				if (
 					(game.blackPlayer === username && game.turn) ||
 					(!game.turn && game.whitePlayer !== username)
 				) {
 					res.status(400).json({ error: "It's not your turn" });
+					return
 				}
 				// Es el turno del usuario, ahora comprobamos que el movimiento sea valido
 				const gameObj = new Game(game.dataValues);
@@ -142,7 +144,7 @@ const GameController = {
 			});
 	},
 
-	promotePawn(req, res, next) {
+	promotePawn(req, res) {
 		if (!containsParams(["x", "y", "wantedPiece"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -156,7 +158,6 @@ const GameController = {
 					player = WhitePlayer;
 					if (y !== 7) {
 						res.status(400).json({ error: "You can't promote that piece" });
-						next();
 						return;
 					}
 				} else {
