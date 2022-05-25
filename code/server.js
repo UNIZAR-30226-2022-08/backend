@@ -9,7 +9,7 @@ import "dotenv/config";
 
 import database from "./database/database";
 import mainRouter from "./routes/mainRouter";
-import QueueWS from "./websockets/wss";
+import wss from "./websockets/wss";
 
 const app = express();
 app.use(json());
@@ -49,9 +49,10 @@ server.on("upgrade", async (request, socket, head) => {
 		if (request.session.username === undefined) {
 			socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
 			socket.destroy();
+			return;
 		}
-		QueueWS.handleUpgrade(request, socket, head, function done(ws) {
-			QueueWS.emit("connection", ws, request);
+		wss.handleUpgrade(request, socket, head, function done(ws) {
+			wss.emit("connection", ws, request);
 		});
 	});
 });

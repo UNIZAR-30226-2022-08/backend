@@ -1,10 +1,10 @@
 import WebSocket from "ws";
 
-const QueueWS = new WebSocket.Server({
-	noServer: true /* , path: "/waitQueue" */,
+const wss = new WebSocket.Server({
+	noServer: true, /*  path: "/waitQueue", */
 });
 
-QueueWS.on("connection", (ws, req) => {
+wss.on("connection", (ws, req) => {
 	const { username } = req.session;
 
 	ws.on("message", (body) => {
@@ -25,4 +25,4 @@ QueueWS.on("connection", (ws, req) => {
 	});
 });
 
-export default QueueWS;
+export default wss;

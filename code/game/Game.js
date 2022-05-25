@@ -23,8 +23,8 @@ function getInitialBoard(gameInst) {
 			new Pawn(WhitePlayer, gameInst, 6, 1),
 			new Pawn(WhitePlayer, gameInst, 7, 1),
 			// Queen and king
-			new King(WhitePlayer, gameInst, 3, 0),
-			new Queen(WhitePlayer, gameInst, 4, 0),
+			new Queen(WhitePlayer, gameInst, 3, 0),
+			new King(WhitePlayer, gameInst, 4, 0),
 			// Bishops
 			new Bishop(WhitePlayer, gameInst, 2, 0),
 			new Bishop(WhitePlayer, gameInst, 5, 0),
@@ -46,17 +46,17 @@ function getInitialBoard(gameInst) {
 			new Pawn(BlackPlayer, gameInst, 6, 6),
 			new Pawn(BlackPlayer, gameInst, 7, 6),
 			// Queen and king
-			new King(BlackPlayer, gameInst, 4, 6),
-			new Queen(BlackPlayer, gameInst, 3, 6),
+			new Queen(BlackPlayer, gameInst, 3, 7),
+			new King(BlackPlayer, gameInst, 4, 7),
 			// Bishops
-			new Bishop(BlackPlayer, gameInst, 2, 6),
-			new Bishop(BlackPlayer, gameInst, 5, 6),
+			new Bishop(BlackPlayer, gameInst, 2, 7),
+			new Bishop(BlackPlayer, gameInst, 5, 7),
 			// Knights
-			new Knight(BlackPlayer, gameInst, 1, 6),
-			new Knight(BlackPlayer, gameInst, 6, 6),
+			new Knight(BlackPlayer, gameInst, 1, 7),
+			new Knight(BlackPlayer, gameInst, 6, 7),
 			// Rooks
-			new Rook(BlackPlayer, gameInst, 0, 6),
-			new Rook(BlackPlayer, gameInst, 7, 6),
+			new Rook(BlackPlayer, gameInst, 0, 7),
+			new Rook(BlackPlayer, gameInst, 7, 7),
 		],
 	};
 }

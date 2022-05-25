@@ -228,7 +228,7 @@ const CommunityController = {
 				return;
 			})
 			.catch((err) => {
-				// return res.status(400).json({ error: err });
+				res.status(400).json({ error: err });
 			});
 	},
 	async sendMessage(req, res, next) {

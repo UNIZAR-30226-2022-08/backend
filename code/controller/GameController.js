@@ -186,7 +186,7 @@ const GameController = {
 		const { gameId, side } = req.body;
 
 		GameModel.findByPk(gameId).then(function (game) {
-			const curGame = new Game(game);
+			const gameObj = new Game(game);
 			if (
 				(game.blackPlayer === username && game.whiteTurn) ||
 				(!game.whiteTurn && game.whitePlayer !== username)
@@ -196,31 +196,41 @@ const GameController = {
 			}
 
 			let y;
-			if (curGame.whiteTurn) {
+			if (gameObj.whiteTurn) {
 				y = 0;
 			} else {
 				y = 7;
 			}
-
+			let successful = true
 			if (side === "left") {
 				if (
-					curGame.getPiece(curGame.whiteTurn, 4, y) instanceof King &&
-					curGame.getPiece(curGame.whiteTurn, 0, y) instanceof Rook &&
-					!curGame.getPiece(curGame.whiteTurn, 1, y) &&
-					!curGame.getPiece(curGame.whiteTurn, 2, y) &&
-					!curGame.getPiece(curGame.whiteTurn, 3, y)
+					gameObj.getPiece(gameObj.whiteTurn, 4, y) instanceof King &&
+					gameObj.getPiece(gameObj.whiteTurn, 0, y) instanceof Rook &&
+					!gameObj.getPiece(gameObj.whiteTurn, 1, y) &&
+					!gameObj.getPiece(gameObj.whiteTurn, 2, y) &&
+					!gameObj.getPiece(gameObj.whiteTurn, 3, y)
 				) {
-					// enrocar
+					successful &= gameObj.moveFromTo(gameObj.whiteTurn, 4, y, 2, y)
+					successful &= gameObj.moveFromTo(gameObj.whiteTurn, 0, y, 3, y)
 				}
 			} else if (side === "right") {
 				if (
-					curGame.getPiece(curGame.whiteTurn, 4, y) instanceof King &&
-					curGame.getPiece(curGame.whiteTurn, 7, y) instanceof Rook &&
-					!curGame.getPiece(curGame.whiteTurn, 5, y) &&
-					!curGame.getPiece(curGame.whiteTurn, 6, y)
+					gameObj.getPiece(gameObj.whiteTurn, 4, y) instanceof King &&
+					gameObj.getPiece(gameObj.whiteTurn, 7, y) instanceof Rook &&
+					!gameObj.getPiece(gameObj.whiteTurn, 5, y) &&
+					!gameObj.getPiece(gameObj.whiteTurn, 6, y)
 				) {
-					// enrocar
+					successful &= gameObj.moveFromTo(gameObj.whiteTurn, 4, y, 6, y)
+					successful &= gameObj.moveFromTo(gameObj.whiteTurn, 5, y, 7, y)
 				}
+			}
+			if (successful) {
+				game.boardState = gameObj.boardToJSONString();
+				game.turn = !game.turn;
+				game.save(); // Sequelize call to update the saved model in the db
+				res.status(200).json({ response: game.dataValues });
+			} else {
+				res.status(400).json({ error: "You cannot make this move" });
 			}
 		});
 	},
