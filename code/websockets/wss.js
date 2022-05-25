@@ -9,18 +9,19 @@ QueueWS.on("connection", (ws, req) => {
 
 	ws.on("message", (body) => {
 		try {
-			const { to, message } = JSON.parse(body);
-			console.log(username);
-			console.log(to);
-			console.log(message);
+			const { event } = JSON.parse(body);
+			if (event === "chat") {
+				const { to, message } = JSON.parse(body);
+				console.log(username);
+				console.log(to);
+				console.log(message);
+			} else if (event === "syncGame") {
+				console.log(username);
+			}
 		} catch (error) {
 			console.trace();
 			console.error(error);
 		}
-	});
-	ws.on("syncGame", (body) => {
-		console.log(username);
-		// leer elo desde la bbdd
 	});
 });
 
