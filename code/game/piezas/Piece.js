@@ -21,7 +21,7 @@ class Piece {
 
 	/**
 	 * Get the allowed moves for the piece
-	 * @returns array of allowed moves relative to the current position
+	 * @returns array of allowed absolute moves
 	 */
 	getAllowedMoves() {
 		return [];
