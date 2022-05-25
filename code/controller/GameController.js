@@ -254,8 +254,8 @@ const GameController = {
 					!gameObj.getPiece(gameObj.turn, 2, y) &&
 					!gameObj.getPiece(gameObj.turn, 3, y)
 				) {
-					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 1, y);
-					successful &&= gameObj.moveFromTo(gameObj.turn, 0, y, 2, y);
+					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 2, y);
+					successful &&= gameObj.moveFromTo(gameObj.turn, 0, y, 3, y);
 				}
 			} else if (side === "right") {
 				if (
@@ -298,6 +298,33 @@ const GameController = {
 				game.finishTimestamp = Date.now();
 				game.update();
 				res.status(200).json({ response: game.dataValues });
+			})
+			.catch(function (error) {
+				console.trace();
+				console.log(error);
+				res.status(400).json(error);
+				return;
+			});
+	},
+	async getAllowedMoves(req, res) {
+		if (req.query.gameId === undefined) {
+			res.status(400).json({ error: "Parametros incorrectos" });
+			return;
+		}
+		const { gameId } = req.query;
+
+		GameModel.findByPk(gameId)
+			.then(function (game) {
+				if (!game) {
+					res
+						.status(400)
+						.json({ error: "Couldn't find the game, ID is wrong" });
+					return;
+				}
+				const gameObj = new Game(game.dataValues);
+				res
+					.status(200)
+					.json({ response: gameObj.getAllowedMoves(gameObj.turn) });
 			})
 			.catch(function (error) {
 				console.trace();
