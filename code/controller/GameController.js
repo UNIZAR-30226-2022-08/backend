@@ -92,7 +92,7 @@ const GameController = {
 			});
 	},
 
-	move(req, res) {
+	async move(req, res) {
 		const { username } = req.session;
 		if (!containsParams(["gameId", "x1", "y1", "x2", "y2"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
@@ -144,7 +144,7 @@ const GameController = {
 			});
 	},
 
-	promotePawn(req, res) {
+	async promotePawn(req, res) {
 		if (!containsParams(["x", "y", "wantedPiece"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -177,7 +177,7 @@ const GameController = {
 			});
 	},
 
-	castle(req, res) {
+	async castle(req, res) {
 		if (!containsParams(["gameId", "side"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;

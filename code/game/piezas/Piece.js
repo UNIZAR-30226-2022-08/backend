@@ -24,6 +24,7 @@ class Piece {
 	 * @returns array of allowed moves relative to the current position
 	 */
 	getAllowedMoves() {
+		console.log("utilizando getAllowedMoves generico")
 		return [];
 	}
 
