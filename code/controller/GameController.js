@@ -251,8 +251,8 @@ const GameController = {
 					!gameObj.getPiece(gameObj.turn, 2, y) &&
 					!gameObj.getPiece(gameObj.turn, 3, y)
 				) {
-					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 2, y);
-					successful &&= gameObj.moveFromTo(gameObj.turn, 0, y, 3, y);
+					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 1, y);
+					successful &&= gameObj.moveFromTo(gameObj.turn, 0, y, 2, y);
 				}
 			} else if (side === "right") {
 				if (
@@ -262,7 +262,7 @@ const GameController = {
 					!gameObj.getPiece(gameObj.turn, 6, y)
 				) {
 					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 6, y);
-					successful &&= gameObj.moveFromTo(gameObj.turn, 5, y, 7, y);
+					successful &&= gameObj.moveFromTo(gameObj.turn, 7, y, 5, y);
 				}
 			}
 			if (successful) {
