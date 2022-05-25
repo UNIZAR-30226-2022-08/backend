@@ -45,14 +45,15 @@ class Piece {
 	 */
 	move(x, y) {
 		console.log("LLamando move con x: ", x, " y:", y)
+
 		const found2 = this.getAllowedMoves().find((elem) => {
-			if (elem.x === Number(x) && elem.y === Number(y)) {
-				console.log("Encontrado ", elem.x, elem.y)
+			if (elem.x == Number(x) && elem.y == Number(y)) {
 				return true;
 			}
 			console.log(elem)
 			return false;
 		});
+
 		const found = true
 		if (found) {
 			this.pos.x = x;

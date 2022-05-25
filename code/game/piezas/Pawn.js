@@ -9,13 +9,13 @@ class Pawn extends Piece {
 		const possibleMoves = [];
 		const allowedMoves = [];
 
-		possibleMoves.push({ x: 0, y: this.player === WhitePlayer ? 1 : -1 });
+		possibleMoves.push({ x: this.x, y: this.y + ( this.player === WhitePlayer ? 1 : -1) });
 
 		if (
 			(this.pos.y === 1 && this.player == WhitePlayer) ||
 			(this.pos.y === 6 && this.player == BlackPlayer)
 		) {
-			possibleMoves.push({ x: 0, y: this.player === WhitePlayer ? 2 : -2 });
+			possibleMoves.push({ x: this.x, y: this.y + ( this.player === WhitePlayer ? 2 : -2) });
 		}
 
 		if (this.player == WhitePlayer) {
