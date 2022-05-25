@@ -173,7 +173,7 @@ class Game {
 		let piece = null;
 
 		function comparePiece(elem) {
-			if (elem.pos.x !== x && elem.pos.y !== y) {
+			if (elem.pos.x !== x || elem.pos.y !== y) {
 				return true;
 			}
 			piece = elem;
