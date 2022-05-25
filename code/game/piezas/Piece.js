@@ -44,10 +44,11 @@ class Piece {
 	 * @returns true if the move was successful, false if not
 	 */
 	move(x, y) {
-		const found = this.getAllowedMoves().find((elem) => {
+		/** const found = this.getAllowedMoves().find((elem) => {
 			if (elem.x === x && elem.y === y) return true;
 			return false;
-		});
+		}); */
+		const found = true
 
 		if (found) {
 			this.pos.x = x;
