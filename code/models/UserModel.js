@@ -25,9 +25,6 @@ const UserModel = sequelize.define(
 		password: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			validate: {
-				len: [4, 12],
-			},
 		},
 		elo: {
 			type: DataTypes.INTEGER,

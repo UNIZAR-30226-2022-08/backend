@@ -13,6 +13,20 @@ const AccountController = {
 			return;
 		}
 		const { username, email, password } = req.body;
+		if(password.length < 4 || password.length > 12) {
+			res.status(400).json({ error: "Tamaño password invalido" });
+			return;
+		}
+		if (!/\d/.test(myString)) {
+			res.status(400).json({ error: "La contraseña tiene que tener un numero" });
+			return;
+		}
+		if (!/\[A-Z]/.test(myString)) {
+			res.status(400).json({ error: "La contraseña tiene que tener un uppercase" });
+			return;
+		}
+
+
 		return UserModel.create({
 			username,
 			email,
