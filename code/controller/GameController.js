@@ -330,7 +330,7 @@ const GameController = {
 				game.whiteWon = winnerPlayer === game.whitePlayer;
 				game.finishTimestamp = Date.now();
 				game.draw = winnerPlayer.toLowerCase() === "draw";
-				game.update();
+				game.save();
 				console.log("Updated game: ", game)
 				if (game.draw === true) {
 					res.status(200).json({ response: game.dataValues });
@@ -355,8 +355,8 @@ const GameController = {
 						winningPlayer.elo += 25 * (eloWinning / eloLosing);
 						losingPlayer.elo -= 25 * (eloWinning / eloLosing);
 					}
-					winningPlayer.update();
-					losingPlayer.update();
+					winningPlayer.save();
+					losingPlayer.save();
 					console.log("Updated")
 				});
 				res.status(200).json({ response: game.dataValues });
