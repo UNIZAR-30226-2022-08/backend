@@ -6,24 +6,24 @@ import UserModel, { UserFriendList } from "../models/UserModel";
 import { containsParams } from "../util/util";
 
 const CommunityController = {
-	async getPublicProfile(req, res, next) {
-		if (!req.query.username) {
+	async getPublicProfile(req, res) {
+		if (!containsParams(["username"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
-			next();
+			return
 		}
 
-		const { username } = req.query;
+		const { username } = req.body;
 
 		UserModel.findOne({
-			attributes : { exclude : ["password"] },
+			attributes: ["username", "elo", "money"],
 			where: {
 				username,
 			},
 		})
 			.then(async function (user) {
 				if (user === null) {
-					res.status(400).json({ error: "Couldn't find the user" });
-					next();
+					res.status(400).json({ error: "Couldn't find the game" });
+					return
 					return;
 				}
 				const playedGames = await GameModel.findAndCountAll({
@@ -39,7 +39,7 @@ const CommunityController = {
 						)
 					)
 				}).then(
-					(arr) => Number(arr.count)
+					(arr) => arr.count
 				)
 
 				const wonGames = await GameModel.findAndCountAll({
@@ -55,46 +55,43 @@ const CommunityController = {
 						)
 					)
 				}).then(
-					(arr) => Number(arr.count)
+					(arr) => arr.count
 				);
+				console.log("Won games: ", wonGames)
+				console.log("Played games: ", playedGames)
 				const stats = {
 					playedGames,
 					wonGames,
-					winrate: playedGames === 0 ? 0 : wonGames / playedGames,
+					winrate: playedGames === 0 ? wonGames / playedGames : 0,
 					playedTournaments: 0,
 					wonTournaments: 0,
 					// TODO añadir torneos
 				};
 
-				const recentGames = await GameModel.findAll({
+				const recentGames = GameModel.findAll({
 					where: Sequelize.and(
 						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 						{ inProgress: false }
 					),
-					attributes : { exclude : ["boardState"] },
 					order: [["finishTimestamp", "DESC"]],
 					limit: 10,
-				}).then(
-					(games) => { console.log("recent games : ", games)
-					return games
-					}
-				);
-				
+				});
+
 				const response = {
 					user,
 					stats,
 					recentGames,
 				};
 				res.status(200).json({ response });
-				next();
+				return
 			})
 			.catch((error) => {
 				res.status(400).json({ error: error.message });
-				next();
+				return
 			});
 	},
 
-	async addFriend(req, res, next) {
+	async addFriend(req, res) {
 		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -116,7 +113,7 @@ const CommunityController = {
 				res.status(400).json({ error: "user is already friend" });
 			}
 			res.status(400).json({ error: "a friend request is already pending" });
-			next();
+			return
 			return;
 		}
 
@@ -133,7 +130,7 @@ const CommunityController = {
 			)
 			.then(() => res.status(200).send())
 			.catch((err) => res.status(400).json({ error: err.message }));
-		next();
+		return
 	},
 	async removeFriend(req, res) {
 		if (!containsParams(["friend"], req)) {
@@ -251,7 +248,7 @@ const CommunityController = {
 				res.status(400).json({ error: err });
 			});
 	},
-	/** async sendMessage(req, res, next) {
+	async sendMessage(req, res) {
 		if (!containsParams(["to", "body"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -280,7 +277,7 @@ const CommunityController = {
 				});
 		}
 	},
-	async getAllChats(req, res, next) {}, */
+	async getAllChats(req, res) {}
 };
 
 export default CommunityController;

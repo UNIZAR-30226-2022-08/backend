@@ -6,7 +6,7 @@ import UserModel from "../models/UserModel";
 import { containsParams } from "../util/util";
 
 const AccountController = {
-	async register(req, res, next) {
+	async register(req, res) {
 		if (!containsParams(["username", "email", "password"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" });
@@ -33,7 +33,7 @@ const AccountController = {
 				return;
 			});
 	},
-	async login(req, res, next) {
+	async login(req, res) {
 		if (req.session.username) {
 			res.status(400).json({ message: "User already logged in" });
 			return;
@@ -68,23 +68,23 @@ const AccountController = {
 				return;
 			});
 	},
-	async findAllUsers(req, res, next) {
+	async findAllUsers(req, res) {
 		return UserModel.findAll()
 			.then(async (user) => {
 				if (user === null) {
 					return res.status(400).json({ error: "User not found" });
 				}
 				res.status(200).json(user);
-				next();
+				return
 			})
 			.catch((error) => {
 				console.trace();
 				console.log(error);
 				res.status(400).json({ error: error.message });
-				next();
+				return
 			});
 	},
-	async changePassword(req, res, next) {
+	async changePassword(req, res) {
 		if (!containsParams(["newPassword"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" });
@@ -107,7 +107,7 @@ const AccountController = {
 				return;
 			});
 	},
-	async logout(req, res, next) {
+	async logout(req, res) {
 		req.session.destroy();
 		res.status(201).json({ status: "success", message: "Logged out" });
 		return;
