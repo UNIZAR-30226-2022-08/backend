@@ -387,7 +387,7 @@ const GameController = {
 				res
 					.status(200)
 					.json({ response: gameObj.getAllowedMoves(gameObj.turn) });
-				console.log(res);
+				console.log({ response: gameObj.getAllowedMoves(gameObj.turn) });
 			})
 			.catch(function (error) {
 				console.trace();
