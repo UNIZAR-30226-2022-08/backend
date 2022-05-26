@@ -324,22 +324,15 @@ const GameController = {
 					return;
 				}
 				game.inProgress = false;
-				var loserPlayer;
-				let found = false;
-				// return pars.every((par) => par in req.body);
-				[game.whitePlayer, game.BlackPlayer, "draw"].forEach((par) => {
-					if (par === winnerPlayer) found = true;
-				});
-				if (!found) {
-					res.status(400).json({ error: "Ganador incorrecto" });
-					return;
-				}
+				let loserPlayer;
+
 
 				game.whiteWon = winnerPlayer === game.whitePlayer;
 				game.finishTimestamp = Date.now();
 				game.draw = winnerPlayer.toLowerCase() === "draw";
 				game.update();
-				if (game.draw) {
+				console.log("Updated game: ", game)
+				if (game.draw === true) {
 					res.status(200).json({ response: game.dataValues });
 					return;
 				}
@@ -351,6 +344,8 @@ const GameController = {
 				UserModel.findByPk(winnerPlayer).then(async function (winningPlayer) {
 					winningPlayer.money += 100;
 					const losingPlayer = await UserModel.findByPk(loserPlayer);
+					console.log("Winning player: ", winningPlayer)
+					console.log("Losing player ", losingPlayer)
 					const eloWinning = winningPlayer.elo;
 					const eloLosing = losingPlayer.elo;
 					if (eloWinning > eloLosing) {
@@ -362,6 +357,9 @@ const GameController = {
 					}
 					winningPlayer.update();
 					losingPlayer.update();
+					console.log("Updated")
+					res.status(200).json({ response: game });
+					return;
 				});
 				res.status(200).json({ response: game.dataValues });
 				return;

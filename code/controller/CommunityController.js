@@ -21,7 +21,6 @@ const CommunityController = {
 				if (user === null) {
 					res.status(400).json({ error: "Couldn't find the game" });
 					return;
-					return;
 				}
 				const playedGames = await GameModel.findAndCountAll({
 					where: Sequelize.and(
@@ -35,7 +34,10 @@ const CommunityController = {
 							}
 						)
 					),
-				}).then((arr) => arr.count);
+					attributes: {
+						exclude: ["boardState"],
+					},
+				}).then((arr) => arr);
 
 				const wonGames = await GameModel.findAndCountAll({
 					where: Sequelize.and(
