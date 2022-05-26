@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-return */
+/* eslint-disable no-console */
 /* eslint-disable consistent-return */
 import bcrypt from "bcrypt";
 import UserModel from "../models/UserModel";
@@ -26,7 +28,7 @@ const AccountController = {
 			})
 			.catch((err) => {
 				console.trace();
-				console.log(error);
+				console.log(err);
 				res.status(400).json({ error: err.message });
 				return;
 			});
