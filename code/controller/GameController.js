@@ -324,7 +324,7 @@ const GameController = {
 					return;
 				}
 				game.inProgress = false;
-
+				var loserPlayer;
 				let found = false;
 				// return pars.every((par) => par in req.body);
 				[game.whitePlayer, game.BlackPlayer, "draw"].forEach((par) => {
@@ -343,9 +343,14 @@ const GameController = {
 					res.status(200).json({ response: game.dataValues });
 					return;
 				}
+				if (game.whiteWon) {
+					loserPlayer = game.blackPlayer
+				} else {
+					loserPlayer = game.whitePlayer
+				}
 				UserModel.findByPk(winnerPlayer).then(async function (winningPlayer) {
 					winningPlayer.money += 100;
-					const losingPlayer = await UserModel.findByPk(winningPlayer);
+					const losingPlayer = await UserModel.findByPk(loserPlayer);
 					const eloWinning = winningPlayer.elo;
 					const eloLosing = losingPlayer.elo;
 					if (eloWinning > eloLosing) {
