@@ -85,7 +85,7 @@ const AccountController = {
 			});
 	},
 	async changePassword(req, res, next) {
-		if (!containsParams(["username", "newPassword"], req)) {
+		if (!containsParams(["newPassword"], req)) {
 			console.log(req.body);
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
