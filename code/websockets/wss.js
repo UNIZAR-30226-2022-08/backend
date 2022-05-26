@@ -1,4 +1,8 @@
 import WebSocket from "ws";
+import Sequelize from "sequelize";
+import GameModel from "../models/GameModel";
+import UserModel, { UserFriendList } from "../models/UserModel";
+import { containsParams } from "../util/util";
 
 const wss = new WebSocket.Server({
 	noServer: true, /*  path: "/waitQueue", */
@@ -6,6 +10,14 @@ const wss = new WebSocket.Server({
 const wssArray = []
 wss.on("connection", (ws, req) => {
 	const { username } = req.session;
+	UserModel.findByPk(username)
+	.then((user) => {
+
+	})
+	.error(function(error){
+
+	})
+
 	ws.on("message", (body) => {
 		try {
 			const { event } = JSON.parse(body);
@@ -17,6 +29,8 @@ wss.on("connection", (ws, req) => {
 				wssArray[to].send({username, message})
 			} else if (event === "syncGame") {
 				console.log(username);
+			} else if (event === "emoji") {
+
 			}
 		} catch (error) {
 			console.trace();
@@ -24,7 +38,6 @@ wss.on("connection", (ws, req) => {
 		}
 	});
 
-	
 	ws.on("close", function close() {
 		try {
 				const { username } = req.session;

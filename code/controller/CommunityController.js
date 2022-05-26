@@ -12,7 +12,7 @@ const CommunityController = {
 			next();
 		}
 
-		const { username } = req.body;
+		const { username } = req.query;
 
 		UserModel.findOne({
 			attributes: ["username", "elo", "money"],
