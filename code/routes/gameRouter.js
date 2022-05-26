@@ -8,6 +8,7 @@ const gameRouter = Router();
 gameRouter.use(validSession);
 
 gameRouter.put("/newAsyncGame", GameController.startAsyncGame);
+gameRouter.put("/newSyncGame", GameController.startAsyncGame);
 gameRouter.get("/getGame", GameController.getGame);
 // gameRouter.post("/startMatchmaking", GameController.startMatchMaking);
 gameRouter.get("/getState", GameController.getGame);
