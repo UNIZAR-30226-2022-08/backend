@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-useless-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
@@ -6,12 +7,13 @@ import Game, { BlackPlayer, WhitePlayer } from "../game/Game";
 import King from "../game/piezas/King";
 import Rook from "../game/piezas/Rook";
 import GameModel from "../models/GameModel";
+import UserModel from "../models/UserModel";
 import { containsParams } from "../util/util";
 
-const matchmakingWaitingList = [];
+// const matchmakingWaitingList = [];
 
 const GameController = {
-	async startMatchMaking(req, res) {},
+	// async startMatchMaking(req, res) {},
 	async startAsyncGame(req, res) {
 		if (!containsParams(["whitePlayer", "blackPlayer"], req)) {
 			console.log(req.body);
@@ -181,7 +183,7 @@ const GameController = {
 	},
 
 	async moverLoco(req, res) {
-		const { username } = req.session;
+		// const { username } = req.session;
 		if (!containsParams(["gameId", "x1", "y1", "x2", "y2"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -294,10 +296,32 @@ const GameController = {
 					return;
 				}
 				game.inProgress = false;
-				game.whiteWon = winnerPlayer.toLowerCase() === "white";
+				game.whiteWon = winnerPlayer === game.whitePlayer;
 				game.finishTimestamp = Date.now();
+				game.draw = winnerPlayer.toLowerCase() === "draw";
 				game.update();
+				if(game.draw) {
+					res.status(200).json({ response: game.dataValues });
+					return
+				}
+				UserModel.findByPk(winnerPlayer)
+				.then(async function(winningPlayer){
+					winningPlayer.money += 100
+					const losingPlayer = await UserModel.findByPk(winningPlayer)
+					const eloWinning = winningPlayer.elo
+					const eloLosing = losingPlayer.elo
+					if (eloWinning > eloLosing) {
+						winningPlayer.elo += 25 * (eloLosing/eloWinning)
+						losingPlayer.elo -= 25 * (eloLosing/eloWinning)
+					} else {
+						winningPlayer.elo += 25 * (eloWinning/eloLosing)
+						losingPlayer.elo -= 25 * (eloWinning/eloLosing)
+					}
+					winningPlayer.update()
+					losingPlayer.update()
+				})
 				res.status(200).json({ response: game.dataValues });
+				return
 			})
 			.catch(function (error) {
 				console.trace();

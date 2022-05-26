@@ -13,12 +13,10 @@ function validSession(req, res, next) {
  */
 function containsParams(pars, req) {
 	let foundAll = true;
-	console.log("Pars is ", pars);
 	// return pars.every((par) => par in req.body);
 	pars.forEach((par) => {
 		if (!(par in req.body)) {
-			console.log(par);
-			console.log(" no encontrado");
+			console.log(par," no encontrado");
 			foundAll = false;
 		}
 	});
