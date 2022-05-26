@@ -296,6 +296,18 @@ const GameController = {
 					return;
 				}
 				game.inProgress = false;
+				
+				let found = false;
+				// return pars.every((par) => par in req.body);
+				[game.whitePlayer, game.BlackPlayer, "draw"].forEach((par) => {
+					if (par === winnerPlayer)
+						found = true
+				});
+				if (!found) {
+					res.status(400).json({ error: "Ganador incorrecto" });
+					return;
+				}
+
 				game.whiteWon = winnerPlayer === game.whitePlayer;
 				game.finishTimestamp = Date.now();
 				game.draw = winnerPlayer.toLowerCase() === "draw";
