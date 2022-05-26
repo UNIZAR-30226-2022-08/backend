@@ -33,11 +33,8 @@ const CommunityController = {
 								blackPlayer: username,
 							}
 						)
-					),
-					attributes: {
-						exclude: ["boardState"],
-					},
-				}).then((arr) => arr);
+					)
+				}).then((arr) => arr.count);
 
 				const wonGames = await GameModel.findAndCountAll({
 					where: Sequelize.and(
@@ -65,15 +62,18 @@ const CommunityController = {
 					// TODO añadir torneos
 				};
 
-				const recentGames = GameModel.findAll({
+				const recentGames = await GameModel.findAll({
 					where: Sequelize.and(
 						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 						{ inProgress: false }
 					),
+					attributes: {
+						exclude: ["boardState"],
+					},
 					order: [["finishTimestamp", "DESC"]],
 					limit: 10,
-				});
-
+				}).then((arr) => arr);
+				console.log(recentGames)
 				const response = {
 					user,
 					stats,
