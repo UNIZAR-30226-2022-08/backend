@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-useless-return */
 import Sequelize from "sequelize";
 import GameModel from "../models/GameModel";
@@ -19,29 +20,45 @@ const CommunityController = {
 				username,
 			},
 		})
-			.then(function (user) {
+			.then(async function (user) {
 				if (user === null) {
 					res.status(400).json({ error: "Couldn't find the game" });
 					next();
 					return;
 				}
-				const playedGames = GameModel.findAndCountAll({
+				const playedGames = await GameModel.findAndCountAll({
 					where: Sequelize.and(
-						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
-						{ inProgress: false }
-					),
-				}).count;
-
-				const wonGames = GameModel.findAndCountAll({
-					where: Sequelize.and(
+						{ inProgress: false },
 						Sequelize.or(
-							{ whitePlayer: username, whiteWon: true },
-							{ blackPlayer: username, whiteWon: false }
-						),
-						{ inProgress: false }
-					),
-				}).count;
+							{
+								whitePlayer: username
+							},
+							{
+								blackPlayer: username
+							}
+						)
+					)
+				}).then(
+					(arr) => arr.count
+				)
 
+				const wonGames = await GameModel.findAndCountAll({
+					where: Sequelize.and(
+						{ inProgress: false },
+						Sequelize.or(
+							{
+								whitePlayer: username, whiteWon: true
+							},
+							{
+								blackPlayer: username, whiteWon: false
+							}
+						)
+					)
+				}).then(
+					(arr) => arr.count
+				);
+				console.log("Won games: ", wonGames)
+				console.log("Played games: ", playedGames)
 				const stats = {
 					playedGames,
 					wonGames,
@@ -115,7 +132,7 @@ const CommunityController = {
 			.catch((err) => res.status(400).json({ error: err.message }));
 		next();
 	},
-	async removeFriend(req, res, next) {
+	async removeFriend(req, res) {
 		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 		}
@@ -140,7 +157,7 @@ const CommunityController = {
 			res.status(200).send();
 		}
 	},
-	async acceptFriendRequest(req, res, next) {
+	async acceptFriendRequest(req, res) {
 		if (!containsParams(["friend"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -172,8 +189,8 @@ const CommunityController = {
 				res.status(400).json({ error: err.message });
 			});
 	},
-	async getFriendRequests(req, res, next) {
-		var friendRequests = [];
+	async getFriendRequests(req, res) {
+		const friendRequests = [];
 		UserFriendList.findAll({
 			where: {
 				accepted: false,
@@ -186,7 +203,7 @@ const CommunityController = {
 					friendRequests.push(friendRequest.userUsername);
 				});
 
-				let temp = { response: friendRequests };
+				const temp = { response: friendRequests };
 				res.status(200).json(temp);
 
 				return;
@@ -195,7 +212,7 @@ const CommunityController = {
 				res.status(400).json({ error: err });
 			});
 	},
-	async getFriends(req, res, next) {
+	async getFriends(req, res) {
 		UserFriendList.findAll({
 			where: Sequelize.and(
 				{ accepted: true },
@@ -223,7 +240,7 @@ const CommunityController = {
 					}
 				});
 
-				let temp = { response: friends };
+				const temp = { response: friends };
 				res.status(200).json(temp);
 				return;
 			})
@@ -231,7 +248,7 @@ const CommunityController = {
 				res.status(400).json({ error: err });
 			});
 	},
-	async sendMessage(req, res, next) {
+	/** async sendMessage(req, res, next) {
 		if (!containsParams(["to", "body"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
@@ -260,7 +277,7 @@ const CommunityController = {
 				});
 		}
 	},
-	async getAllChats(req, res, next) {},
+	async getAllChats(req, res, next) {}, */
 };
 
 export default CommunityController;

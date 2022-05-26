@@ -35,6 +35,11 @@ const GameModel = sequelize.define(
 			allowNull: true,
 			default: true,
 		},
+		draw: {
+			type: DataTypes.BOOLEAN,
+			allowNull: true,
+			default: false,
+		},
 		finishTimestamp: {
 			type: DataTypes.DATE,
 			allowNull: true,
