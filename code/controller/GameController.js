@@ -109,14 +109,14 @@ const GameController = {
 				}
 				if (game.blackPlayer !== username && game.whitePlayer !== username) {
 					res.status(400).json({ error: "You aren't a player of that game" });
-					return
+					return;
 				}
-				if ((game.blackPlayer === username && game.turn) 
-					||
+				if (
+					(game.blackPlayer === username && game.turn) ||
 					(!game.turn && game.whitePlayer === username)
 				) {
 					res.status(400).json({ error: "It's not your turn" });
-					return
+					return;
 				}
 				// Es el turno del usuario, ahora comprobamos que el movimiento sea valido
 				const gameObj = new Game(game.dataValues);
@@ -145,7 +145,7 @@ const GameController = {
 	},
 
 	async promotePawn(req, res) {
-		if (!containsParams(["x", "y", "wantedPiece"], req)) {
+		if (!containsParams(["gameId", "x", "y", "wantedPiece"], req)) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			return;
 		}
@@ -167,8 +167,51 @@ const GameController = {
 						return;
 					}
 				}
-				curGame.deletePiece(player, x, y);
-				curGame.addPiece(player, wantedPiece, x, y);
+				curGame.deletePiece(player, Number(x), Number(y));
+				curGame.addPiece(player, wantedPiece, Number(x), Number(y));
+				game.boardState = curGame.boardToJSONString();
+				game.save(); // Sequelize call to update the saved model in the db
+				res.status(200).send();
+			})
+			.catch(function (error) {
+				console.trace();
+				console.log(error);
+				res.status(400).json(error);
+			});
+	},
+
+	async moverLoco(req, res) {
+		const { username } = req.session;
+		if (!containsParams(["gameId", "x1", "y1", "x2", "y2"], req)) {
+			res.status(400).json({ error: "Parametros incorrectos" });
+			return;
+		}
+		const { gameId, turn, x1, y1, x2, y2 } = req.body;
+		return GameModel.findByPk(gameId)
+			.then(function (game) {
+				if (!game) {
+					res
+						.status(400)
+						.json({ error: "Couldn't find the game, ID is wrong" });
+					return;
+				}
+				const gameObj = new Game(game.dataValues);
+				console.log("Successfully created game object");
+				const successful = gameObj.moveFromTo(
+					turn,
+					Number(x1),
+					Number(y1),
+					Number(x2),
+					Number(y2)
+				);
+				if (successful) {
+					game.boardState = gameObj.boardToJSONString();
+					game.turn = !game.turn;
+					game.save(); // Sequelize call to update the saved model in the db
+					res.status(200).json(JSON.parse(game.boardState));
+				} else {
+					res.status(400).json({ error: "You cannot make this move" });
+				}
 			})
 			.catch(function (error) {
 				console.trace();
@@ -190,8 +233,8 @@ const GameController = {
 			const gameObj = new Game(game);
 			if (
 				(game.blackPlayer === username && game.turn) ||
-				(!game.turn && game.whitePlayer !== username)
-			){
+				(!game.turn && game.whitePlayer === username)
+			) {
 				res.status(400).json({ error: "It's not your turn" });
 				return;
 			}
@@ -202,7 +245,7 @@ const GameController = {
 			} else {
 				y = 7;
 			}
-			let successful = true
+			let successful = true;
 			if (side === "left") {
 				if (
 					gameObj.getPiece(gameObj.turn, 4, y) instanceof King &&
@@ -211,8 +254,8 @@ const GameController = {
 					!gameObj.getPiece(gameObj.turn, 2, y) &&
 					!gameObj.getPiece(gameObj.turn, 3, y)
 				) {
-					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 2, y)
-					successful &&= gameObj.moveFromTo(gameObj.turn, 0, y, 3, y)
+					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 2, y);
+					successful &&= gameObj.moveFromTo(gameObj.turn, 0, y, 3, y);
 				}
 			} else if (side === "right") {
 				if (
@@ -221,8 +264,8 @@ const GameController = {
 					!gameObj.getPiece(gameObj.turn, 5, y) &&
 					!gameObj.getPiece(gameObj.turn, 6, y)
 				) {
-					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 6, y)
-					successful &&= gameObj.moveFromTo(gameObj.turn, 5, y, 7, y)
+					successful &&= gameObj.moveFromTo(gameObj.turn, 4, y, 6, y);
+					successful &&= gameObj.moveFromTo(gameObj.turn, 7, y, 5, y);
 				}
 			}
 			if (successful) {
@@ -250,11 +293,38 @@ const GameController = {
 						.json({ error: "Couldn't find the game, ID is wrong" });
 					return;
 				}
-				game.inProgress = false
-				game.whiteWon = (winnerPlayer.toLowerCase() === "white")
-				game.finishTimestamp = Date.now()
-				game.update()
+				game.inProgress = false;
+				game.whiteWon = winnerPlayer.toLowerCase() === "white";
+				game.finishTimestamp = Date.now();
+				game.update();
 				res.status(200).json({ response: game.dataValues });
+			})
+			.catch(function (error) {
+				console.trace();
+				console.log(error);
+				res.status(400).json(error);
+				return;
+			});
+	},
+	async getAllowedMoves(req, res) {
+		if (req.query.gameId === undefined) {
+			res.status(400).json({ error: "Parametros incorrectos" });
+			return;
+		}
+		const { gameId } = req.query;
+
+		GameModel.findByPk(gameId)
+			.then(function (game) {
+				if (!game) {
+					res
+						.status(400)
+						.json({ error: "Couldn't find the game, ID is wrong" });
+					return;
+				}
+				const gameObj = new Game(game.dataValues);
+				res
+					.status(200)
+					.json({ response: gameObj.getAllowedMoves(gameObj.turn) });
 			})
 			.catch(function (error) {
 				console.trace();

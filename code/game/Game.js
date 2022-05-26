@@ -94,12 +94,11 @@ class Game {
 	 */
 	moveFromTo(player, x1, y1, x2, y2) {
 		const piece = this.getPiece(player, x1, y1);
-		console.log("pieza:  ", piece)
-		if (!piece)
-			return false;
-		var result = piece.move(Number(x2), Number(y2))
-		console.log("movePiece devuelve ", result)
-		if (result){
+		console.log("pieza:  ", piece);
+		if (!piece) return false;
+		const result = piece.move(Number(x2), Number(y2));
+		console.log("movePiece devuelve ", result);
+		if (result) {
 			const taken = this.deletePiece(!player, x2, y2);
 			if (taken) {
 				// notificar pieza tomada
@@ -146,16 +145,16 @@ class Game {
 				arr.push(new Pawn(player, this, Number(x), Number(y)));
 				break;
 			case "knight":
-				arr.push(new Pawn(player, this, Number(x), Number(y)));
+				arr.push(new Knight(player, this, Number(x), Number(y)));
 				break;
 			case "queen":
-				arr.push(new Pawn(player, this, Number(x), Number(y)));
+				arr.push(new Queen(player, this, Number(x), Number(y)));
 				break;
 			case "rook":
-				arr.push(new Pawn(player, this, Number(x), Number(y)));
+				arr.push(new Rook(player, this, Number(x), Number(y)));
 				break;
 			case "bishop":
-				arr.push(new Pawn(player, this, Number(x), Number(y)));
+				arr.push(new Bishop(player, this, Number(x), Number(y)));
 				break;
 			default:
 				break;
@@ -170,13 +169,10 @@ class Game {
 	 * @returns
 	 */
 	deletePiece(player, x, y) {
-		let piece = null;
-
 		function comparePiece(elem) {
 			if (elem.pos.x !== x || elem.pos.y !== y) {
 				return true;
 			}
-			piece = elem;
 			return false;
 		}
 
@@ -185,7 +181,6 @@ class Game {
 		} else {
 			this.board.blackPieces = this.board.blackPieces.filter(comparePiece);
 		}
-		return piece;
 	}
 
 	/**
@@ -354,6 +349,29 @@ class Game {
 			}
 		});
 		return toRet;
+	}
+
+	getAllowedMoves(player) {
+		if (player === WhitePlayer) {
+			return this.board.whitePieces.map((elem) => ({
+				piece: {
+					type: elem.type,
+					player: elem.player,
+					x: elem.pos.x,
+					y: elem.pos.y,
+				},
+				moves: elem.getAllowedMoves(),
+			}));
+		}
+		return this.board.blackPieces.map((elem) => ({
+			piece: {
+				type: elem.type,
+				player: elem.player,
+				x: elem.pos.x,
+				y: elem.pos.y,
+			},
+			moves: elem.getAllowedMoves(),
+		}));
 	}
 }
 

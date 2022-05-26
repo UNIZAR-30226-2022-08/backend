@@ -11,17 +11,18 @@ function validSession(req, res, next) {
  * @returns {boolean} True if object 'req.body' contains all properties specified
  * 	in the 'pars' array.
  */
-function containsParams (pars, req) {
+function containsParams(pars, req) {
 	let foundAll = true;
-	console.log("Pars is ", pars)
-	pars.forEach(par => {
-		if (!(par in req.body)){
-			console.log(par)
-			console.log(" no encontrado")
+	console.log("Pars is ", pars);
+	// return pars.every((par) => par in req.body);
+	pars.forEach((par) => {
+		if (!(par in req.body)) {
+			console.log(par);
+			console.log(" no encontrado");
 			foundAll = false;
 		}
 	});
-	return foundAll
+	return foundAll;
 }
 
 export { validSession, containsParams };

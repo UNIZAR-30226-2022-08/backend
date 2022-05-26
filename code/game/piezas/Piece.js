@@ -21,7 +21,7 @@ class Piece {
 
 	/**
 	 * Get the allowed moves for the piece
-	 * @returns array of allowed moves relative to the current position
+	 * @returns array of allowed moves
 	 */
 	getAllowedMoves() {
 		return [];
@@ -34,7 +34,12 @@ class Piece {
 	 * @returns true if the move is inside the board, false if not
 	 */
 	checkMoveRange(x, y) {
-		return x >= 0 && x < 8 && y >= 0 && y < 8;
+		return (
+			this.pos.x + x >= 0 &&
+			this.pos.x + x < 8 &&
+			this.pos.y + y >= 0 &&
+			this.pos.y + y < 8
+		);
 	}
 
 	/**
@@ -44,17 +49,16 @@ class Piece {
 	 * @returns true if the move was successful, false if not
 	 */
 	move(x, y) {
-		console.log("LLamando move con x: ", x, " y:", y)
-
+		console.log("LLamando move con x: ", x, " y:", y);
 		const found2 = this.getAllowedMoves().find((elem) => {
-			if (elem.x == Number(x) && elem.y == Number(y)) {
+			if (elem.x === Number(x) && elem.y === Number(y)) {
+				console.log("Encontrado ", elem.x, elem.y);
 				return true;
 			}
-			console.log(elem)
+			console.log(elem);
 			return false;
 		});
-
-		const found = true
+		const found = true;
 		if (found) {
 			this.pos.x = x;
 			this.pos.y = y;
