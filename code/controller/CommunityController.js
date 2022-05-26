@@ -7,7 +7,7 @@ import { containsParams } from "../util/util";
 
 const CommunityController = {
 	async getPublicProfile(req, res, next) {
-		if (!containsParams(["username"], req)) {
+		if (!req.query.username) {
 			res.status(400).json({ error: "Parametros incorrectos" });
 			next();
 		}
@@ -15,14 +15,14 @@ const CommunityController = {
 		const { username } = req.query;
 
 		UserModel.findOne({
-			attributes: ["username", "elo", "money"],
+			attributes : { exclude : ["password"] },
 			where: {
 				username,
 			},
 		})
 			.then(async function (user) {
 				if (user === null) {
-					res.status(400).json({ error: "Couldn't find the game" });
+					res.status(400).json({ error: "Couldn't find the user" });
 					next();
 					return;
 				}
@@ -39,7 +39,7 @@ const CommunityController = {
 						)
 					)
 				}).then(
-					(arr) => arr.count
+					(arr) => Number(arr.count)
 				)
 
 				const wonGames = await GameModel.findAndCountAll({
@@ -55,28 +55,31 @@ const CommunityController = {
 						)
 					)
 				}).then(
-					(arr) => arr.count
+					(arr) => Number(arr.count)
 				);
-				console.log("Won games: ", wonGames)
-				console.log("Played games: ", playedGames)
 				const stats = {
 					playedGames,
 					wonGames,
-					winrate: playedGames === 0 ? wonGames / playedGames : 0,
+					winrate: playedGames === 0 ? 0 : wonGames / playedGames,
 					playedTournaments: 0,
 					wonTournaments: 0,
 					// TODO añadir torneos
 				};
 
-				const recentGames = GameModel.findAll({
+				const recentGames = await GameModel.findAll({
 					where: Sequelize.and(
 						Sequelize.or({ whitePlayer: username }, { blackPlayer: username }),
 						{ inProgress: false }
 					),
+					attributes : { exclude : ["boardState"] },
 					order: [["finishTimestamp", "DESC"]],
 					limit: 10,
-				});
-
+				}).then(
+					(games) => { console.log("recent games : ", games)
+					return games
+					}
+				);
+				
 				const response = {
 					user,
 					stats,
