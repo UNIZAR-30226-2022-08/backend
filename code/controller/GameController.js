@@ -13,7 +13,6 @@ import { containsParams } from "../util/util";
 // const matchmakingWaitingList = [];
 
 const GameController = {
-	// async startMatchMaking(req, res) {},
 	async startAsyncGame(req, res) {
 		if (!containsParams(["whitePlayer", "blackPlayer"], req)) {
 			console.log(req.body);
@@ -29,6 +28,35 @@ const GameController = {
 			whiteWon: null,
 			inProgress: true,
 			isAsync: true,
+		})
+			.then(function (game) {
+				game.boardState = JSON.parse(game.boardState);
+				res.status(200).json({ response: game.dataValues });
+				return;
+			})
+			.catch(function (error) {
+				console.trace();
+				console.log(error);
+				res.status(400).json(error);
+				return;
+			});
+	},
+
+	async startSyncGame(req, res) {
+		if (!containsParams(["whitePlayer", "blackPlayer"], req)) {
+			console.log(req.body);
+			res.status(400).json({ error: "Parametros incorrectos" });
+			return;
+		}
+		const newGame = new Game(req.body.whitePlayer, req.body.blackPlayer);
+		return GameModel.create({
+			boardState: newGame.boardToJSONString(),
+			whitePlayer: newGame.whitePlayer,
+			blackPlayer: newGame.blackPlayer,
+			turn: newGame.turn,
+			whiteWon: null,
+			inProgress: true,
+			isAsync: false,
 		})
 			.then(function (game) {
 				game.boardState = JSON.parse(game.boardState);
@@ -296,12 +324,11 @@ const GameController = {
 					return;
 				}
 				game.inProgress = false;
-				
+
 				let found = false;
 				// return pars.every((par) => par in req.body);
 				[game.whitePlayer, game.BlackPlayer, "draw"].forEach((par) => {
-					if (par === winnerPlayer)
-						found = true
+					if (par === winnerPlayer) found = true;
 				});
 				if (!found) {
 					res.status(400).json({ error: "Ganador incorrecto" });
@@ -312,28 +339,27 @@ const GameController = {
 				game.finishTimestamp = Date.now();
 				game.draw = winnerPlayer.toLowerCase() === "draw";
 				game.update();
-				if(game.draw) {
+				if (game.draw) {
 					res.status(200).json({ response: game.dataValues });
-					return
+					return;
 				}
-				UserModel.findByPk(winnerPlayer)
-				.then(async function(winningPlayer){
-					winningPlayer.money += 100
-					const losingPlayer = await UserModel.findByPk(winningPlayer)
-					const eloWinning = winningPlayer.elo
-					const eloLosing = losingPlayer.elo
+				UserModel.findByPk(winnerPlayer).then(async function (winningPlayer) {
+					winningPlayer.money += 100;
+					const losingPlayer = await UserModel.findByPk(winningPlayer);
+					const eloWinning = winningPlayer.elo;
+					const eloLosing = losingPlayer.elo;
 					if (eloWinning > eloLosing) {
-						winningPlayer.elo += 25 * (eloLosing/eloWinning)
-						losingPlayer.elo -= 25 * (eloLosing/eloWinning)
+						winningPlayer.elo += 25 * (eloLosing / eloWinning);
+						losingPlayer.elo -= 25 * (eloLosing / eloWinning);
 					} else {
-						winningPlayer.elo += 25 * (eloWinning/eloLosing)
-						losingPlayer.elo -= 25 * (eloWinning/eloLosing)
+						winningPlayer.elo += 25 * (eloWinning / eloLosing);
+						losingPlayer.elo -= 25 * (eloWinning / eloLosing);
 					}
-					winningPlayer.update()
-					losingPlayer.update()
-				})
+					winningPlayer.update();
+					losingPlayer.update();
+				});
 				res.status(200).json({ response: game.dataValues });
-				return
+				return;
 			})
 			.catch(function (error) {
 				console.trace();
