@@ -358,8 +358,6 @@ const GameController = {
 					winningPlayer.update();
 					losingPlayer.update();
 					console.log("Updated")
-					res.status(200).json({ response: game });
-					return;
 				});
 				res.status(200).json({ response: game.dataValues });
 				return;
