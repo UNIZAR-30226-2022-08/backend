@@ -29,6 +29,11 @@ const MessageModel = sequelize.define("message", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
+	opened: {
+		type: DataTypes.boolean,
+		allowNull: false,
+		defaultValue: true
+	},
 });
 
 export default MessageModel;

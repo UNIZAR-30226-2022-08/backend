@@ -8,12 +8,8 @@ import { containsParams } from "../util/util";
 
 const CommunityController = {
 	async getPublicProfile(req, res) {
-		if (!containsParams(["username"], req)) {
-			res.status(400).json({ error: "Parametros incorrectos" });
-			return;
-		}
 
-		const { username } = req.body;
+		const { username } = req.query;
 
 		UserModel.findOne({
 			attributes: ["username", "elo", "money"],
