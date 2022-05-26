@@ -27,7 +27,7 @@ const UserModel = sequelize.define(
 			allowNull: false,
 		},
 		elo: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.TEXT,
 			defaultValue: 800,
 			validate: {
 				min: 0,

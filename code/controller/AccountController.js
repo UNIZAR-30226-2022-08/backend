@@ -17,11 +17,11 @@ const AccountController = {
 			res.status(400).json({ error: "Tamaño password invalido" });
 			return;
 		}
-		if (!/\d/.test(myString)) {
+		if (!/\d/.test(password)) {
 			res.status(400).json({ error: "La contraseña tiene que tener un numero" });
 			return;
 		}
-		if (!/\[A-Z]/.test(myString)) {
+		if (!/[A-Z]/.test(password)) {
 			res.status(400).json({ error: "La contraseña tiene que tener un uppercase" });
 			return;
 		}
