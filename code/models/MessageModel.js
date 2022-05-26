@@ -30,7 +30,7 @@ const MessageModel = sequelize.define("message", {
 		allowNull: false,
 	},
 	opened: {
-		type: DataTypes.boolean,
+		type: DataTypes.BOOLEAN,
 		allowNull: false,
 		defaultValue: true
 	},
