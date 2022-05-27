@@ -16,7 +16,15 @@ class King extends Piece {
 		const allowedMoves = [];
 
 		possibleMoves.forEach((elem) => {
-			if (this.checkMoveRange(elem.x, elem.y)) allowedMoves.push(elem);
+			if (
+				this.checkMoveRange(elem.x, elem.y) &&
+				!this.game.getPiece(
+					this.player,
+					this.pos.x + elem.x,
+					this.pos.y + elem.y
+				)
+			)
+				allowedMoves.push(elem);
 		});
 
 		return allowedMoves;

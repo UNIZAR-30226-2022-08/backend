@@ -14,7 +14,12 @@ class Rook extends Piece {
 		if (this.checkMoveRange(this.pos.x + newX, this.pos.y + newY)) {
 			arr.push({ x: newX, y: newY });
 			if (
-				!this.game.getPiece(!this.player, this.pos.x + newX, this.pos.y + newY)
+				!this.game.getPiece(
+					!this.player,
+					this.pos.x + newX,
+					this.pos.y + newY
+				) ||
+				!this.game.getPiece(this.player, this.pos.x + newX, this.pos.y + newY)
 			) {
 				arr = arr.concat(this.#walk(newX, newY, xMov, yMov));
 			}
