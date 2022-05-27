@@ -13,8 +13,8 @@ class Knight extends Piece {
 			{ x: -2, y: -1 },
 			{ x: 1, y: 2 },
 			{ x: -1, y: 2 },
-			{ x: 1, y: 2 },
-			{ x: -1, y: 2 },
+			{ x: 1, y: -2 },
+			{ x: -1, y: -2 },
 		];
 
 		const allowedMoves = [];
