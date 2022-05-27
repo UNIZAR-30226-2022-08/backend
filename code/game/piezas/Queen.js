@@ -17,7 +17,7 @@ class Queen extends Piece {
 					!this.player,
 					this.pos.x + newX,
 					this.pos.y + newY
-				) ||
+				) &&
 				!this.game.getPiece(this.player, this.pos.x + newX, this.pos.y + newY)
 			) {
 				arr = arr.concat(this.#walk(newX, newY, xMov, yMov));
