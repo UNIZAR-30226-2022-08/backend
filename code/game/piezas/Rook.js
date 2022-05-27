@@ -21,10 +21,15 @@ class Rook extends Piece {
 	}
 
 	getAllowedMoves() {
-		return this.#walk(0, 0, 1, 0)
+		let allowedMoves = [];
+		this.#walk(0, 0, 1, 0)
 			.concat(this.#walk(0, 0, -1, 0))
 			.concat(this.#walk(0, 0, 0, 1))
-			.concat(this.#walk(0, 0, 0, -1));
+			.concat(this.#walk(0, 0, 0, -1))
+			.forEach((elem) => {
+				if (this.checkMoveRange(elem.x, elem.y)) allowedMoves.push(elem);
+			});
+		return allowedMoves;
 	}
 }
 
