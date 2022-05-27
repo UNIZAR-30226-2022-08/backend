@@ -12,7 +12,9 @@ class Queen extends Piece {
 		let arr = [];
 		if (this.checkMoveRange(this.pos.x + newX, this.pos.y + newY)) {
 			arr.push({ x: newX, y: newY });
-			if (!this.game.getPiece(!this.player, newX, newY)) {
+			if (
+				!this.game.getPiece(!this.player, this.pos.x + newX, this.pos.y + newY)
+			) {
 				arr = arr.concat(this.#walk(newX, newY, xMov, yMov));
 			}
 		}
@@ -20,20 +22,14 @@ class Queen extends Piece {
 	}
 
 	getAllowedMoves() {
-		let allowedMoves = [];
-		this.#walk(0, 0, 1, 1)
+		return this.#walk(0, 0, 1, 1)
 			.concat(this.#walk(0, 0, -1, -1))
 			.concat(this.#walk(0, 0, 1, -1))
 			.concat(this.#walk(0, 0, -1, 1))
 			.concat(this.#walk(0, 0, 1, 0))
 			.concat(this.#walk(0, 0, -1, 0))
 			.concat(this.#walk(0, 0, 0, 1))
-			.concat(this.#walk(0, 0, 0, -1))
-			.forEach((elem) => {
-				if (this.checkMoveRange(elem.x, elem.y)) allowedMoves.push(elem);
-			});
-
-		return allowedMoves;
+			.concat(this.#walk(0, 0, 0, -1));
 	}
 }
 
